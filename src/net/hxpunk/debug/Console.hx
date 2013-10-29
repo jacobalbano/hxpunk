@@ -962,9 +962,9 @@ class Console
 	/**
 	 * Get the unscaled screen size for the Console.
 	 */
-	private var width(get, null):UInt = 0;
+	private var width(get, null):UInt;
 	private inline function get_width() { return Std.int(HP.width * HP.screen.scaleX * HP.screen.scale); }
-	private var height(get, null):UInt = 0;
+	private var height(get, null):UInt;
 	private inline function get_height() { return Std.int(HP.height * HP.screen.scaleY * HP.screen.scale); }
 	
 	// Console state information.

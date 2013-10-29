@@ -97,7 +97,7 @@ class Screen
 	/**
 	 * Refresh color of the screen.
 	 */
-	public var color(get, set):UInt = 0;
+	public var color(get, set):UInt;
 	private inline function get_color() { return _color; }
 	private inline function set_color(value:UInt):UInt { 
 		_color = 0xFF000000 | value; 
@@ -107,7 +107,7 @@ class Screen
 	/**
 	 * X offset of the screen.
 	 */
-	public var x(get, set):Int = 0;
+	public var x(get, set):Int;
 	private inline function get_x() { return _x; }
 	private inline function set_x(value:Int):Int
 	{
@@ -120,7 +120,7 @@ class Screen
 	/**
 	 * Y offset of the screen.
 	 */
-	public var y(get, set):Int = 0;
+	public var y(get, set):Int;
 	private inline function get_y() { return _y; }
 	private inline function set_y(value:Int):Int
 	{
@@ -133,7 +133,7 @@ class Screen
 	/**
 	 * X origin of transformations.
 	 */
-	public var originX(get, set):Int = 0;
+	public var originX(get, set):Int;
 	private inline function get_originX() { return _originX; }
 	private inline function set_originX(value:Int):Int
 	{
@@ -146,7 +146,7 @@ class Screen
 	/**
 	 * Y origin of transformations.
 	 */
-	public var originY(get, set):Int = 0;
+	public var originY(get, set):Int;
 	private inline function get_originY() { return _originY; }
 	private inline function set_originY(value:Int):Int
 	{
@@ -159,7 +159,7 @@ class Screen
 	/**
 	 * X scale of the screen.
 	 */
-	public var scaleX(get, set):Float = 0;
+	public var scaleX(get, set):Float;
 	private inline function get_scaleX() { return _scaleX; }
 	private inline function set_scaleX(value:Float):Float
 	{
@@ -172,7 +172,7 @@ class Screen
 	/**
 	 * Y scale of the screen.
 	 */
-	public var scaleY(get, set):Float = 0;
+	public var scaleY(get, set):Float;
 	private inline function get_scaleY() { return _scaleY; }
 	private inline function set_scaleY(value:Float):Float
 	{
@@ -186,7 +186,7 @@ class Screen
 	 * Scale factor of the screen. Final scale is scaleX * scale by scaleY * scale, so
 	 * you can use this factor to scale the screen both horizontally and vertically.
 	 */
-	public var scale(get, set):Float = 0;
+	public var scale(get, set):Float;
 	private inline function get_scale() { return _scale; }
 	private inline function set_scale(value:Float):Float
 	{
@@ -199,7 +199,7 @@ class Screen
 	/**
 	 * Rotation of the screen, in degrees.
 	 */
-	public var angle(get, set):Float = 0;
+	public var angle(get, set):Float;
 	private inline function get_angle() { return _angle * HP.DEG; }
 	private inline function set_angle(value:Float):Float
 	{
@@ -223,25 +223,25 @@ class Screen
 	/**
 	 * Width of the screen.
 	 */
-	public var width(get, null):UInt = 0;
+	public var width(get, null):UInt;
 	private inline function get_width() { return _width; }
 	
 	/**
 	 * Height of the screen.
 	 */
-	public var height(get, null):UInt = 0;
+	public var height(get, null):UInt;
 	private inline function get_height() { return _height; }
 	
 	/**
 	 * X position of the mouse on the screen.
 	 */
-	public var mouseX(get, null):Int = 0;
+	public var mouseX(get, null):Int;
 	private inline function get_mouseX() { return Std.int(_sprite.mouseX); }
 	
 	/**
 	 * Y position of the mouse on the screen.
 	 */
-	public var mouseY(get, null):Int = 0;
+	public var mouseY(get, null):Int;
 	private inline function get_mouseY() { return Std.int(_sprite.mouseY); }
 	
 	/**

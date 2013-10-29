@@ -271,7 +271,7 @@ class Image extends Graphic
 	/**
 	 * Change the opacity of the Image, a value from 0 to 1.
 	 */
-	public var alpha(get, set):Float = 0;
+	public var alpha(get, set):Float;
 	private inline function get_alpha() { return _alpha; }
 	private inline function set_alpha(value:Float):Float
 	{
@@ -288,7 +288,7 @@ class Image extends Graphic
 	 * Image normally with the default blending mode.
 	 * Default: 0xFFFFFF.
 	 */
-	public var color(get, set):UInt = 0;
+	public var color(get, set):UInt;
 	private inline function get_color() { return _color; }
 	private inline function set_color(value:UInt):UInt
 	{
@@ -305,7 +305,7 @@ class Image extends Graphic
 	 * 0 to 1. 0 Means no change, 1 is full color tint.
 	 * Default: 1.
 	 */
-	public var tinting(get, set):Float = 0;
+	public var tinting(get, set):Float;
 	private inline function get_tinting() { return _tintFactor; }
 	private inline function set_tinting(value:Float):Float
 	{
@@ -321,7 +321,7 @@ class Image extends Graphic
 	 * Default: multiply.
 	 * See Image.TINTING_MULTIPLY and Image.TINTING_COLORIZE.
 	 */
-	public var tintMode(get, set):Float = 0;
+	public var tintMode(get, set):Float;
 	private inline function get_tintMode() { return _tintMode; }
 	private inline function set_tintMode(value:Float):Float
 	{
@@ -422,21 +422,21 @@ class Image extends Graphic
 	/**
 	 * Width of the image.
 	 */
-	public var width(get, set):UInt = 0;
+	public var width(get, set):UInt;
 	private function get_width() { return Std.int(_bufferRect.width); }
 	private function set_width(value:UInt):UInt { throw new Error("Cannot modify this property!"); return 0; }
 	
 	/**
 	 * Height of the image.
 	 */
-	public var height(get, set):UInt = 0;
+	public var height(get, set):UInt;
 	private function get_height() { return Std.int(_bufferRect.height); }
 	private function set_height(value:UInt):UInt { throw new Error("Cannot modify this property!"); return 0; }
 	
 	/**
 	 * The scaled width of the image.
 	 */
-	public var scaledWidth(get, set):Float = 0;
+	public var scaledWidth(get, set):Float;
 	private function get_scaledWidth() { return _bufferRect.width * scaleX * scale; }
 	
 	/**
@@ -447,7 +447,7 @@ class Image extends Graphic
 	/**
 	 * The scaled height of the image.
 	 */
-	public var scaledHeight(get, set):Float = 0;
+	public var scaledHeight(get, set):Float;
 	private function get_scaledHeight() { return _bufferRect.height * scaleY * scale; }
 	
 	/**

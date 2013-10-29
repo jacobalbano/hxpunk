@@ -7,7 +7,9 @@ import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.Lib;
+#if flash
 import flash.media.SoundMixer;
+#end
 import flash.media.SoundTransform;
 import flash.text.Font;
 import flash.utils.ByteArray;
@@ -202,21 +204,23 @@ class HP
 	/**
 	 * Global volume factor for all sounds, a value from 0 to 1.
 	 */
-	public static var volume(get, set):Float = 0;
+	public static var volume(get, set):Float;
 	private static inline function get_volume() { return _volume; }
 	private static inline function set_volume(value:Float):Float
 	{
 		if (value < 0) value = 0;
 		if (_volume == value) return value;
 		_soundTransform.volume = _volume = value;
+	#if flash
 		SoundMixer.soundTransform = _soundTransform;
+	#end
 		return value;
 	}
 	
 	/**
 	 * Global panning factor for all sounds, a value from -1 to 1.
 	 */
-	public static var pan(get, set):Float = 0;
+	public static var pan(get, set):Float;
 	private static inline function get_pan() { return _pan; }
 	private static inline function set_pan(value:Float):Float
 	{
@@ -224,7 +228,9 @@ class HP
 		if (value > 1) value = 1;
 		if (_pan == value) return value;
 		_soundTransform.pan = _pan = value;
+	#if flash
 		SoundMixer.soundTransform = _soundTransform;
+	#end
 		return value;
 	}
 	
@@ -575,7 +581,7 @@ class HP
 	/**
 	 * The random seed used by FP's random functions.
 	 */
-	public static var randomSeed(get, set):UInt = 0;
+	public static var randomSeed(get, set):UInt;
 	private static inline function get_randomSeed() { return _getSeed; }
 	private static inline function set_randomSeed(value:UInt):UInt
 	{
@@ -595,7 +601,7 @@ class HP
 	/**
 	 * A pseudo-random Float produced using FP's random seed, where 0 &lt;= Float &lt; 1.
 	 */
-	public static var random(get, null):Float = 0;
+	public static var random(get, null):Float;
 	private static inline function get_random()
 	{
 		_seed = (_seed * 16807) % 2147483647;

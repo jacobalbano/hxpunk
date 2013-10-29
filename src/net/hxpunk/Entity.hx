@@ -399,55 +399,55 @@ class Entity extends Tweener
 	/**
 	 * Half the Entity's width.
 	 */
-	public var halfWidth(get, null):Float = 0;
+	public var halfWidth(get, null):Float;
 	private inline function get_halfWidth() { return width / 2; }
 	
 	/**
 	 * Half the Entity's height.
 	 */
-	public var halfHeight(get, null):Float = 0;
+	public var halfHeight(get, null):Float;
 	private inline function get_halfHeight() { return height / 2; }
 	
 	/**
 	 * The center x position of the Entity's hitbox.
 	 */
-	public var centerX(get, null):Float = 0;
+	public var centerX(get, null):Float;
 	private inline function get_centerX() { return x - originX + width / 2; }
 	
 	/**
 	 * The center y position of the Entity's hitbox.
 	 */
-	public var centerY(get, null):Float = 0;
+	public var centerY(get, null):Float;
 	private inline function get_centerY() { return y - originY + height / 2; }
 	
 	/**
 	 * The leftmost position of the Entity's hitbox.
 	 */
-	public var left(get, null):Float = 0;
+	public var left(get, null):Float;
 	private inline function get_left() { return x - originX; }
 	
 	/**
 	 * The rightmost position of the Entity's hitbox.
 	 */
-	public var right(get, null):Float = 0;
+	public var right(get, null):Float;
 	private inline function get_right() { return x - originX + width; }
 	
 	/**
 	 * The topmost position of the Entity's hitbox.
 	 */
-	public var top(get, null):Float = 0;
+	public var top(get, null):Float;
 	private inline function get_top() { return y - originY; }
 	
 	/**
 	 * The bottommost position of the Entity's hitbox.
 	 */
-	public var bottom(get, null):Float = 0;
+	public var bottom(get, null):Float;
 	private inline function get_bottom() { return y - originY + height; }
 	
 	/**
 	 * The rendering layer of this Entity. Higher layers are rendered first.
 	 */
-	public var layer(get, set):Int = 0;
+	public var layer(get, set):Int;
 	private inline function get_layer() { return _layer; }
 	private inline function set_layer(value:Int):Int
 	{

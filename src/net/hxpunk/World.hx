@@ -143,7 +143,7 @@ class World extends Tweener
 	/**
 	 * X position of the mouse in the World.
 	 */
-	public var mouseX(get, null):Int = 0;
+	public var mouseX(get, null):Int;
 	private inline function get_mouseX()
 	{
 		return Std.int(HP.screen.mouseX + camera.x);
@@ -152,7 +152,7 @@ class World extends Tweener
 	/**
 	 * Y position of the mouse in the world.
 	 */
-	public var mouseY(get, null):Int = 0;
+	public var mouseY(get, null):Int;
 	private inline function get_mouseY()
 	{
 		return Std.int(HP.screen.mouseY + camera.y);
@@ -745,7 +745,7 @@ class World extends Tweener
 	/**
 	 * How many Entities are in the World.
 	 */
-	public var count(get, null):Int = 0;
+	public var count(get, null):Int;
 	private inline function get_count() { return _count; }
 	
 	/**
@@ -787,7 +787,7 @@ class World extends Tweener
 	/**
 	 * How many Entity layers the World has.
 	 */
-	public var layers(get, null):UInt = 0;
+	public var layers(get, null):UInt;
 	private inline function get_layers() { return _layerList.length; }
 	
 	/**
@@ -863,7 +863,7 @@ class World extends Tweener
 	/**
 	 * The layer that will be rendered first by the World.
 	 */
-	public var layerFarthest(get, null):Int = 0;
+	public var layerFarthest(get, null):Int;
 	private inline function get_layerFarthest()
 	{
 		if (_updateFirst == null) return 0;
@@ -873,7 +873,7 @@ class World extends Tweener
 	/**
 	 * The layer that will be rendered last by the World.
 	 */
-	public var layerNearest(get, null):Int = 0;
+	public var layerNearest(get, null):Int;
 	private inline function get_layerNearest()
 	{
 		if (_updateFirst == null) return 0;
@@ -883,7 +883,7 @@ class World extends Tweener
 	/**
 	 * How many different types have been added to the World.
 	 */
-	public var uniqueTypes(get, null):UInt = 0;
+	public var uniqueTypes(get, null):UInt;
 	private inline function get_uniqueTypes()
 	{
 		var i:UInt = 0;

@@ -132,7 +132,7 @@ class Graphiclist extends Graphic
 	/**
 	 * Amount of Graphics in this list.
 	 */
-	public var count(get, null):UInt = 0;
+	public var count(get, null):UInt;
 	private inline function get_count() { return _count; }
 	
 	/**

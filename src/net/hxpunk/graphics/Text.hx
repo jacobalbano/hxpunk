@@ -11,6 +11,16 @@ import net.hxpunk.HP;
 import openfl.Assets;
 
 
+// TODO fix TextField class for html5
+#if html5
+@:final extern class TextField {
+	inline function getLineMetrics(lineIndex : Int) : TextLineMetrics {
+		return new TextLineMetrics(0, 0, 0, 0, 0, 0);
+	}
+}
+#end
+
+
 /**
  * Used for drawing text using embedded fonts.
  * 
@@ -345,6 +355,7 @@ class Text extends Image
 		var tlm_y:Float = 2;
 		for (i in 0..._field.numLines) {
 			tlm = _field.getLineMetrics(i);
+			tlm = _field.getLineMetrics(i);
 			remainder = tlm.x % 1;
 			if (remainder > 0.1 && remainder < 0.9) {
 				offsetRequired = true;
@@ -443,7 +454,7 @@ class Text extends Image
 	/**
 	 * Font size.
 	 */
-	public var size(get, set):UInt = 0;
+	public var size(get, set):UInt;
 	private inline function get_size() { return _size; }
 	private inline function set_size(value:UInt):UInt
 	{
@@ -475,7 +486,7 @@ class Text extends Image
 	/**
 	 * Leading (amount of vertical space between lines).
 	 */
-	public var leading(get, set):Float = 0;
+	public var leading(get, set):Float;
 	private inline function get_leading() { return _leading; }
 	private inline function set_leading(value:Float):Float
 	{
@@ -547,13 +558,13 @@ class Text extends Image
 	/**
 	 * Width of the text within the image.
 	 */
-	public var textWidth(get, null):UInt = 0;
+	public var textWidth(get, null):UInt;
 	private inline function get_textWidth() { return _textWidth; }
 	
 	/**
 	 * Height of the text within the image.
 	 */
-	public var textHeight(get, null):UInt = 0;
+	public var textHeight(get, null):UInt;
 	private inline function get_textHeight() { return _textHeight; }
 	
 	/** 

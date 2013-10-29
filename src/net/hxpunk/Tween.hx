@@ -125,14 +125,14 @@ class Tween
 	/**
 	 * The completion percentage of the Tween.
 	 */
-	public var percent(get, set):Float = 0;
+	public var percent(get, set):Float;
 	private inline function get_percent() { return _time / _target; }
 	private inline function set_percent(value:Float):Float { return _time = _target * value; }
 	
 	/**
 	 * The current time scale of the Tween (after easer has been applied).
 	 */
-	public var scale(get, null):Float = 0;
+	public var scale(get, null):Float;
 	private inline function get_scale() { return _t; }
 	
 	// Tween information.
