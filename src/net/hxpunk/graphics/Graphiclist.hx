@@ -3,6 +3,7 @@
 import flash.display.BitmapData;
 import flash.geom.Point;
 import net.hxpunk.Graphic;
+import net.hxpunk.HP;
 
 /**
  * A Graphic that can contain multiple Graphics of one or various types.
@@ -79,11 +80,9 @@ class Graphiclist extends Graphic
 	public function remove(graphic:Graphic):Graphic
 	{
 		if (Lambda.indexOf(_graphics, graphic) < 0) return graphic;
-	#if flash
-		untyped _temp.length = 0;
-	#else
-		_temp.splice(0, _temp.length);
-	#end
+		
+		HP.removeAll(_temp);
+		
 		for (g in _graphics)
 		{
 			if (g == graphic) _count --;
@@ -100,7 +99,7 @@ class Graphiclist extends Graphic
 	 * Removes the Graphic from the position in the list.
 	 * @param	index		Index to remove.
 	 */
-	public function removeAt(index:UInt = 0):Void
+	public function removeAt(index:Int = 0):Void
 	{
 		if (_graphics.length <= 0) return;
 		index %= _graphics.length;
@@ -113,13 +112,9 @@ class Graphiclist extends Graphic
 	 */
 	public function removeAll():Void
 	{
-	#if flash
-		untyped _graphics.length = untyped _temp.length = _count = 0;
-	#else
-		_graphics.splice(0, _graphics.length);
-		_temp.splice(0, _temp.length);
+		HP.removeAll(_graphics);
+		HP.removeAll(_temp);
 		count = 0;
-	#end
 		active = false;
 	}
 	
@@ -132,7 +127,7 @@ class Graphiclist extends Graphic
 	/**
 	 * Amount of Graphics in this list.
 	 */
-	public var count(get, null):UInt;
+	public var count(get, null):Int;
 	private inline function get_count() { return _count; }
 	
 	/**
@@ -154,6 +149,6 @@ class Graphiclist extends Graphic
 	// List information.
 	/** @private */ private var _graphics:Array<Graphic>;
 	/** @private */ private var _temp:Array<Graphic>;
-	/** @private */ private var _count:UInt = 0;
+	/** @private */ private var _count:Int = 0;
 	/** @private */ private var _camera:Point;
 }

@@ -27,7 +27,7 @@ class Console
 	/**
 	 * The key used to toggle the Console on/off. Tilde (~) by default.
 	 */
-	public var toggleKey:UInt = 192;
+	public var toggleKey:Int = 192;
 	
 	/**
 	 * Constructor.
@@ -39,7 +39,7 @@ class Console
 		Input.define("_ARROWS", [Key.RIGHT, Key.LEFT, Key.DOWN, Key.UP]);
 	}
 	
-	private function initVars():Void 
+	private inline function initVars():Void 
 	{
 		// Console display objects.
 		_sprite = new Sprite();
@@ -197,7 +197,7 @@ class Console
 	#if flash
 		_entRead.graphics.drawRoundRectComplex(0, 0, _entReadText.width, 20, 0, 0, 20, 0);
 	#else
-		_entRead.graphics.drawRect(0, 0, _entReadText.width, 20);
+		_entRead.graphics.drawRoundRect(0, -20, _entReadText.width + 20, 40, 40, 40);
 	#end
 		
 		// The FPS text.
@@ -216,7 +216,7 @@ class Console
 	#if flash
 		_fpsRead.graphics.drawRoundRectComplex(0, 0, big ? 320 : 160, 20, 0, 0, 0, 20);
 	#else
-		_fpsRead.graphics.drawRect(0, 0, big ? 320 : 160, 20);
+		_fpsRead.graphics.drawRoundRect(-20, -20, big ? 320 + 20 : 160 + 20, 40, 40, 40);
 	#end
 		
 		// The frame timing text.
@@ -298,7 +298,7 @@ class Console
 	#if flash
 		_butRead.graphics.drawRoundRectComplex( -20, 0, 100, 20, 0, 0, 20, 20);
 	#else
-		_butRead.graphics.drawRect( -20, 0, 100, 20);
+		_butRead.graphics.drawRoundRect( -20, -20, 100, 40, 40, 40);
 	#end
 		
 		// Default the display to debug view
@@ -306,6 +306,9 @@ class Console
 		
 		// Set the state to unpaused.
 		paused = false;
+		
+		// Show version info
+		log("hxpunk " + HP.VERSION);
 	}
 	
 	/**
@@ -443,15 +446,10 @@ class Console
 				_debRead.visible = false;
 				_logRead.visible = true;
 				updateLog();
-			#if flash
-				untyped ENTITY_LIST.length = 0;
-				untyped SCREEN_LIST.length = 0;
-				untyped SELECT_LIST.length = 0;
-			#else
-				ENTITY_LIST.splice(0, ENTITY_LIST.length);
-				SCREEN_LIST.splice(0, SCREEN_LIST.length);
-				SELECT_LIST.splice(0, SELECT_LIST.length);
-			#end
+			
+				HP.removeAll(ENTITY_LIST);
+				HP.removeAll(SCREEN_LIST);
+				HP.removeAll(SELECT_LIST);
 			}
 		}
 		return value;
@@ -616,11 +614,8 @@ class Console
 		else
 		{
 			// Replace selections with new selections.
-		#if flash
-			untyped SELECT_LIST.length = 0;
-		#else
-			SELECT_LIST.splice(0, SELECT_LIST.length);
-		#end
+			HP.removeAll(SELECT_LIST);
+			
 			for (e in SCREEN_LIST)
 			{
 				HP.rect.x = (e.x - HP.camera.x) * sx - 3;
@@ -633,11 +628,8 @@ class Console
 	/** @private Selects all entities on screen. */
 	private function selectAll():Void
 	{
-	#if flash
-		untyped SELECT_LIST.length = 0;
-	#else
-		SELECT_LIST.splice(0, SELECT_LIST.length);
-	#end
+		HP.removeAll(SELECT_LIST);
+		
 		for (e in SCREEN_LIST) SELECT_LIST.push(e);
 		renderEntities();
 	}
@@ -678,20 +670,12 @@ class Console
 		// If the list should be re-populated.
 		if (fetchList)
 		{
-		#if flash
-			untyped ENTITY_LIST.length = 0;
-		#else
-			ENTITY_LIST.splice(0, ENTITY_LIST.length);
-		#end
+			HP.removeAll(ENTITY_LIST);
 			HP.world.getAll(ENTITY_LIST);
 		}
 		
 		// Update the list of Entities on screen.
-		#if flash
-			untyped SCREEN_LIST.length = 0;
-		#else
-			SCREEN_LIST.splice(0, SCREEN_LIST.length);
-		#end
+		HP.removeAll(SCREEN_LIST);
 		for (e in ENTITY_LIST)
 		{
 			if (e.collideRect(e.x, e.y, HP.camera.x, HP.camera.y, HP.width, HP.height))
@@ -754,7 +738,12 @@ class Console
 		#if flash
 			_logRead.graphics.drawRoundRectComplex(0, 0, _logReadText0.width, 20, 0, 20, 0, 0);
 		#else
-			_logRead.graphics.drawRect(0, 0, _logReadText0.width, 20);
+			_logRead.graphics.drawRect(0, 0, _logReadText0.width - 20, 20);
+			_logRead.graphics.moveTo(_logReadText0.width, 20);
+			_logRead.graphics.lineTo(_logReadText0.width - 20, 20);
+			_logRead.graphics.lineTo(_logReadText0.width - 20, 0);
+			_logRead.graphics.curveTo(_logReadText0.width, 0, _logReadText0.width, 20);
+			
 		#end
 			_logRead.graphics.drawRect(0, 20, width, _logHeight);
 			
@@ -763,7 +752,7 @@ class Console
 		#if flash
 			_logRead.graphics.drawRoundRectComplex(_logBar.x, _logBar.y, _logBar.width, _logBar.height, 8, 8, 8, 8);
 		#else
-			_logRead.graphics.drawRect(_logBar.x, _logBar.y, _logBar.width, _logBar.height);
+			_logRead.graphics.drawRoundRect(_logBar.x, _logBar.y, _logBar.width, _logBar.height, 16, 16);
 		#end
 			
 			// If the log has more lines than the display limit.
@@ -771,11 +760,11 @@ class Console
 			{
 				// Draw the log scrollbar handle.
 				_logRead.graphics.beginFill(0xFFFFFF, 1);
-				var y:UInt = Std.int(_logBar.y + 2 + (_logBar.height - 16) * _logScroll);
+				var y:Int = Std.int(_logBar.y + 2 + (_logBar.height - 16) * _logScroll);
 			#if flash
 				_logRead.graphics.drawRoundRectComplex(_logBar.x + 2, y, 12, 12, 6, 6, 6, 6);
 			#else
-				_logRead.graphics.drawRect(_logBar.x + 2, y, 12, 12);
+				_logRead.graphics.drawRoundRect(_logBar.x + 2, y, 12, 12, 12, 12);
 			#end
 			}
 			
@@ -820,7 +809,11 @@ class Console
 		#if flash
 			_logRead.graphics.drawRoundRectComplex(0, 0, _logReadText0.width, 20, 0, 20, 0, 0);
 		#else
-			_logRead.graphics.drawRect(0, 0, _logReadText0.width, 20);
+			_logRead.graphics.drawRect(0, 0, _logReadText0.width - 20, 20);
+			_logRead.graphics.moveTo(_logReadText0.width, 20);
+			_logRead.graphics.lineTo(_logReadText0.width - 20, 20);
+			_logRead.graphics.lineTo(_logReadText0.width - 20, 0);
+			_logRead.graphics.curveTo(_logReadText0.width, 0, _logReadText0.width, 20);
 		#end
 			_logRead.graphics.drawRect(0, 20, width, 20);
 			
@@ -849,8 +842,8 @@ class Console
 			"Update: " + Std.string(HP._updateTime) + "ms\n" + 
 			"Render: " + Std.string(HP._renderTime) + "ms";
 		_fpsInfoText1.text =
-			"Game: " + Std.string(HP._gameTime) + "ms\n" + 
-			"Flash: " + Std.string(HP._flashTime) + "ms";
+			"System: " + Std.string(HP._systemTime) + "ms\n" +
+			"Logic: " + Std.string(HP._logicTime) + "ms";
 		_memReadText.text = "MEM: " + HP.toFixed(System.totalMemory/1024/1024, 2) + "MB";
 	}
 	
@@ -895,8 +888,12 @@ class Console
 		_debRead.graphics.drawRoundRectComplex(0, 0, _debReadText0.width, 20, 0, 20, 0, 0);
 		_debRead.graphics.drawRoundRectComplex(0, 20, _debReadText1.width + 20, height - _debRead.y - 20, 0, 20, 0, 0);
 	#else
-		_debRead.graphics.drawRect(0, 0, _debReadText0.width, 20);
-		_debRead.graphics.drawRect(0, 20, _debReadText1.width + 20, height - _debRead.y - 20);
+		_debRead.graphics.drawRect(0, 0, _debReadText0.width - 20, 20);
+		_debRead.graphics.moveTo(_debReadText0.width, 20);
+		_debRead.graphics.lineTo(_debReadText0.width - 20, 20);
+		_debRead.graphics.lineTo(_debReadText0.width - 20, 0);
+		_debRead.graphics.curveTo(_debReadText0.width, 0, _debReadText0.width, 20);
+		_debRead.graphics.drawRoundRect(-20, 20, _debReadText1.width + 40, height - _debRead.y, 40, 40);
 	#end
 	}
 	
@@ -947,9 +944,9 @@ class Console
 	
 	/** @private Gets a TextFormat object with the formatting. */
 #if (flash || html5)
-	private function format(size:UInt = 16, color:UInt = 0xFFFFFF, ?align:TextFormatAlign = null):TextFormat
+	private function format(size:Int = 16, color:Int = 0xFFFFFF, ?align:TextFormatAlign = null):TextFormat
 #else
-	private function format(size:UInt = 16, color:UInt = 0xFFFFFF, ?align:String = null):TextFormat
+	private function format(size:Int = 16, color:Int = 0xFFFFFF, ?align:String = null):TextFormat
 #end
 	{
 		if (align == null) align = TextFormatAlign.LEFT;
@@ -962,9 +959,9 @@ class Console
 	/**
 	 * Get the unscaled screen size for the Console.
 	 */
-	private var width(get, null):UInt;
+	private var width(get, null):Int;
 	private inline function get_width() { return Std.int(HP.width * HP.screen.scaleX * HP.screen.scale); }
-	private var height(get, null):UInt;
+	private var height(get, null):Int;
 	private inline function get_height() { return Std.int(HP.height * HP.screen.scaleY * HP.screen.scale); }
 	
 	// Console state information.
@@ -993,7 +990,7 @@ class Console
 	/** @private */ private var _logRead:Sprite;
 	/** @private */ private var _logReadText0:TextField;
 	/** @private */ private var _logReadText1:TextField;
-	/** @private */ private var _logHeight:UInt = 0;
+	/** @private */ private var _logHeight:Int = 0;
 	/** @private */ private var _logBar:Rectangle;
 	/** @private */ private var _logBarGlobal:Rectangle;
 	/** @private */ private var _logScroll:Float = 0;

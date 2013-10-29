@@ -155,7 +155,7 @@ class Image extends Graphic
 	 * @param	color		Color of the rectangle.
 	 * @return	A new Image object.
 	 */
-	public static function createRect(width:UInt, height:UInt, color:UInt = 0xFFFFFF, alpha:Float = 1):Image
+	public static function createRect(width:Int, height:Int, color:Int = 0xFFFFFF, alpha:Float = 1):Image
 	{
 		var source:BitmapData = new BitmapData(width, height, true, 0xFFFFFFFF);
 		
@@ -174,7 +174,7 @@ class Image extends Graphic
 	 * @param	alpha		Alpha of the circle.
 	 * @return	A new Image object.
 	 */
-	public static function createCircle(radius:UInt, color:UInt = 0xFFFFFF, alpha:Float = 1):Image
+	public static function createCircle(radius:Int, color:Int = 0xFFFFFF, alpha:Float = 1):Image
 	{
 		HP.sprite.graphics.clear();
 		HP.sprite.graphics.beginFill(0xFFFFFF);
@@ -204,7 +204,7 @@ class Image extends Graphic
 	 * @param	toAlpha		Alpha at end of gradient.
 	 * @return	A new Image object.
 	 */
-	public static function createGradient (width:UInt, height:UInt, fromX:Float, fromY:Float, toX:Float, toY:Float, fromColor:UInt, toColor:UInt, fromAlpha:Float = 1, toAlpha:Float = 1):Image
+	public static function createGradient (width:Int, height:Int, fromX:Float, fromY:Float, toX:Float, toY:Float, fromColor:Int, toColor:Int, fromAlpha:Float = 1, toAlpha:Float = 1):Image
 	{
 		var bitmap:BitmapData = new BitmapData(width, height, true, 0x0);
 		
@@ -288,9 +288,9 @@ class Image extends Graphic
 	 * Image normally with the default blending mode.
 	 * Default: 0xFFFFFF.
 	 */
-	public var color(get, set):UInt;
+	public var color(get, set):Int;
 	private inline function get_color() { return _color; }
-	private inline function set_color(value:UInt):UInt
+	private inline function set_color(value:Int):Int
 	{
 		value &= 0xFFFFFF;
 		if (_color != value) {
@@ -422,16 +422,16 @@ class Image extends Graphic
 	/**
 	 * Width of the image.
 	 */
-	public var width(get, set):UInt;
+	public var width(get, set):Int;
 	private function get_width() { return Std.int(_bufferRect.width); }
-	private function set_width(value:UInt):UInt { throw new Error("Cannot modify this property!"); return 0; }
+	private function set_width(value:Int):Int { throw new Error("Cannot modify this property!"); return 0; }
 	
 	/**
 	 * Height of the image.
 	 */
-	public var height(get, set):UInt;
+	public var height(get, set):Int;
 	private function get_height() { return Std.int(_bufferRect.height); }
-	private function set_height(value:UInt):UInt { throw new Error("Cannot modify this property!"); return 0; }
+	private function set_height(value:Int):Int { throw new Error("Cannot modify this property!"); return 0; }
 	
 	/**
 	 * The scaled width of the image.
@@ -504,7 +504,7 @@ class Image extends Graphic
 	
 	// Color and alpha information.
 	/** @private */ private var _alpha:Float = 1;
-	/** @private */ private var _color:UInt = 0x00FFFFFF;
+	/** @private */ private var _color:Int = 0x00FFFFFF;
 	/** @private */ private var _tintFactor:Float = 1.0;
 	/** @private */ private var _tintMode:Float = TINTING_MULTIPLY;
 	/** @private */ private var _tint:ColorTransform;

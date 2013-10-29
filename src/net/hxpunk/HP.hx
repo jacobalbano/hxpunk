@@ -36,12 +36,12 @@ class HP
 	/**
 	 * Width of the game.
 	 */
-	public static var width:UInt = 0;
+	public static var width:Int = 0;
 	
 	/**
 	 * Height of the game.
 	 */
-	public static var height:UInt = 0;
+	public static var height:Int = 0;
 	
 	/**
 	 * Half width of the game.
@@ -122,7 +122,7 @@ class HP
 	public static var defaultFont:Font;
 
 	
-	private static function initStaticVars():Bool 
+	private static inline function initStaticVars():Bool 
 	{
 		// Tweener
 		tweener = new Tweener();
@@ -235,6 +235,19 @@ class HP
 	}
 	
 	/**
+	 * Remove all elements from an array
+	 * @param	array	The array to clear.
+	 */
+	public static inline function removeAll(array:Array<Dynamic>):Void
+	{
+	#if !(cpp || php)
+		untyped array.length = 0;
+	#else
+		array.splice(0, array.length);
+	#end
+	}
+	
+	/**
 	 * Remove an element from an array
 	 * @return	True if element existed and has been removed, false if element was not in array.
 	 */
@@ -316,14 +329,14 @@ class HP
 	 * @param	t				Interpolation value. Clamped to the range [0, 1].
 	 * return	RGB component-interpolated color value.
 	 */
-	public static inline function colorLerp(fromColor:UInt, toColor:UInt, t:Float = 1):UInt
+	public static inline function colorLerp(fromColor:Int, toColor:Int, t:Float = 1):Int
 	{
 		if (t <= 0) { return fromColor; }
 		if (t >= 1) { return toColor; }
-		var a:UInt = fromColor >> 24 & 0xFF,
-			r:UInt = fromColor >> 16 & 0xFF,
-			g:UInt = fromColor >> 8 & 0xFF,
-			b:UInt = fromColor & 0xFF,
+		var a:Int = fromColor >> 24 & 0xFF,
+			r:Int = fromColor >> 16 & 0xFF,
+			g:Int = fromColor >> 8 & 0xFF,
+			b:Int = fromColor & 0xFF,
 			dA:Int = (toColor >> 24 & 0xFF) - a,
 			dR:Int = (toColor >> 16 & 0xFF) - r,
 			dG:Int = (toColor >> 8 & 0xFF) - g,
@@ -581,9 +594,9 @@ class HP
 	/**
 	 * The random seed used by FP's random functions.
 	 */
-	public static var randomSeed(get, set):UInt;
+	public static var randomSeed(get, set):Int;
 	private static inline function get_randomSeed() { return _getSeed; }
-	private static inline function set_randomSeed(value:UInt):UInt
+	private static inline function set_randomSeed(value:Int):Int
 	{
 		_seed = Std.int(clamp(value, 1, 2147483646));
 		_getSeed = _seed;
@@ -613,7 +626,7 @@ class HP
 	 * @param	amount		The returned UInt will always be 0 &lt;= UInt &lt; amount.
 	 * @return	The UInt.
 	 */
-	public static inline function rand(amount:UInt):UInt
+	public static inline function rand(amount:Int):Int
 	{
 		_seed = (_seed * 16807) % 2147483647;
 		return Std.int((_seed / 2147483647) * amount);
@@ -664,7 +677,7 @@ class HP
 	 * @param	B		The blue value of the color, from 0 to 255.
 	 * @return	The color UInt.
 	 */
-	public static inline function getColorRGB(R:UInt = 0, G:UInt = 0, B:UInt = 0):UInt
+	public static inline function getColorRGB(R:Int = 0, G:Int = 0, B:Int = 0):Int
 	{
 		return R << 16 | G << 8 | B;
 	}
@@ -676,7 +689,7 @@ class HP
 	 * @param	v		The value of the color (from 0 to 1).
 	 * @return	The color UInt.
 	 */
-	public static inline function getColorHSV(h:Float, s:Float, v:Float):UInt
+	public static inline function getColorHSV(h:Float, s:Float, v:Float):Int
 	{
 		h = h < 0 ? 0 : (h > 1 ? 1 : h);
 		s = s < 0 ? 0 : (s > 1 ? 1 : s);
@@ -699,16 +712,16 @@ class HP
 		}
 	}
 	
-	public static inline function getColorHue(color:UInt):Float
+	public static inline function getColorHue(color:Int):Float
 	{
-		var r:UInt = (color >> 16) & 0xFF;
-		var g:UInt = (color >> 8) & 0xFF;
-		var b:UInt = color & 0xFF;
+		var r:Int = (color >> 16) & 0xFF;
+		var g:Int = (color >> 8) & 0xFF;
+		var b:Int = color & 0xFF;
 		
-		var max:UInt = Std.int(Math.max(r, Math.max(g, b)));
-		var min:UInt = Std.int(Math.min(r, Math.min(g, b)));
+		var max:Int = Std.int(Math.max(r, Math.max(g, b)));
+		var min:Int = Std.int(Math.min(r, Math.min(g, b)));
 		
-		var hue:UInt = 0;
+		var hue:Int = 0;
 		 
 		if (max == min) {
 			hue = 0;
@@ -723,14 +736,14 @@ class HP
 		return hue / 360;
 	}
 	
-	public static inline function getColorSaturation(color:UInt):Float
+	public static inline function getColorSaturation(color:Int):Float
 	{
-		var r:UInt = (color >> 16) & 0xFF;
-		var g:UInt = (color >> 8) & 0xFF;
-		var b:UInt = color & 0xFF;
+		var r:Int = (color >> 16) & 0xFF;
+		var g:Int = (color >> 8) & 0xFF;
+		var b:Int = color & 0xFF;
 		
-		var max:UInt = Std.int(Math.max(r, Math.max(g, b)));
-		var min:UInt = Std.int(Math.min(r, Math.min(g, b)));
+		var max:Int = Std.int(Math.max(r, Math.max(g, b)));
+		var min:Int = Std.int(Math.min(r, Math.min(g, b)));
 		
 		if (max == 0) {
 			return 0;
@@ -739,11 +752,11 @@ class HP
 		}
 	}
 	
-	public static inline function getColorValue(color:UInt):Float
+	public static inline function getColorValue(color:Int):Float
 	{
-		var r:UInt = (color >> 16) & 0xFF;
-		var g:UInt = (color >> 8) & 0xFF;
-		var b:UInt = color & 0xFF;
+		var r:Int = (color >> 16) & 0xFF;
+		var g:Int = (color >> 8) & 0xFF;
+		var b:Int = color & 0xFF;
 		
 		return Math.max(r, Math.max(g, b)) / 255;
 	}
@@ -753,7 +766,7 @@ class HP
 	 * @param	color		The color to evaluate.
 	 * @return	A UInt from 0 to 255.
 	 */
-	public static inline function getRed(color:UInt):UInt
+	public static inline function getRed(color:Int):Int
 	{
 		return color >> 16 & 0xFF;
 	}
@@ -763,7 +776,7 @@ class HP
 	 * @param	color		The color to evaluate.
 	 * @return	A UInt from 0 to 255.
 	 */
-	public static inline function getGreen(color:UInt):UInt
+	public static inline function getGreen(color:Int):Int
 	{
 		return color >> 8 & 0xFF;
 	}
@@ -773,7 +786,7 @@ class HP
 	 * @param	color		The color to evaluate.
 	 * @return	A UInt from 0 to 255.
 	 */
-	public static inline function getBlue(color:UInt):UInt
+	public static inline function getBlue(color:Int):Int
 	{
 		return color & 0xFF;
 	}
@@ -812,10 +825,10 @@ public static function getBitmap(source:Dynamic):BitmapData
 	 * Sets a time flag.
 	 * @return	Time elapsed (in milliseconds) since the last time flag was set.
 	 */
-	public static inline function timeFlag():UInt
+	public static inline function timeFlag():Float
 	{
-		var t:UInt = Lib.getTimer(),
-			e:UInt = t - _time;
+		var t:Float = Lib.getTimer(),
+			e:Float = t - _time;
 		_time = t;
 		return e;
 	}
@@ -907,7 +920,7 @@ public static function getBitmap(source:Dynamic):BitmapData
 	 */
 	/*public static function tween(object:Dynamic, values:Dynamic, duration:Float, options:Dynamic = null):MultiVarTween
 	{
-		var type:UInt = Tween.ONESHOT,
+		var type:Int = Tween.ONESHOT,
 			complete:Function = null,
 			ease:Function = null,
 			tweener:Tweener = HP.tweener,
@@ -938,7 +951,7 @@ public static function getBitmap(source:Dynamic):BitmapData
 	 * 
 	 * Example: HP.alarm(5.0, callbackFunction, Tween.LOOPING); // Calls callbackFunction every 5 seconds
 	 */
-	public static inline function alarm(delay:Float, callback:Void -> Void, type:UInt = 2, tweener:Tweener = null):Alarm
+	public static inline function alarm(delay:Float, callback:Void -> Void, type:Int = 2, tweener:Tweener = null):Alarm
 	{
 		if (tweener == null) tweener = HP.tweener;
 		
@@ -1097,7 +1110,7 @@ public static function getBitmap(source:Dynamic):BitmapData
 	}
 	
 	// TODO : update with Math.floor & Math.ceil
-	public static function toFixed(x:Float, ?decimalPlaces:UInt = 20, ?paddingZeroes:Bool = true):String 
+	public static function toFixed(x:Float, ?decimalPlaces:Int = 20, ?paddingZeroes:Bool = true):String 
 	{
 		if (Math.isNaN(x) || decimalPlaces <= 0) return Std.string(Std.int(x));
 		var factor:Float = Math.pow(10, decimalPlaces);
@@ -1119,18 +1132,18 @@ public static function getBitmap(source:Dynamic):BitmapData
 	/** @private */ public static var _console:Console;
 	
 	// Time information.
-	/** @private */ public static var _time:UInt = 0;
-	/** @private */ public static var _updateTime:UInt = 0;
-	/** @private */ public static var _renderTime:UInt = 0;
-	/** @private */ public static var _gameTime:UInt = 0;
-	/** @private */ public static var _flashTime:UInt = 0;
+	/** @private */ public static var _time:Float = 0;
+	/** @private */ public static var _updateTime:Float = 0;
+	/** @private */ public static var _renderTime:Float = 0;
+	/** @private */ public static var _logicTime:Float = 0;
+	/** @private */ public static var _systemTime:Float = 0;
 	
 	// Bitmap storage.
 	/** @private */ private static var _bitmap:Map<String, BitmapData>;
 	
 	// Pseudo-random number generation (the seed is set in Engine's constructor).
-	/** @private */ private static var _seed:UInt = 0;
-	/** @private */ private static var _getSeed:UInt = 0;
+	/** @private */ private static var _seed:Int = 0;
+	/** @private */ private static var _getSeed:Int = 0;
 	
 	// Volume control.
 	/** @private */ private static var _volume:Float = 1;

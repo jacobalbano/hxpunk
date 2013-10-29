@@ -40,7 +40,7 @@ class Main extends Engine
 		
 		
 		
-		HP.log(1, [1, 2, 3]);
+		for (i in 0...35) HP.log(i, [1, 2, 3]);
 		
 		HP.world.addGraphic(new Text("ecciao", 100, 100));
     }
@@ -58,6 +58,8 @@ class Main extends Engine
 		var img:Image = cast e.graphic;
 		if (img.scale > 3 || img.scale < 0.5) deltaScale *= -1;
 		img.scale += deltaScale;
+		img.angle += 1;
+		img.angle %= 360;
 	}
 	
     public static function main() { 

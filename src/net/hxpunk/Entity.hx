@@ -326,7 +326,7 @@ class Entity extends Tweener
 		
 		_x = this.x; _y = this.y;
 		this.x = x; this.y = y;
-		var n:UInt = array.length;
+		var n:Int = array.length;
 		
 		if (_mask == null)
 		{

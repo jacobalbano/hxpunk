@@ -39,7 +39,7 @@ class Text extends Image
 	/**
 	 * The font size to assign to new Text objects.
 	 */
-	public static var SIZE:UInt = 16;
+	public static var SIZE:Int = 16;
 	
 	/**
 	 * The alignment to assign to new Text objects.
@@ -108,8 +108,8 @@ class Text extends Image
 		_leading = Text.DEFAULT_LEADING;
 		_wordWrap = Text.WORD_WRAP;
 		resizable = Text.RESIZABLE;
-		var width:UInt = 0;
-		var height:UInt = Std.int(h);
+		var width:Int = 0;
+		var height:Int = Std.int(h);
 		
 		if (options)
 		{
@@ -157,7 +157,7 @@ class Text extends Image
 		}
 	}
 	
-	public static function initStaticVars():Bool 
+	public static inline function initStaticVars():Bool 
 	{
 		// Font
 		_FONT_DEFAULT = HP.defaultFont;
@@ -211,20 +211,12 @@ class Text extends Image
 		
 		var fragments:Array<String> = _richText.split("<");
 		
-	#if (flash)
-		untyped _styleIndices.length = 0;
-		untyped _styleMatched.length = 0;
-		untyped _styleFormats.length = 0;
-		untyped _styleFrom.length = 0;
-		untyped _styleTo.length = 0;
-	#else
-		_styleIndices.splice(0, _styleIndices.length);
-		_styleMatched.splice(0, _styleMatched.length);
-		_styleFormats.splice(0, _styleFormats.length);
-		_styleFrom.splice(0, _styleFrom.length);
-		_styleTo.splice(0, _styleTo.length);
-	#end
-	
+		HP.removeAll(_styleIndices);
+		HP.removeAll(_styleMatched);
+		HP.removeAll(_styleFormats);
+		HP.removeAll(_styleFrom);
+		HP.removeAll(_styleTo);
+		
 		for (i in 1...fragments.length) {
 			if (_styleMatched[i]) continue;
 			
@@ -454,9 +446,9 @@ class Text extends Image
 	/**
 	 * Font size.
 	 */
-	public var size(get, set):UInt;
+	public var size(get, set):Int;
 	private inline function get_size() { return _size; }
-	private inline function set_size(value:UInt):UInt
+	private inline function set_size(value:Int):Int
 	{
 		if (_size == value) return value;
 		_form.size = _size = value;
@@ -513,7 +505,7 @@ class Text extends Image
 	 * Width of the text image.
 	 */
 	override private function get_width() { return _width; }
-	override private function set_width(value:UInt):UInt
+	override private function set_width(value:Int):Int
 	{
 		if (_width != value) {
 			_width = value;
@@ -526,7 +518,7 @@ class Text extends Image
 	 * Height of the text image.
 	 */
 	override private function get_height() { return _height; }
-	override private function set_height(value:UInt):UInt
+	override private function set_height(value:Int):Int
 	{
 		if (_height != value) {
 			_height = value;
@@ -558,13 +550,13 @@ class Text extends Image
 	/**
 	 * Width of the text within the image.
 	 */
-	public var textWidth(get, null):UInt;
+	public var textWidth(get, null):Int;
 	private inline function get_textWidth() { return _textWidth; }
 	
 	/**
 	 * Height of the text within the image.
 	 */
-	public var textHeight(get, null):UInt;
+	public var textHeight(get, null):Int;
 	private inline function get_textHeight() { return _textHeight; }
 	
 	/** 
@@ -600,15 +592,15 @@ class Text extends Image
 
 	// Text information.
 	/** @private */ private var _field:TextField;
-	/** @private */ private var _width:UInt = 0;
-	/** @private */ private var _height:UInt = 0;
-	/** @private */ private var _textWidth:UInt = 0;
-	/** @private */ private var _textHeight:UInt = 0;
+	/** @private */ private var _width:Int = 0;
+	/** @private */ private var _height:Int = 0;
+	/** @private */ private var _textWidth:Int = 0;
+	/** @private */ private var _textHeight:Int = 0;
 	/** @private */ private var _form:TextFormat;
 	/** @private */ private var _text:String;
 	/** @private */ private var _richText:Null<String> = null;
 	/** @private */ private var _font:String;
-	/** @private */ private var _size:UInt = 0;
+	/** @private */ private var _size:Int = 0;
 #if (flash || html5)
 	/** @private */ private var _align:TextFormatAlign;
 #else

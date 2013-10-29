@@ -8,17 +8,17 @@ class Tween
 	/**
 	 * Persistent Tween type, will stop when it finishes.
 	 */
-	public static inline var PERSIST:UInt = 0;
+	public static inline var PERSIST:Int = 0;
 	
 	/**
 	 * Looping Tween type, will restart immediately when it finishes.
 	 */
-	public static inline var LOOPING:UInt = 1;
+	public static inline var LOOPING:Int = 1;
 	
 	/**
 	 * Oneshot Tween type, will stop and remove itself from its core container when it finishes.
 	 */
-	public static inline var ONESHOT:UInt = 2;
+	public static inline var ONESHOT:Int = 2;
 	
 	/**
 	 * If the tween should update.
@@ -42,7 +42,7 @@ class Tween
 	 * @param	complete		Optional callback for when the Tween completes.
 	 * @param	ease			Optional easer function to apply to the Tweened value.
 	 */
-	public function new(duration:Float, type:UInt = 0, complete:Void -> Void = null, ease:Float -> Float = null) 
+	public function new(duration:Float, type:Int = 0, complete:Void -> Void = null, ease:Float -> Float = null) 
 	{
 		_target = duration;
 		_type = type;
@@ -136,7 +136,7 @@ class Tween
 	private inline function get_scale() { return _t; }
 	
 	// Tween information.
-	/** @private */ private var _type:UInt = 0;
+	/** @private */ private var _type:Int = 0;
 	/** @private */ private var _ease:Float -> Float;
 	/** @private */ private var _t:Float = 0;
 	

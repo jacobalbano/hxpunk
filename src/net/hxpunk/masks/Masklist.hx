@@ -1,6 +1,7 @@
 ﻿package net.hxpunk.masks;
 
 import flash.display.Graphics;
+import net.hxpunk.HP;
 import net.hxpunk.Mask;
 import net.hxpunk.masks.Hitbox;
 
@@ -68,11 +69,8 @@ class Masklist extends Hitbox
 	public function remove(mask:Mask):Mask
 	{
 		if (Lambda.indexOf(_masks, mask) < 0) return mask;
-	#if flash
-		untyped _temp.length = 0;
-	#else
-		_temp.splice(0, _temp.length);
-	#end
+		
+		HP.removeAll(_temp);
 		for (m in _masks)
 		{
 			if (m == mask)
@@ -94,13 +92,10 @@ class Masklist extends Hitbox
 	 * Removes the Mask at the index.
 	 * @param	index		The Mask index.
 	 */
-	public function removeAt(index:UInt = 0):Void
+	public function removeAt(index:Int = 0):Void
 	{
-	#if flash
-		untyped _temp.length = 0;
-	#else
-		_temp.splice(0, _temp.length);
-	#end
+		HP.removeAll(_temp);
+		
 		var i:Int = _masks.length;
 		index %= i;
 		while (i -- > 0)
@@ -124,13 +119,10 @@ class Masklist extends Hitbox
 	public function removeAll():Void
 	{
 		for (m in _masks) m.list = null;
-	#if flash
-		untyped _masks.length = 0;
-		untyped _temp.length = 0;
-	#else
-		_masks.splice(0, _temp.length);
-		_temp.splice(0, _temp.length);
-	#end
+		
+		HP.removeAll(_masks);
+		HP.removeAll(_temp);
+
 		_count = 0;
 		update();
 	}
@@ -140,7 +132,7 @@ class Masklist extends Hitbox
 	 * @param	index		The Mask index.
 	 * @return	The Mask at the index.
 	 */
-	public function getMask(index:UInt = 0):Mask
+	public function getMask(index:Int = 0):Mask
 	{
 		return _masks[index % _masks.length];
 	}
@@ -183,11 +175,11 @@ class Masklist extends Hitbox
 	/**
 	 * Amount of Masks in the list.
 	 */
-	public var count(get, null):UInt;
+	public var count(get, null):Int;
 	private inline function get_count() { return _count; }
 	
 	// List information.
 	/** @private */ private var _masks:Array<Mask>;
 	/** @private */ private var _temp:Array<Mask>;
-	/** @private */ private var _count:UInt = 0;
+	/** @private */ private var _count:Int = 0;
 }

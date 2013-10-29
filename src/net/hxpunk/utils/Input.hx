@@ -55,7 +55,7 @@ class Input
 	public static var mouseWheel:Bool = false; 
 	
 	
-	public static function initStaticVars():Bool 
+	public static inline function initStaticVars():Bool 
 	{
 		_key = new Array<Bool>();
 		_press = new Array<Int>();
@@ -256,13 +256,9 @@ class Input
 	 */
 	public static function clear():Void
 	{
-	#if flash
-		untyped _press.length = 0;
-		untyped _release.length = 0;
-	#else
-		_press.splice(0, _press.length);
-		_release.splice(0, _release.length);
-	#end
+		HP.removeAll(_press);
+		HP.removeAll(_release);
+		
 		_pressNum = 0;
 		_releaseNum = 0;
 		var i:Int = _key.length;
@@ -349,7 +345,7 @@ class Input
 	}
 	
 	// Max amount of characters stored by the keystring.
-	/** @private */ private static inline var KEYSTRING_MAX:UInt = 100;
+	/** @private */ private static inline var KEYSTRING_MAX:Int = 100;
 	
 	// Input information.
 	/** @private */ private static var _enabled:Bool = false;

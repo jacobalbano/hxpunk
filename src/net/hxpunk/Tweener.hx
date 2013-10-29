@@ -9,17 +9,17 @@ class Tweener
 	/**
 	 * Persistent Tween type, will stop when it finishes.
 	 */
-	public static inline var PERSIST:UInt = 0;
+	public static inline var PERSIST:Int = 0;
 	
 	/**
 	 * Looping Tween type, will restart immediately when it finishes.
 	 */
-	public static inline var LOOPING:UInt = 1;
+	public static inline var LOOPING:Int = 1;
 	
 	/**
 	 * Oneshot Tween type, will stop and remove itself from its core container when it finishes.
 	 */
-	public static inline var ONESHOT:UInt = 2;
+	public static inline var ONESHOT:Int = 2;
 	
 	/**
 	 * If this object should update.

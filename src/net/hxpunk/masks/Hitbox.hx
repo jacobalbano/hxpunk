@@ -17,7 +17,7 @@ class Hitbox extends Mask
 	 * @param	x			X offset of the hitbox.
 	 * @param	y			Y offset of the hitbox.
 	 */
-	public function new(width:UInt = 1, height:UInt = 1, x:Int = 0, y:Int = 0) 
+	public function new(width:Int = 1, height:Int = 1, x:Int = 0, y:Int = 0) 
 	{
 		super();
 		_width = width;
@@ -121,8 +121,8 @@ class Hitbox extends Mask
 	}
 	
 	// Hitbox information.
-	/** @private */ private var _width:UInt = 0;
-	/** @private */ private var _height:UInt = 0;
+	/** @private */ private var _width:Int = 0;
+	/** @private */ private var _height:Int = 0;
 	/** @private */ private var _x:Int = 0;
 	/** @private */ private var _y:Int = 0;
 }

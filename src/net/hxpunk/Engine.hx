@@ -34,12 +34,12 @@ class Engine extends Sprite
 	/**
 	 * The max amount of frames that can be skipped in fixed framerate mode.
 	 */
-	public var maxFrameSkip:UInt = 5;
+	public var maxFrameSkip:Int = 5;
 	
 	/**
 	 * The amount of milliseconds between ticks in fixed framerate mode.
 	 */
-	public var tickRate:UInt = 4;
+	public var tickRate:Int = 4;
 	
 	/**
 	 * Constructor. Defines startup information about your game.
@@ -48,7 +48,7 @@ class Engine extends Sprite
 	 * @param	frameRate		The game framerate, in frames per second.
 	 * @param	fixed			If a fixed-framerate should be used.
 	 */
-	public function new(width:UInt, height:UInt, frameRate:Float = 60, fixed:Bool = false) 
+	public function new(width:Int, height:Int, frameRate:Float = 60, fixed:Bool = false) 
 	{
 		super();
 		
@@ -222,7 +222,7 @@ class Engine extends Sprite
 	{
 		// update timer
 		_time = _gameTime = Lib.getTimer();
-		HP._flashTime = Std.int(_time - _flashTime);
+		HP._systemTime = Std.int(_time - _flashTime);
 		_updateTime = Std.int(_time);
 		HP.elapsed = (_time - _last) / 1000;
 		if (HP.elapsed > maxElapsed) HP.elapsed = maxElapsed;
@@ -249,7 +249,7 @@ class Engine extends Sprite
 		_time = Lib.getTimer();
 		_flashTime = Std.int(_time);
 		HP._renderTime = Std.int(_time - _renderTime);
-		HP._gameTime = Std.int(_time - _gameTime);
+		HP._logicTime = Std.int(_time - _gameTime);
 	}
 	
 	/** @private Fixed framerate game loop. */
@@ -265,7 +265,7 @@ class Engine extends Sprite
 		
 		// update timer
 		_gameTime = Std.int(_time);
-		HP._flashTime = Std.int(_time - _flashTime);
+		HP._systemTime = Std.int(_time - _flashTime);
 		
 		// update console
 		if (HP._console != null) HP._console.update();
@@ -301,7 +301,7 @@ class Engine extends Sprite
 		// update timer
 		_time = _flashTime = Lib.getTimer();
 		HP._renderTime = Std.int(_time - _renderTime);
-		HP._gameTime =  Std.int(_time - _gameTime);
+		HP._logicTime =  Std.int(_time - _gameTime);
 	}
 	
 	/** @private Switch Worlds if they've changed. */
@@ -343,13 +343,13 @@ class Engine extends Sprite
 	/** @private */ private var _prev:Float = 0;
 	
 	// Debug timing information.
-	/** @private */ private var _updateTime:UInt = 0;
-	/** @private */ private var _renderTime:UInt = 0;
-	/** @private */ private var _gameTime:UInt = 0;
-	/** @private */ private var _flashTime:UInt = 0;
+	/** @private */ private var _updateTime:Int = 0;
+	/** @private */ private var _renderTime:Int = 0;
+	/** @private */ private var _gameTime:Int = 0;
+	/** @private */ private var _flashTime:Int = 0;
 	
 	// FrameRate tracking.
-	/** @private */ private var _frameLast:UInt = 0;
-	/** @private */ private var _frameListSum:UInt = 0;
+	/** @private */ private var _frameLast:Int = 0;
+	/** @private */ private var _frameListSum:Int = 0;
 	/** @private */ private var _frameList:Array<UInt>;
 }

@@ -30,14 +30,14 @@ class World extends Tweener
 		initVars();
 	}
 	
-	public static function initStaticVars():Bool 
+	public static inline function initStaticVars():Bool 
 	{
 		_recycled = new Map < String, Entity > ();
 		
 		return true;
 	}
 	
-	public function initVars():Void 
+	public inline function initVars():Void 
 	{
 		camera = new Point();
 		
@@ -477,7 +477,7 @@ class World extends Tweener
 	 * @param	p			If non-null, will have its x and y values set to the point of collision.
 	 * @return
 	 */
-	public function collideLine(type:String, fromX:Int, fromY:Int, toX:Int, toY:Int, precision:UInt = 1, ?p:Point = null):Entity
+	public function collideLine(type:String, fromX:Int, fromY:Int, toX:Int, toY:Int, precision:Int = 1, ?p:Point = null):Entity
 	{
 		// If the distance is less than precision, do the short sweep.
 		if (precision < 1) precision = 1;
@@ -613,7 +613,7 @@ class World extends Tweener
 	public function collideRectInto(type:String, rX:Float, rY:Float, rWidth:Float, rHeight:Float, into:Array<Entity>):Void
 	{
 		var e:Entity = _typeFirst[type],
-			n:UInt = into.length;
+			n:Int = into.length;
 		while (e != null)
 		{
 			if (e.collidable && e.collideRect(e.x, e.y, rX, rY, rWidth, rHeight)) into[n ++] = e;
@@ -633,7 +633,7 @@ class World extends Tweener
 	public function collidePointInto(type:String, pX:Float, pY:Float, into:Array<Entity>):Void
 	{
 		var e:Entity = _typeFirst[type],
-			n:UInt = into.length;
+			n:Int = into.length;
 		while (e != null)
 		{
 			if (e.collidable && e.collidePoint(e.x, e.y, pX, pY)) into[n ++] = e;
@@ -753,7 +753,7 @@ class World extends Tweener
 	 * @param	type		The type (or Class type) to count.
 	 * @return	How many Entities of type exist in the World.
 	 */
-	public function typeCount(type:String):UInt
+	public function typeCount(type:String):Int
 	{
 		return cast _typeCount[type];
 	}
@@ -763,7 +763,7 @@ class World extends Tweener
 	 * @param	c		The Class type to count.
 	 * @return	How many Entities of Class exist in the World.
 	 */
-	public function classCount(c:Class<Entity>):UInt
+	public function classCount(c:Class<Entity>):Int
 	{
 		return _classCount[Type.getClassName(c)];
 	}
@@ -773,7 +773,7 @@ class World extends Tweener
 	 * @param	layer		The layer to count Entities on.
 	 * @return	How many Entities are on the layer.
 	 */
-	public function layerCount(layer:Int):UInt
+	public function layerCount(layer:Int):Int
 	{
 		return cast _layerCount[layer];
 	}
@@ -787,7 +787,7 @@ class World extends Tweener
 	/**
 	 * How many Entity layers the World has.
 	 */
-	public var layers(get, null):UInt;
+	public var layers(get, null):Int;
 	private inline function get_layers() { return _layerList.length; }
 	
 	/**
@@ -883,10 +883,10 @@ class World extends Tweener
 	/**
 	 * How many different types have been added to the World.
 	 */
-	public var uniqueTypes(get, null):UInt;
+	public var uniqueTypes(get, null):Int;
 	private inline function get_uniqueTypes()
 	{
-		var i:UInt = 0;
+		var i:Int = 0;
 		for (type in _typeCount) i++;
 		return i;
 	}
@@ -900,7 +900,7 @@ class World extends Tweener
 	public function getType(type:String, into:Array<Entity>):Void
 	{
 		var e:Entity = _typeFirst[type],
-			n:UInt = into.length;
+			n:Int = into.length;
 		while (e != null)
 		{
 			into[n ++] = e;
@@ -917,7 +917,7 @@ class World extends Tweener
 	public function getClass(c:Class<Entity>, into:Array<Entity>):Void
 	{
 		var e:Entity = _updateFirst,
-			n:UInt = into.length;
+			n:Int = into.length;
 		while (e != null)
 		{
 			if (Std.is(e, c)) into[n ++] = e;
@@ -934,7 +934,7 @@ class World extends Tweener
 	public function getLayer(layer:Int, into:Array<Entity>):Void
 	{
 		var e:Entity = _renderLast[layer],
-			n:UInt = into.length;
+			n:Int = into.length;
 		while (e != null)
 		{
 			into[n ++] = e;
@@ -950,7 +950,7 @@ class World extends Tweener
 	public function getAll(into:Array<Entity>):Void
 	{
 		var e:Entity = _updateFirst,
-			n:UInt = into.length;
+			n:Int = into.length;
 		while (e != null)
 		{
 			into[n ++] = e;
@@ -1001,11 +1001,7 @@ class World extends Tweener
 				if (e._name != null) unregisterName(e);
 				if (e.autoClear && e._tween != null) e.clearTweens();
 			}
-		#if flash
-			untyped _remove.length = 0;
-		#else
-			_remove.splice(0, _remove.length);
-		#end
+			HP.removeAll(_remove);
 		}
 		
 		// add entities
@@ -1024,11 +1020,7 @@ class World extends Tweener
 				e._world = this;
 				e.added();
 			}
-		#if flash
-			untyped _add.length = 0;
-		#else
-			_add.splice(0, _add.length);
-		#end
+			HP.removeAll(_add);
 		}
 		
 		// recycle entities
@@ -1042,11 +1034,7 @@ class World extends Tweener
 				e._recycleNext = _recycled[e._class];
 				_recycled[e._class] = e;
 			}
-		#if flash
-			untyped _remove.length = 0;
-		#else
-			_remove.splice(0, _remove.length);
-		#end
+			HP.removeAll(_recycle);
 		}
 	}
 	
@@ -1122,7 +1110,7 @@ class World extends Tweener
 					_layerList[Lambda.indexOf(_layerList, e._layer)] = _layerList[_layerList.length - 1];
 					_layerSort = true;
 				}
-				_layerList.splice(_layerList.length - 1, 1);
+				_layerList.pop();
 			}
 		}
 		_layerCount[e._layer] --;

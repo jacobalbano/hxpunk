@@ -19,11 +19,11 @@ class Screen
 	public function new() 
 	{
 		// init vars
-		_sprite = new Sprite();
+		sprite = new Sprite();
 		_bitmap = new Array<Bitmap>();
 		_matrix = new Matrix();
 
-		HP.engine.addChild(_sprite);
+		HP.engine.addChild(sprite);
 		resize();
 		update();
 	}
@@ -34,18 +34,18 @@ class Screen
 	public function resize():Void
 	{
 		if (_bitmap[0] != null) {
-			_sprite.removeChild(_bitmap[0]);
-			_sprite.removeChild(_bitmap[1]);
+			sprite.removeChild(_bitmap[0]);
+			sprite.removeChild(_bitmap[1]);
 			
 			_bitmap[0].bitmapData.dispose();
 			_bitmap[1].bitmapData.dispose();
 		}
 		
 		// create screen buffers
-		_bitmap.push(new Bitmap(new BitmapData(HP.width, HP.height, false, _color), PixelSnapping.NEVER));
-		_bitmap.push(new Bitmap(new BitmapData(HP.width, HP.height, false, _color), PixelSnapping.NEVER));
-		_sprite.addChild(_bitmap[0]).visible = true;
-		_sprite.addChild(_bitmap[1]).visible = false;
+		_bitmap[0] = new Bitmap(new BitmapData(HP.width, HP.height, false, _color), PixelSnapping.NEVER);
+		_bitmap[1] = new Bitmap(new BitmapData(HP.width, HP.height, false, _color), PixelSnapping.NEVER);
+		sprite.addChild(_bitmap[0]).visible = true;
+		sprite.addChild(_bitmap[1]).visible = false;
 		HP.buffer = _bitmap[0].bitmapData;
 		_width = HP.width;
 		_height = HP.height;
@@ -91,15 +91,15 @@ class Screen
 		if (_angle != 0) _matrix.rotate(_angle);
 		_matrix.tx += _originX * _scaleX * _scale + _x;
 		_matrix.ty += _originY * _scaleX * _scale + _y;
-		_sprite.transform.matrix = _matrix;
+		sprite.transform.matrix = _matrix;
 	}
 	
 	/**
 	 * Refresh color of the screen.
 	 */
-	public var color(get, set):UInt;
+	public var color(get, set):Int;
 	private inline function get_color() { return _color; }
-	private inline function set_color(value:UInt):UInt { 
+	private inline function set_color(value:Int):Int { 
 		_color = 0xFF000000 | value; 
 		return _color;
 	}
@@ -111,9 +111,10 @@ class Screen
 	private inline function get_x() { return _x; }
 	private inline function set_x(value:Int):Int
 	{
-		if (_x == value) return value;
-		_x = value;
-		update();
+		if (_x != value) {
+			_x = value;
+			update();
+		}
 		return value;
 	}
 	
@@ -124,9 +125,10 @@ class Screen
 	private inline function get_y() { return _y; }
 	private inline function set_y(value:Int):Int
 	{
-		if (_y == value) return value;
-		_y = value;
-		update();
+		if (_y != value) {
+			_y = value;
+			update();
+		}
 		return value;
 	}
 	
@@ -137,9 +139,10 @@ class Screen
 	private inline function get_originX() { return _originX; }
 	private inline function set_originX(value:Int):Int
 	{
-		if (_originX == value) return value;
-		_originX = value;
-		update();
+		if (_originX != value) {
+			_originX = value;
+			update();
+		}
 		return value;
 	}
 	
@@ -150,9 +153,10 @@ class Screen
 	private inline function get_originY() { return _originY; }
 	private inline function set_originY(value:Int):Int
 	{
-		if (_originY == value) return value;
-		_originY = value;
-		update();
+		if (_originY != value) {
+			_originY = value;
+			update();
+		}
 		return value;
 	}
 	
@@ -163,9 +167,10 @@ class Screen
 	private inline function get_scaleX() { return _scaleX; }
 	private inline function set_scaleX(value:Float):Float
 	{
-		if (_scaleX == value) return value;
-		_scaleX = value;
-		update();
+		if (_scaleX != value) {
+			_scaleX = value;
+			update();
+		}
 		return value;
 	}
 	
@@ -176,9 +181,10 @@ class Screen
 	private inline function get_scaleY() { return _scaleY; }
 	private inline function set_scaleY(value:Float):Float
 	{
-		if (_scaleY == value) return value;
-		_scaleY = value;
-		update();
+		if (_scaleY != value) {
+			_scaleY = value;
+			update();
+		}
 		return value;
 	}
 	
@@ -190,9 +196,10 @@ class Screen
 	private inline function get_scale() { return _scale; }
 	private inline function set_scale(value:Float):Float
 	{
-		if (_scale == value) return value;
-		_scale = value;
-		update();
+		if (_scale != value) {
+			_scale = value;
+			update();
+		}
 		return value;
 	}
 	
@@ -203,10 +210,11 @@ class Screen
 	private inline function get_angle() { return _angle * HP.DEG; }
 	private inline function set_angle(value:Float):Float
 	{
-		if (_angle == value * HP.RAD) return value;
-		_angle = value * HP.RAD;
-		update();
-		return _angle;
+		if (_angle != value * HP.RAD) {
+			_angle = value * HP.RAD;
+			update();
+		}
+		return value;
 	}
 	
 	/**
@@ -223,26 +231,26 @@ class Screen
 	/**
 	 * Width of the screen.
 	 */
-	public var width(get, null):UInt;
+	public var width(get, null):Int;
 	private inline function get_width() { return _width; }
 	
 	/**
 	 * Height of the screen.
 	 */
-	public var height(get, null):UInt;
+	public var height(get, null):Int;
 	private inline function get_height() { return _height; }
 	
 	/**
 	 * X position of the mouse on the screen.
 	 */
 	public var mouseX(get, null):Int;
-	private inline function get_mouseX() { return Std.int(_sprite.mouseX); }
+	private inline function get_mouseX() { return Std.int(sprite.mouseX); }
 	
 	/**
 	 * Y position of the mouse on the screen.
 	 */
 	public var mouseY(get, null):Int;
-	private inline function get_mouseY() { return Std.int(_sprite.mouseY); }
+	private inline function get_mouseY() { return Std.int(sprite.mouseY); }
 	
 	/**
 	 * Captures the current screen as an Image object.
@@ -254,20 +262,20 @@ class Screen
 	}
 	
 	// Screen information.
-	/** @private */ private var _sprite:Sprite;
+	/** @private */ public var sprite:Sprite;
 	/** @private */ private var _bitmap:Array<Bitmap>;
 	/** @private */ private var _current:Int = 0;
 	/** @private */ private var _matrix:Matrix;
 	/** @private */ private var _x:Int = 0;
 	/** @private */ private var _y:Int = 0;
-	/** @private */ private var _width:UInt = 0;
-	/** @private */ private var _height:UInt = 0;
+	/** @private */ private var _width:Int = 0;
+	/** @private */ private var _height:Int = 0;
 	/** @private */ private var _originX:Int = 0;
 	/** @private */ private var _originY:Int = 0;
 	/** @private */ private var _scaleX:Float = 1;
 	/** @private */ private var _scaleY:Float = 1;
 	/** @private */ private var _scale:Float = 1;
 	/** @private */ private var _angle:Float = 0;
-	/** @private */ private var _color:UInt = 0xFF202020;
+	/** @private */ private var _color:Int = 0xFF202020;
 }
 

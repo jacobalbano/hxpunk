@@ -57,7 +57,7 @@ class Draw
 	 * @param	color			Color of the line.
 	 * @param	overwriteAlpha	Alpha value written to these pixels: does NOT do blending. If you want to draw a semi-transparent line over some other content, you will have to either: A) use Draw.linePlus() or B) if non-antialiasing is important, render with Draw.line() to an intermediate buffer with transparency and then render that intermediate buffer.
 	 */
-	public static function line(x1:Int, y1:Int, x2:Int, y2:Int, color:UInt = 0xFFFFFF, overwriteAlpha:Float = 1.0):Void
+	public static function line(x1:Int, y1:Int, x2:Int, y2:Int, color:Int = 0xFFFFFF, overwriteAlpha:Float = 1.0):Void
 	{
 		color = (Std.int(overwriteAlpha * 0xFF) << 24) | (color & 0xFFFFFF);
 		
@@ -157,7 +157,7 @@ class Draw
 	 * @param	alpha	Alpha of the line.
 	 * @param	thick	The thickness of the line.
 	 */
-	public static function linePlus(x1:Float, y1:Float, x2:Float, y2:Float, color:UInt = 0xFF000000, alpha:Float = 1, thick:Float = 1):Void
+	public static function linePlus(x1:Float, y1:Float, x2:Float, y2:Float, color:Int = 0xFF000000, alpha:Float = 1, thick:Float = 1):Void
 	{
 		_graphics.clear();
 		_graphics.lineStyle(thick, color, alpha, false, LineScaleMode.NONE);
@@ -176,7 +176,7 @@ class Draw
 	 * @param	alpha		Alpha of the rectangle.
 	 * @param	overwrite	If the color/alpha provided should replace the existing data rather than blend.
 	 */
-	public static function rect(x:Float, y:Float, width:Float, height:Float, color:UInt = 0xFFFFFF, alpha:Float = 1, overwrite:Bool = false):Void
+	public static function rect(x:Float, y:Float, width:Float, height:Float, color:Int = 0xFFFFFF, alpha:Float = 1, overwrite:Bool = false):Void
 	{
 		if (! overwrite && (alpha < 1 || blend != null)) {
 			_graphics.clear();
@@ -206,7 +206,7 @@ class Draw
 	 * @param	thick		How thick the outline should be (only applicable when fill = false).
 	 * @param	radius		Round rectangle corners by this amount.
 	 */
-	public static function rectPlus(x:Float, y:Float, width:Float, height:Float, color:UInt = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1, radius:Float = 0):Void
+	public static function rectPlus(x:Float, y:Float, width:Float, height:Float, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1, radius:Float = 0):Void
 	{
 		if (color > 0xFFFFFF) color = 0xFFFFFF & color;
 		_graphics.clear();
@@ -233,7 +233,7 @@ class Draw
 	 * @param	radius		Radius of the circle.
 	 * @param	color		Color of the circle.
 	 */
-	public static function circle(x:Int, y:Int, radius:Int, color:UInt = 0xFFFFFF):Void
+	public static function circle(x:Int, y:Int, radius:Int, color:Int = 0xFFFFFF):Void
 	{
 		if (Std.int(color) < 0xFF000000) color = 0xFF000000 | color;
 		x -= Std.int(_camera.x);
@@ -279,7 +279,7 @@ class Draw
 	 * @param	fill		If the circle should be filled with the color (true) or just an outline (false).
 	 * @param	thick		How thick the outline should be (only applicable when fill = false).
 	 */
-	public static function circlePlus(x:Float, y:Float, radius:Float, color:UInt = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1):Void
+	public static function circlePlus(x:Float, y:Float, radius:Float, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1):Void
 	{
 		_graphics.clear();
 		if (fill)
@@ -308,7 +308,7 @@ class Draw
 	 * @param	thick		How thick the outline should be (only applicable when fill = false).
 	 * @param	angle		What angle (in degrees) the ellipse should be rotated.
 	 */
-	public static function ellipse(x:Float, y:Float, width:Float, height:Float, color:UInt = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1, angle:Float = 0):Void
+	public static function ellipse(x:Float, y:Float, width:Float, height:Float, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1, angle:Float = 0):Void
 	{
 		_graphics.clear();
 		if (fill)
@@ -335,7 +335,7 @@ class Draw
 	 * @param	color		Color of the hitbox.
 	 * @param	alpha		Alpha of the hitbox.
 	 */
-	public static function hitbox(e:Entity, outline:Bool = true, color:UInt = 0xFFFFFF, alpha:Float = 1):Void
+	public static function hitbox(e:Entity, outline:Bool = true, color:Int = 0xFFFFFF, alpha:Float = 1):Void
 	{
 		if (outline)
 		{
@@ -385,7 +385,7 @@ class Draw
 	 * @param	color	Color of the curve
 	 * @param	alpha	Alpha transparency.
 	 */
-	public static function curve(x1:Float, y1:Float, x2:Float, y2:Float, x3:Float, y3:Float, color:UInt = 0, alpha:Float = 1, thick:Float = 1):Void
+	public static function curve(x1:Float, y1:Float, x2:Float, y2:Float, x3:Float, y3:Float, color:Int = 0, alpha:Float = 1, thick:Float = 1):Void
 	{
 		_graphics.clear();
 		_graphics.lineStyle(thick, color & 0xFFFFFF, alpha);
