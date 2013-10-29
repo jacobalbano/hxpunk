@@ -19,12 +19,13 @@
 
 	<!-- compiler flags -->
 	<haxeflag name="--no-traces" if="release" />
+	<set name="SHOW_CONSOLE" value="1" if="debug" />
 	
 	<!-- assets -->
 	<icon path="assets/openfl.svg" />
-	<assets path="assets/hxpunk" include="*" />
+	<assets path="assets" include="*" />
 	
-	<!-- optimize output
-	<haxeflag name="-dce full" /> -->
+	<!-- optimize output -->
+	<haxeflag name="-dce std" />
 	
 </project>

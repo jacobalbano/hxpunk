@@ -8,6 +8,7 @@ import net.hxpunk.graphics.Text;
 import net.hxpunk.HP;
 import net.hxpunk.utils.Input;
 import net.hxpunk.utils.Key;
+import openfl.Assets;
 
 
 /**
@@ -31,9 +32,11 @@ class Main extends Engine
 		
 		trace("HXPunk is running!");
 		
-		var img:Image = Image.createRect(40, 40);
+		//var img:Image = Image.createRect(40, 40);
+		var img:Image = new Image(Assets.getBitmapData("assets/ball.png"));
 		img.centerOrigin();
-		e = HP.world.addGraphic(img, 0, HP.halfWidth, HP.halfHeight);
+		e = new Entity(0, 0, img);
+		HP.world.add(e, HP.halfWidth, HP.halfHeight);
 		e.setHitboxTo(img);
 		e.centerOrigin();
 		img.angle = 45;
@@ -42,7 +45,7 @@ class Main extends Engine
 		
 		for (i in 0...35) HP.log(i, [1, 2, 3]);
 		
-		HP.world.addGraphic(new Text("ecciao", 100, 100));
+		//HP.world.addGraphic(new Text("ecciao", 100, 100));
     }
 	
 	override public function update():Void 

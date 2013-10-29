@@ -622,9 +622,9 @@ class HP
 	}
 	
 	/**
-	 * Returns a pseudo-random UInt.
-	 * @param	amount		The returned UInt will always be 0 &lt;= UInt &lt; amount.
-	 * @return	The UInt.
+	 * Returns a pseudo-random Int.
+	 * @param	amount		The returned Int will always be 0 &lt;= Int &lt; amount.
+	 * @return	The Int.
 	 */
 	public static inline function rand(amount:Int):Int
 	{
@@ -675,7 +675,7 @@ class HP
 	 * @param	R		The red value of the color, from 0 to 255.
 	 * @param	G		The green value of the color, from 0 to 255.
 	 * @param	B		The blue value of the color, from 0 to 255.
-	 * @return	The color UInt.
+	 * @return	The color Int.
 	 */
 	public static inline function getColorRGB(R:Int = 0, G:Int = 0, B:Int = 0):Int
 	{
@@ -687,7 +687,7 @@ class HP
 	 * @param	h		The hue of the color (from 0 to 1).
 	 * @param	s		The saturation of the color (from 0 to 1).
 	 * @param	v		The value of the color (from 0 to 1).
-	 * @return	The color UInt.
+	 * @return	The color Int.
 	 */
 	public static inline function getColorHSV(h:Float, s:Float, v:Float):Int
 	{
@@ -764,7 +764,7 @@ class HP
 	/**
 	 * Finds the red factor of a color.
 	 * @param	color		The color to evaluate.
-	 * @return	A UInt from 0 to 255.
+	 * @return	A Int from 0 to 255.
 	 */
 	public static inline function getRed(color:Int):Int
 	{
@@ -774,7 +774,7 @@ class HP
 	/**
 	 * Finds the green factor of a color.
 	 * @param	color		The color to evaluate.
-	 * @return	A UInt from 0 to 255.
+	 * @return	A Int from 0 to 255.
 	 */
 	public static inline function getGreen(color:Int):Int
 	{
@@ -784,7 +784,7 @@ class HP
 	/**
 	 * Finds the blue factor of a color.
 	 * @param	color		The color to evaluate.
-	 * @return	A UInt from 0 to 255.
+	 * @return	A Int from 0 to 255.
 	 */
 	public static inline function getBlue(color:Int):Int
 	{

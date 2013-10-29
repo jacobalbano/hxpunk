@@ -52,7 +52,7 @@ class Engine extends Sprite
 	{
 		super();
 		
-		_frameList = new Array<UInt>();
+		_frameList = new Array<Int>();
 
 		// global game properties
 		HP.width = width;
@@ -221,9 +221,9 @@ class Engine extends Sprite
 	private function onEnterFrame(e:Event):Void
 	{
 		// update timer
-		_time = _gameTime = Lib.getTimer();
-		HP._systemTime = Std.int(_time - _flashTime);
-		_updateTime = Std.int(_time);
+		_time = _logicTime = Lib.getTimer();
+		HP._systemTime = _time - _systemTime;
+		_updateTime = _time;
 		HP.elapsed = (_time - _last) / 1000;
 		if (HP.elapsed > maxElapsed) HP.elapsed = maxElapsed;
 		HP.elapsed *= HP.rate;
@@ -240,16 +240,16 @@ class Engine extends Sprite
 		
 		// update timer
 		_time = _renderTime = Lib.getTimer();
-		HP._updateTime = Std.int(_time - _updateTime);
+		HP._updateTime = _time - _updateTime;
 		
 		// render loop
 		if (!paused) render();
 		
 		// update timer
 		_time = Lib.getTimer();
-		_flashTime = Std.int(_time);
-		HP._renderTime = Std.int(_time - _renderTime);
-		HP._logicTime = Std.int(_time - _gameTime);
+		_systemTime = _time;
+		HP._renderTime = _time - _renderTime;
+		HP._logicTime = _time - _logicTime;
 	}
 	
 	/** @private Fixed framerate game loop. */
@@ -264,8 +264,8 @@ class Engine extends Sprite
 		if (_delta < _rate) return;
 		
 		// update timer
-		_gameTime = Std.int(_time);
-		HP._systemTime = Std.int(_time - _flashTime);
+		_logicTime = Std.int(_time);
+		HP._systemTime = _time - _systemTime;
 		
 		// update console
 		if (HP._console != null) HP._console.update();
@@ -277,7 +277,7 @@ class Engine extends Sprite
 			HP.elapsed = _rate * HP.rate * 0.001;
 			
 			// update timer
-			_updateTime = Std.int(_time);
+			_updateTime = _time;
 			_delta -= _rate;
 			_prev = _time;
 			
@@ -299,9 +299,9 @@ class Engine extends Sprite
 		if (!paused) render();
 		
 		// update timer
-		_time = _flashTime = Lib.getTimer();
-		HP._renderTime = Std.int(_time - _renderTime);
-		HP._logicTime =  Std.int(_time - _gameTime);
+		_time = _systemTime = Lib.getTimer();
+		HP._renderTime = _time - _renderTime;
+		HP._logicTime =  _time - _logicTime;
 	}
 	
 	/** @private Switch Worlds if they've changed. */
@@ -343,13 +343,13 @@ class Engine extends Sprite
 	/** @private */ private var _prev:Float = 0;
 	
 	// Debug timing information.
-	/** @private */ private var _updateTime:Int = 0;
-	/** @private */ private var _renderTime:Int = 0;
-	/** @private */ private var _gameTime:Int = 0;
-	/** @private */ private var _flashTime:Int = 0;
+	/** @private */ private var _updateTime:Float = 0;
+	/** @private */ private var _renderTime:Float = 0;
+	/** @private */ private var _logicTime:Float = 0;
+	/** @private */ private var _systemTime:Float = 0;
 	
 	// FrameRate tracking.
-	/** @private */ private var _frameLast:Int = 0;
+	/** @private */ private var _frameLast:Float = 0;
 	/** @private */ private var _frameListSum:Int = 0;
-	/** @private */ private var _frameList:Array<UInt>;
+	/** @private */ private var _frameList:Array<Int>;
 }

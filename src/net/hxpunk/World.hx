@@ -51,10 +51,10 @@ class World extends Tweener
 		_renderLast = new Array<Entity>();
 		_layerList = new Array<Int>();
 		_layerCount = new Array<Int>();
-		_classCount = new Map<String, UInt>();
+		_classCount = new Map<String, Int>();
 		
 		_typeFirst = new Map<String, Entity>();
-		_typeCount = new Map<String, UInt>();
+		_typeCount = new Map<String, Int>();
 		
 		_entityNames = new Map<String, Entity>();
 	}
@@ -161,10 +161,14 @@ class World extends Tweener
 	/**
 	 * Adds the Entity to the World at the end of the frame.
 	 * @param	e		Entity object you want to add.
+	 * @param   x		Set Entity x position.
+	 * @param   y		Set Entity y position.
 	 * @return	The added Entity object.
 	 */
-	public function add(e:Entity):Entity
+	public function add(e:Entity, ?x:Float, ?y:Float):Entity
 	{
+		if (x != null) e.x = x;
+		if (y != null) e.y = y;
 		_add[_add.length] = e;
 		return e;
 	}
@@ -1226,9 +1230,9 @@ class World extends Tweener
 	/** @private */	private var _layerList:Array<Int>;
 	/** @private */	private var _layerCount:Array<Int>;
 	/** @private */	private var _layerSort:Bool;
-	/** @private */	private var _classCount:Map<String, UInt>;
+	/** @private */	private var _classCount:Map<String, Int>;
 	/** @private */	public var _typeFirst:Map<String, Entity>;
-	/** @private */	private var _typeCount:Map<String, UInt>;
+	/** @private */	private var _typeCount:Map<String, Int>;
 	/** @private */	private static var _recycled:Map<String, Entity>;
 	/** @private */	public var _entityNames:Map<String, Entity>;
 }
