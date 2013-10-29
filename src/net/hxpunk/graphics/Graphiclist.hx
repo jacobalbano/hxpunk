@@ -14,7 +14,7 @@ class Graphiclist extends Graphic
 	 * Constructor.
 	 * @param	graphic		Graphic objects to add to the list.
 	 */
-	public function new(graphics:Array<Dynamic> = null) 
+	public function new(graphics:Array<Graphic> = null) 
 	{
 		super();
 		

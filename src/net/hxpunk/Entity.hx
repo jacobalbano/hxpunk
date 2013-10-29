@@ -192,7 +192,7 @@ class Entity extends Tweener
 	 * @param	y			Virtual y position to place this Entity.
 	 * @return	The first Entity collided with, or null if none were collided.
 	 */
-	public function collideTypes(types:Array<Dynamic>, x:Float, y:Float):Entity
+	public function collideTypes(types:Array<String>, x:Float, y:Float):Entity
 	{
 		if (_world == null) return null;
 		
@@ -317,7 +317,7 @@ class Entity extends Tweener
 	 * @param	array		The Array or Vector object to populate.
 	 * @return	The array, populated with all collided Entities.
 	 */
-	public function collideInto(type:String, x:Float, y:Float, array:Dynamic):Void
+	public function collideInto(type:String, x:Float, y:Float, array:Array<Entity>):Void
 	{
 		if (_world == null) return;
 		
@@ -372,7 +372,7 @@ class Entity extends Tweener
 	 * @param	array		The Array or Vector object to populate.
 	 * @return	The array, populated with all collided Entities.
 	 */
-	public function collideTypesInto(types:Array<Dynamic>, x:Float, y:Float, array:Dynamic):Void
+	public function collideTypesInto(types:Array<String>, x:Float, y:Float, array:Array<Entity>):Void
 	{
 		if (_world == null) return;
 		for (type in types) collideInto(type, x, y, array);
@@ -594,8 +594,10 @@ class Entity extends Tweener
 	 */
 	public function distanceFrom(e:Entity, useHitboxes:Bool = false):Float
 	{
-		if (!useHitboxes) return Math.sqrt((x - e.x) * (x - e.x) + (y - e.y) * (y - e.y));
-		return HP.distanceRects(x - originX, y - originY, width, height, e.x - e.originX, e.y - e.originY, e.width, e.height);
+		var res:Float;
+		if (!useHitboxes) res = Math.sqrt((x - e.x) * (x - e.x) + (y - e.y) * (y - e.y));
+		else res = HP.distanceRects(x - originX, y - originY, width, height, e.x - e.originX, e.y - e.originY, e.width, e.height);
+		return res;
 	}
 	
 	/**
@@ -607,8 +609,10 @@ class Entity extends Tweener
 	 */
 	public function distanceToPoint(px:Float, py:Float, useHitbox:Bool = false):Float
 	{
-		if (!useHitbox) return Math.sqrt((x - px) * (x - px) + (y - py) * (y - py));
-		return HP.distanceRectPoint(px, py, x - originX, y - originY, width, height);
+		var res:Float;
+		if (!useHitbox) res = Math.sqrt((x - px) * (x - px) + (y - py) * (y - py));
+		else res = HP.distanceRectPoint(px, py, x - originX, y - originY, width, height);
+		return res;
 	}
 	
 	/**
@@ -641,7 +645,7 @@ class Entity extends Tweener
 	 * @param	solidType	An optional collision type (or array of types) to stop flush against upon collision.
 	 * @param	sweep		If sweeping should be used (prevents fast-moving objects from going through solidType).
 	 */
-	public function moveBy(x:Float, y:Float, solidType:Dynamic = null, sweep:Bool = false):Void
+	public function moveBy(x:Float, y:Float, solidTypes:Array<String> = null, sweep:Bool = false):Void
 	{
 		_moveX += x;
 		_moveY += y;
@@ -649,17 +653,17 @@ class Entity extends Tweener
 		y = Math.round(_moveY);
 		_moveX -= x;
 		_moveY -= y;
-		if (solidType != null)
+		if (solidTypes != null)
 		{
 			var sign:Int, e:Entity;
 			if (x != 0)
 			{
-				if (sweep || collideTypes(solidType, this.x + x, this.y) != null)
+				if (sweep || collideTypes(solidTypes, this.x + x, this.y) != null)
 				{
 					sign = x > 0 ? 1 : -1;
 					while (x != 0)
 					{
-						e = collideTypes(solidType, this.x + sign, this.y);
+						e = collideTypes(solidTypes, this.x + sign, this.y);
 						if (e != null)
 						{
 							if (moveCollideX(e)) break;
@@ -673,12 +677,12 @@ class Entity extends Tweener
 			}
 			if (y != 0)
 			{
-				if (sweep || collideTypes(solidType, this.x, this.y + y) != null)
+				if (sweep || collideTypes(solidTypes, this.x, this.y + y) != null)
 				{
 					sign = y > 0 ? 1 : -1;
 					while (y != 0)
 					{
-						e = collideTypes(solidType, this.x, this.y + sign);
+						e = collideTypes(solidTypes, this.x, this.y + sign);
 						if (e != null)
 						{
 							if (moveCollideY(e)) break;
@@ -705,9 +709,9 @@ class Entity extends Tweener
 	 * @param	solidType	An optional collision type (or array of types) to stop flush against upon collision.
 	 * @param	sweep		If sweeping should be used (prevents fast-moving objects from going through solidType).
 	 */
-	public function moveTo(x:Float, y:Float, solidType:Dynamic = null, sweep:Bool = false):Void
+	public function moveTo(x:Float, y:Float, solidTypes:Array<String> = null, sweep:Bool = false):Void
 	{
-		moveBy(x - this.x, y - this.y, solidType, sweep);
+		moveBy(x - this.x, y - this.y, solidTypes, sweep);
 	}
 	
 	/**
@@ -718,7 +722,7 @@ class Entity extends Tweener
 	 * @param	solidType	An optional collision type (or array of types) to stop flush against upon collision.
 	 * @param	sweep		If sweeping should be used (prevents fast-moving objects from going through solidType).
 	 */
-	public function moveTowards(x:Float, y:Float, amount:Float, solidType:Dynamic = null, sweep:Bool = false):Void
+	public function moveTowards(x:Float, y:Float, amount:Float, solidTypes:Array<String> = null, sweep:Bool = false):Void
 	{
 		_point.x = x - this.x;
 		_point.y = y - this.y;
@@ -727,7 +731,7 @@ class Entity extends Tweener
 			_point.normalize(amount);
 		}
 		
-		moveBy(_point.x, _point.y, solidType, sweep);
+		moveBy(_point.x, _point.y, solidTypes, sweep);
 	}
 	
 	/**

@@ -17,6 +17,7 @@ import net.hxpunk.tweens.misc.Alarm;
 import openfl.Assets;
 
 
+typedef PointLike = { var x:Dynamic; var y:Dynamic; }
 
 /**
  * Static catch-all class used to access global properties and functions.
@@ -184,7 +185,7 @@ class HP
 	 * @param	x	X position.
 	 * @param	y	Y position.
 	 */
-	public static function setCamera(x:Float = 0, y:Float = 0):Void
+	public static inline function setCamera(x:Float = 0, y:Float = 0):Void
 	{
 		camera.x = x;
 		camera.y = y;
@@ -193,7 +194,7 @@ class HP
 	/**
 	 * Resets the camera position.
 	 */
-	public static function resetCamera():Void
+	public static inline function resetCamera():Void
 	{
 		camera.x = camera.y = 0;
 	}
@@ -231,7 +232,7 @@ class HP
 	 * Remove an element from an array
 	 * @return	True if element existed and has been removed, false if element was not in array.
 	 */
-	public static function remove(array:Array<Dynamic>, toRemove:Dynamic):Bool
+	public static inline function remove(array:Array<Dynamic>, toRemove:Dynamic):Bool
 	{
 		var i:Int = Lambda.indexOf(array, toRemove);
 		
@@ -267,7 +268,7 @@ class HP
 	 * @param	value		The Float to evaluate.
 	 * @return	1 if value &gt; 0, -1 if value &lt; 0, and 0 when value == 0.
 	 */
-	public static function sign(value:Float):Int
+	public static inline function sign(value:Float):Int
 	{
 		return value < 0 ? -1 : (value > 0 ? 1 : 0);
 	}
@@ -279,7 +280,7 @@ class HP
 	 * @param	amount	How much you want the value to approach target by.
 	 * @return	The new value.
 	 */
-	public static function approach(value:Float, target:Float, amount:Float):Float
+	public static inline function approach(value:Float, target:Float, amount:Float):Float
 	{
 		if (value < target - amount) {
 			return value + amount;
@@ -297,7 +298,7 @@ class HP
 	 * @param	t		Interpolation factor.
 	 * @return	When t=0, returns a. When t=1, returns b. When t=0.5, will return halfway between a and b. Etc.
 	 */
-	public static function lerp(a:Float, b:Float, t:Float = 1):Float
+	public static inline function lerp(a:Float, b:Float, t:Float = 1):Float
 	{
 		return a + (b - a) * t;
 	}
@@ -309,7 +310,7 @@ class HP
 	 * @param	t				Interpolation value. Clamped to the range [0, 1].
 	 * return	RGB component-interpolated color value.
 	 */
-	public static function colorLerp(fromColor:UInt, toColor:UInt, t:Float = 1):UInt
+	public static inline function colorLerp(fromColor:UInt, toColor:UInt, t:Float = 1):UInt
 	{
 		if (t <= 0) { return fromColor; }
 		if (t >= 1) { return toColor; }
@@ -335,7 +336,7 @@ class HP
 	 * @param	y			Y position to step towards.
 	 * @param	distance	The distance to step (will not overshoot target).
 	 */
-	public static function stepTowards(object:Dynamic, x:Float, y:Float, distance:Float = 1):Void
+	public static function stepTowards(object:PointLike, x:Float, y:Float, distance:Float = 1):Void
 	{
 		point.x = x - object.x;
 		point.y = y - object.y;
@@ -356,7 +357,7 @@ class HP
 	 * @param	anchor		The anchor object.
 	 * @param	distance	The max distance object can be anchored to the anchor.
 	 */
-	public static function anchorTo(object:Dynamic, anchor:Dynamic, distance:Float = 0):Void
+	public static inline function anchorTo(object:PointLike, anchor:PointLike, distance:Float = 0):Void
 	{
 		point.x = object.x - anchor.x;
 		point.y = object.y - anchor.y;
@@ -373,7 +374,7 @@ class HP
 	 * @param	y2		The second y-position.
 	 * @return	The angle from (x1, y1) to (x2, y2).
 	 */
-	public static function angle(x1:Float, y1:Float, x2:Float, y2:Float):Float
+	public static inline function angle(x1:Float, y1:Float, x2:Float, y2:Float):Float
 	{
 		var a:Float = Math.atan2(y2 - y1, x2 - x1) * DEG;
 		return a < 0 ? a + 360 : a;
@@ -387,7 +388,7 @@ class HP
 	 * @param	x			X offset.
 	 * @param	y			Y offset.
 	 */
-	public static function angleXY(object:Dynamic, angle:Float, length:Float = 1, x:Float = 0, y:Float = 0):Void
+	public static inline function angleXY(object:PointLike, angle:Float, length:Float = 1, x:Float = 0, y:Float = 0):Void
 	{
 		angle *= RAD;
 		object.x = Math.cos(angle) * length + x;
@@ -400,7 +401,7 @@ class HP
 	 * @param	anchor		Anchor to rotate around.
 	 * @param	angle		The amount of degrees to rotate by.
 	 */
-	public static function rotateAround(object:Dynamic, anchor:Dynamic, angle:Float = 0, relative:Bool = true):Void
+	public static inline function rotateAround(object:PointLike, anchor:PointLike, angle:Float = 0, relative:Bool = true):Void
 	{
 		if (relative) angle += HP.angle(anchor.x, anchor.y, object.x, object.y);
 		HP.angleXY(object, angle, HP.distance(anchor.x, anchor.y, object.x, object.y), anchor.x, anchor.y);
@@ -412,7 +413,7 @@ class HP
 	 * @param	b	Second angle in degrees.
 	 * @return	Difference in angles, wrapped around to the range -180 to 180.
 	 */
-	public static function angleDiff(a:Float, b:Float):Float
+	public static inline function angleDiff(a:Float, b:Float):Float
 	{
 		var diff:Float = b - a;
 
@@ -429,7 +430,7 @@ class HP
 	 * @param	y2		The second y-position.
 	 * @return	The distance.
 	 */
-	public static function distance(x1:Float, y1:Float, x2:Float = 0, y2:Float = 0):Float
+	public static inline function distance(x1:Float, y1:Float, x2:Float = 0, y2:Float = 0):Float
 	{
 		return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 	}
@@ -507,7 +508,7 @@ class HP
 	 * @param	max			The maximum range.
 	 * @return	The clamped value.
 	 */
-	public static function clamp(value:Float, min:Float, max:Float):Float
+	public static inline function clamp(value:Float, min:Float, max:Float):Float
 	{
 		if (max > min)
 		{
@@ -530,7 +531,7 @@ class HP
 	 * @param	width		Rectangle's width.
 	 * @param	height		Rectangle's height.
 	 */
-	public static function clampInRect(object:Dynamic, x:Float, y:Float, width:Float, height:Float, padding:Float = 0):Void
+	public static inline function clampInRect(object:PointLike, x:Float, y:Float, width:Float, height:Float, padding:Float = 0):Void
 	{
 		object.x = clamp(object.x, x + padding, x + width - padding);
 		object.y = clamp(object.y, y + padding, y + height - padding);
@@ -545,7 +546,7 @@ class HP
 	 * @param	max2		The maximum range of the second scale.
 	 * @return	The scaled value.
 	 */
-	public static function scale(value:Float, min:Float, max:Float, min2:Float, max2:Float):Float
+	public static inline function scale(value:Float, min:Float, max:Float, min2:Float, max2:Float):Float
 	{
 		return min2 + ((value - min) / (max - min)) * (max2 - min2);
 	}
@@ -586,7 +587,7 @@ class HP
 	/**
 	 * Randomizes the random seed using Flash's Math.random() function.
 	 */
-	public static function randomizeSeed():Void
+	public static inline function randomizeSeed():Void
 	{
 		randomSeed = Std.int(2147483647 * Math.random());
 	}
@@ -606,7 +607,7 @@ class HP
 	 * @param	amount		The returned UInt will always be 0 &lt;= UInt &lt; amount.
 	 * @return	The UInt.
 	 */
-	public static function rand(amount:UInt):UInt
+	public static inline function rand(amount:UInt):UInt
 	{
 		_seed = (_seed * 16807) % 2147483647;
 		return Std.int((_seed / 2147483647) * amount);
@@ -619,7 +620,7 @@ class HP
 	 * @param	loop		If true, will jump to the first item after the last item is reached.
 	 * @return	The next item in the list.
 	 */
-	public static function next(current:Dynamic, options:Array<Dynamic>, loop:Bool = true):Dynamic
+	public static inline function next(current:Dynamic, options:Array<Dynamic>, loop:Bool = true):Dynamic
 	{
 		if (loop) return options[(Lambda.indexOf(options, current) + 1) % options.length];
 		return options[Std.int(Math.max(Lambda.indexOf(options, current) + 1, options.length - 1))];
@@ -632,7 +633,7 @@ class HP
 	 * @param	loop		If true, will jump to the last item after the first is reached.
 	 * @return	The previous item in the list.
 	 */
-	public static function prev(current:Dynamic, options:Array<Dynamic>, loop:Bool = true):Dynamic
+	public static inline function prev(current:Dynamic, options:Array<Dynamic>, loop:Bool = true):Dynamic
 	{
 		if (loop) return options[((Lambda.indexOf(options, current) - 1) + options.length) % options.length];
 		return options[Std.int(Math.max(Lambda.indexOf(options, current) - 1, 0))];
@@ -645,7 +646,7 @@ class HP
 	 * @param	b			Item b.
 	 * @return	Returns a if current is b, and b if current is a.
 	 */
-	public static function swap(current:Dynamic, a:Dynamic, b:Dynamic):Dynamic
+	public static inline function swap(current:Dynamic, a:Dynamic, b:Dynamic):Dynamic
 	{
 		return current == a ? b : a;
 	}
@@ -657,7 +658,7 @@ class HP
 	 * @param	B		The blue value of the color, from 0 to 255.
 	 * @return	The color UInt.
 	 */
-	public static function getColorRGB(R:UInt = 0, G:UInt = 0, B:UInt = 0):UInt
+	public static inline function getColorRGB(R:UInt = 0, G:UInt = 0, B:UInt = 0):UInt
 	{
 		return R << 16 | G << 8 | B;
 	}
@@ -669,7 +670,7 @@ class HP
 	 * @param	v		The value of the color (from 0 to 1).
 	 * @return	The color UInt.
 	 */
-	public static function getColorHSV(h:Float, s:Float, v:Float):UInt
+	public static inline function getColorHSV(h:Float, s:Float, v:Float):UInt
 	{
 		h = h < 0 ? 0 : (h > 1 ? 1 : h);
 		s = s < 0 ? 0 : (s > 1 ? 1 : s);
@@ -692,7 +693,7 @@ class HP
 		}
 	}
 	
-	public static function getColorHue(color:UInt):Float
+	public static inline function getColorHue(color:UInt):Float
 	{
 		var r:UInt = (color >> 16) & 0xFF;
 		var g:UInt = (color >> 8) & 0xFF;
@@ -716,7 +717,7 @@ class HP
 		return hue / 360;
 	}
 	
-	public static function getColorSaturation(color:UInt):Float
+	public static inline function getColorSaturation(color:UInt):Float
 	{
 		var r:UInt = (color >> 16) & 0xFF;
 		var g:UInt = (color >> 8) & 0xFF;
@@ -732,7 +733,7 @@ class HP
 		}
 	}
 	
-	public static function getColorValue(color:UInt):Float
+	public static inline function getColorValue(color:UInt):Float
 	{
 		var r:UInt = (color >> 16) & 0xFF;
 		var g:UInt = (color >> 8) & 0xFF;
@@ -746,7 +747,7 @@ class HP
 	 * @param	color		The color to evaluate.
 	 * @return	A UInt from 0 to 255.
 	 */
-	public static function getRed(color:UInt):UInt
+	public static inline function getRed(color:UInt):UInt
 	{
 		return color >> 16 & 0xFF;
 	}
@@ -756,7 +757,7 @@ class HP
 	 * @param	color		The color to evaluate.
 	 * @return	A UInt from 0 to 255.
 	 */
-	public static function getGreen(color:UInt):UInt
+	public static inline function getGreen(color:UInt):UInt
 	{
 		return color >> 8 & 0xFF;
 	}
@@ -766,7 +767,7 @@ class HP
 	 * @param	color		The color to evaluate.
 	 * @return	A UInt from 0 to 255.
 	 */
-	public static function getBlue(color:UInt):UInt
+	public static inline function getBlue(color:UInt):UInt
 	{
 		return color & 0xFF;
 	}
@@ -796,7 +797,7 @@ public static function getBitmap(source:Dynamic):BitmapData
 	/**
 	 * Clears the cache of BitmapData objects used by the getBitmap method.
 	 */
-	public static function clearBitmapCache():Void
+	public static inline function clearBitmapCache():Void
 	{
 		_bitmap = new Map<String, BitmapData>();
 	}
@@ -805,7 +806,7 @@ public static function getBitmap(source:Dynamic):BitmapData
 	 * Sets a time flag.
 	 * @return	Time elapsed (in milliseconds) since the last time flag was set.
 	 */
-	public static function timeFlag():UInt
+	public static inline function timeFlag():UInt
 	{
 		var t:UInt = Lib.getTimer(),
 			e:UInt = t - _time;
@@ -877,7 +878,7 @@ public static function getBitmap(source:Dynamic):BitmapData
 	 * @param	file		The embedded file to load.
 	 * @return	An XML object representing the file.
 	 */
-	public static function getXML(file:Class<ByteArray>):Xml
+	public static inline function getXML(file:Class<ByteArray>):Xml
 	{
 		var bytes:ByteArray = Type.createInstance(file, []);
 		return cast(bytes.readUTFBytes(bytes.length), Xml);
@@ -931,7 +932,7 @@ public static function getBitmap(source:Dynamic):BitmapData
 	 * 
 	 * Example: HP.alarm(5.0, callbackFunction, Tween.LOOPING); // Calls callbackFunction every 5 seconds
 	 */
-	public static function alarm(delay:Float, callback:Void -> Void, type:UInt = 2, tweener:Tweener = null):Alarm
+	public static inline function alarm(delay:Float, callback:Void -> Void, type:UInt = 2, tweener:Tweener = null):Alarm
 	{
 		if (tweener == null) tweener = HP.tweener;
 		
@@ -948,7 +949,7 @@ public static function getBitmap(source:Dynamic):BitmapData
 	 * @param	to		Ending frame.
 	 * @param	skip	Skip amount every frame (eg. use 1 for every 2nd frame).
 	 */
-	public static function frames(from:Int, to:Int, skip:Int = 0):Array<Int>
+	public static inline function frames(from:Int, to:Int, skip:Int = 0):Array<Int>
 	{
 		var a:Array<Int> = new Array<Int>();
 		skip ++;
@@ -975,7 +976,7 @@ public static function getBitmap(source:Dynamic):BitmapData
 	 * Shuffles the elements in the array.
 	 * @param	a		The Object to shuffle (an Array or Vector).
 	 */
-	public static function shuffle(a:Array<Dynamic>):Void
+	public static inline function shuffle(a:Array<Dynamic>):Void
 	{
 		var i:Int = a.length, j:Int, t:Dynamic;
 		while (-- i > 0)
