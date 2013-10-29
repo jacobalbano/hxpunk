@@ -102,7 +102,7 @@ class Console
 	 * @param	data The data parameters to log, can be variables, objects, etc. Parameters will be separated by a space (" ").
 	 */
 	public var log(get, null):Dynamic;
-	public function get_log()
+	private inline function get_log()
 	{
 		return Reflect.makeVarArgs(_log);
 	}
@@ -114,7 +114,7 @@ class Console
 		for (i in 0...data.length)
 		{
 			if (i > 0) s += " ";
-			s += (data[i] != null) ? data[i].toString() : "null";
+			s += (data[i] != null) ? Std.string(data[i]) : "null";
 		}
 		
 		// Replace newlines with multiple log statements.
@@ -137,7 +137,7 @@ class Console
 	 * @param	properties		The properties (strings) to watch.
 	 */
 	public var watch(get, null):Dynamic;
-	public function get_watch()
+	private inline function get_watch()
 	{
 		return Reflect.makeVarArgs(_watch);
 	}
@@ -312,8 +312,8 @@ class Console
 	 * If the console should be visible.
 	 */
 	public var visible(get, set):Bool;
-	public function get_visible() { return _sprite.visible; }
-	public function set_visible(value:Bool):Bool
+	private inline function get_visible() { return _sprite.visible; }
+	private inline function set_visible(value:Bool):Bool
 	{
 		_sprite.visible = value;
 		if (_enabled && value) updateLog();
@@ -415,45 +415,45 @@ class Console
 	 * If the Console is currently in paused mode.
 	 */
 	public var paused(get, set):Bool;
-	public function get_paused() { return _paused; }
-	public function set_paused(value:Bool):Bool
+	private inline function get_paused() { return _paused; }
+	private inline function set_paused(value:Bool):Bool
 	{
 		// Quit if the console isn't enabled.
-		if (!_enabled) return value;
+		if (_enabled) {
 		
-		// Set the console to paused.
-		_paused = value;
-		HP.engine.paused = value;
-		
-		// Panel visibility.
-		_back.visible = value;
-		_entScreen.visible = value;
-		_butRead.visible = value;
-		
-		// If the console is paused.
-		if (value)
-		{
-			// Set the console to paused mode.
-			if (_debug) debug = true;
-			else updateLog();
+			// Set the console to paused.
+			_paused = value;
+			HP.engine.paused = value;
+			
+			// Panel visibility.
+			_back.visible = value;
+			_entScreen.visible = value;
+			_butRead.visible = value;
+			
+			// If the console is paused.
+			if (value)
+			{
+				// Set the console to paused mode.
+				if (_debug) debug = true;
+				else updateLog();
+			}
+			else
+			{
+				// Set the console to running mode.
+				_debRead.visible = false;
+				_logRead.visible = true;
+				updateLog();
+			#if flash
+				untyped ENTITY_LIST.length = 0;
+				untyped SCREEN_LIST.length = 0;
+				untyped SELECT_LIST.length = 0;
+			#else
+				ENTITY_LIST.splice(0, ENTITY_LIST.length);
+				SCREEN_LIST.splice(0, SCREEN_LIST.length);
+				SELECT_LIST.splice(0, SELECT_LIST.length);
+			#end
+			}
 		}
-		else
-		{
-			// Set the console to running mode.
-			_debRead.visible = false;
-			_logRead.visible = true;
-			updateLog();
-		#if flash
-			untyped ENTITY_LIST.length = 0;
-			untyped SCREEN_LIST.length = 0;
-			untyped SELECT_LIST.length = 0;
-		#else
-			ENTITY_LIST.splice(0, ENTITY_LIST.length);
-			SCREEN_LIST.splice(0, SCREEN_LIST.length);
-			SELECT_LIST.splice(0, SELECT_LIST.length);
-		#end
-		}
-		
 		return value;
 	}
 	
@@ -461,22 +461,22 @@ class Console
 	 * If the Console is currently in debug mode.
 	 */
 	public var debug(get, set):Bool;
-	public function get_debug() { return _debug; }
-	public function set_debug(value:Bool):Bool
+	private inline function get_debug() { return _debug; }
+	private inline function set_debug(value:Bool):Bool
 	{
 		// Quit if the console isn't enabled.
-		if (!_enabled) return value;
-		
-		// Set the console to debug mode.
-		_debug = value;
-		_debRead.visible = value;
-		_logRead.visible = !value;
-		
-		// Update console state.
-		if (value) updateEntityLists();
-		else updateLog();
-		renderEntities();
-		
+		if (_enabled) {
+			
+			// Set the console to debug mode.
+			_debug = value;
+			_debRead.visible = value;
+			_logRead.visible = !value;
+			
+			// Update console state.
+			if (value) updateEntityLists();
+			else updateLog();
+			renderEntities();
+		}
 		return value;
 	}
 	
@@ -946,7 +946,7 @@ class Console
 	}
 	
 	/** @private Gets a TextFormat object with the formatting. */
-#if flash
+#if (flash || html5)
 	private function format(size:UInt = 16, color:UInt = 0xFFFFFF, ?align:TextFormatAlign = null):TextFormat
 #else
 	private function format(size:UInt = 16, color:UInt = 0xFFFFFF, ?align:String = null):TextFormat
@@ -963,9 +963,9 @@ class Console
 	 * Get the unscaled screen size for the Console.
 	 */
 	private var width(get, null):UInt = 0;
-	private function get_width() { return Std.int(HP.width * HP.screen.scaleX * HP.screen.scale); }
+	private inline function get_width() { return Std.int(HP.width * HP.screen.scaleX * HP.screen.scale); }
 	private var height(get, null):UInt = 0;
-	private function get_height() { return Std.int(HP.height * HP.screen.scaleY * HP.screen.scale); }
+	private inline function get_height() { return Std.int(HP.height * HP.screen.scaleY * HP.screen.scale); }
 	
 	// Console state information.
 	/** @private */ private var _enabled:Bool;

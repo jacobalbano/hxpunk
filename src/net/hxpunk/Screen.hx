@@ -98,8 +98,8 @@ class Screen
 	 * Refresh color of the screen.
 	 */
 	public var color(get, set):UInt = 0;
-	public function get_color() { return _color; }
-	public function set_color(value:UInt):UInt { 
+	private inline function get_color() { return _color; }
+	private inline function set_color(value:UInt):UInt { 
 		_color = 0xFF000000 | value; 
 		return _color;
 	}
@@ -108,8 +108,8 @@ class Screen
 	 * X offset of the screen.
 	 */
 	public var x(get, set):Int = 0;
-	public function get_x() { return _x; }
-	public function set_x(value:Int):Int
+	private inline function get_x() { return _x; }
+	private inline function set_x(value:Int):Int
 	{
 		if (_x == value) return value;
 		_x = value;
@@ -121,8 +121,8 @@ class Screen
 	 * Y offset of the screen.
 	 */
 	public var y(get, set):Int = 0;
-	public function get_y() { return _y; }
-	public function set_y(value:Int):Int
+	private inline function get_y() { return _y; }
+	private inline function set_y(value:Int):Int
 	{
 		if (_y == value) return value;
 		_y = value;
@@ -134,8 +134,8 @@ class Screen
 	 * X origin of transformations.
 	 */
 	public var originX(get, set):Int = 0;
-	public function get_originX() { return _originX; }
-	public function set_originX(value:Int):Int
+	private inline function get_originX() { return _originX; }
+	private inline function set_originX(value:Int):Int
 	{
 		if (_originX == value) return value;
 		_originX = value;
@@ -147,8 +147,8 @@ class Screen
 	 * Y origin of transformations.
 	 */
 	public var originY(get, set):Int = 0;
-	public function get_originY() { return _originY; }
-	public function set_originY(value:Int):Int
+	private inline function get_originY() { return _originY; }
+	private inline function set_originY(value:Int):Int
 	{
 		if (_originY == value) return value;
 		_originY = value;
@@ -160,8 +160,8 @@ class Screen
 	 * X scale of the screen.
 	 */
 	public var scaleX(get, set):Float = 0;
-	public function get_scaleX() { return _scaleX; }
-	public function set_scaleX(value:Float):Float
+	private inline function get_scaleX() { return _scaleX; }
+	private inline function set_scaleX(value:Float):Float
 	{
 		if (_scaleX == value) return value;
 		_scaleX = value;
@@ -173,8 +173,8 @@ class Screen
 	 * Y scale of the screen.
 	 */
 	public var scaleY(get, set):Float = 0;
-	public function get_scaleY() { return _scaleY; }
-	public function set_scaleY(value:Float):Float
+	private inline function get_scaleY() { return _scaleY; }
+	private inline function set_scaleY(value:Float):Float
 	{
 		if (_scaleY == value) return value;
 		_scaleY = value;
@@ -187,8 +187,8 @@ class Screen
 	 * you can use this factor to scale the screen both horizontally and vertically.
 	 */
 	public var scale(get, set):Float = 0;
-	public function get_scale() { return _scale; }
-	public function set_scale(value:Float):Float
+	private inline function get_scale() { return _scale; }
+	private inline function set_scale(value:Float):Float
 	{
 		if (_scale == value) return value;
 		_scale = value;
@@ -200,8 +200,8 @@ class Screen
 	 * Rotation of the screen, in degrees.
 	 */
 	public var angle(get, set):Float = 0;
-	public function get_angle() { return _angle * HP.DEG; }
-	public function set_angle(value:Float):Float
+	private inline function get_angle() { return _angle * HP.DEG; }
+	private inline function set_angle(value:Float):Float
 	{
 		if (_angle == value * HP.RAD) return value;
 		_angle = value * HP.RAD;
@@ -213,8 +213,8 @@ class Screen
 	 * Whether screen smoothing should be used or not.
 	 */
 	public var smoothing(get, set):Bool;
-	public function get_smoothing() { return _bitmap[0].smoothing; }
-	public function set_smoothing(value) { 
+	private inline function get_smoothing() { return _bitmap[0].smoothing; }
+	private inline function set_smoothing(value) { 
 		_bitmap[0].smoothing = value; 
 		_bitmap[1].smoothing = value; 
 		return value;
@@ -224,25 +224,25 @@ class Screen
 	 * Width of the screen.
 	 */
 	public var width(get, null):UInt = 0;
-	public function get_width() { return _width; }
+	private inline function get_width() { return _width; }
 	
 	/**
 	 * Height of the screen.
 	 */
 	public var height(get, null):UInt = 0;
-	public function get_height() { return _height; }
+	private inline function get_height() { return _height; }
 	
 	/**
 	 * X position of the mouse on the screen.
 	 */
 	public var mouseX(get, null):Int = 0;
-	public function get_mouseX() { return Std.int(_sprite.mouseX); }
+	private inline function get_mouseX() { return Std.int(_sprite.mouseX); }
 	
 	/**
 	 * Y position of the mouse on the screen.
 	 */
 	public var mouseY(get, null):Int = 0;
-	public function get_mouseY() { return Std.int(_sprite.mouseY); }
+	private inline function get_mouseY() { return Std.int(_sprite.mouseY); }
 	
 	/**
 	 * Captures the current screen as an Image object.

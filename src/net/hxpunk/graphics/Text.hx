@@ -34,7 +34,7 @@ class Text extends Image
 	/**
 	 * The alignment to assign to new Text objects.
 	 */
-#if flash
+#if (flash || html5)
 	public static var ALIGN:TextFormatAlign = TextFormatAlign.LEFT;
 #else
 	public static var ALIGN:String = TextFormatAlign.LEFT;
@@ -385,8 +385,8 @@ class Text extends Image
 	 * Text string.
 	 */
 	public var text(get, set):String;
-	public function get_text() { return _text; }
-	public function set_text(value:String):String
+	private inline function get_text() { return _text; }
+	private inline function set_text(value:String):String
 	{
 		if (_text == value && _richText == null) return value;
 		_field.text = _text = value;
@@ -403,8 +403,8 @@ class Text extends Image
 	 * Use setStyle() to control the appearance of marked-up text.
 	 */
 	public var richText(get, set):String;
-	public function get_richText() { return _richText != null ? _richText : _text; }
-	public function set_richText(value:String):String
+	private inline function get_richText() { return _richText != null ? _richText : _text; }
+	private inline function set_richText(value:String):String
 	{
 		if (_richText == value) return value;
 		var fromPlain:Bool = (_richText == null);
@@ -430,8 +430,8 @@ class Text extends Image
 	 * Font family.
 	 */
 	public var font(get, set):String;
-	public function get_font() { return _font; }
-	public function set_font(value:String):String
+	private inline function get_font() { return _font; }
+	private inline function set_font(value:String):String
 	{
 		if (_font == value) return value;
 		value = Assets.getFont(value).fontName;
@@ -444,8 +444,8 @@ class Text extends Image
 	 * Font size.
 	 */
 	public var size(get, set):UInt = 0;
-	public function get_size() { return _size; }
-	public function set_size(value:UInt):UInt
+	private inline function get_size() { return _size; }
+	private inline function set_size(value:UInt):UInt
 	{
 		if (_size == value) return value;
 		_form.size = _size = value;
@@ -456,14 +456,14 @@ class Text extends Image
 	/**
 	 * Alignment ("left", "center" or "right").
 	 */
-#if flash
+#if (flash || html5)
 	public var align(get, set):TextFormatAlign;
-	public function get_align() { return _align; }
-	public function set_align(value:TextFormatAlign):TextFormatAlign
+	private inline function get_align() { return _align; }
+	private inline function set_align(value:TextFormatAlign):TextFormatAlign
 #else
 	public var align(get, set):String;
-	public function get_align() { return _align; }
-	public function set_align(value:String):String
+	private inline function get_align() { return _align; }
+	private inline function set_align(value:String):String
 #end
 	{
 		if (_align == value) return value;
@@ -476,8 +476,8 @@ class Text extends Image
 	 * Leading (amount of vertical space between lines).
 	 */
 	public var leading(get, set):Float = 0;
-	public function get_leading() { return _leading; }
-	public function set_leading(value:Float):Float
+	private inline function get_leading() { return _leading; }
+	private inline function set_leading(value:Float):Float
 	{
 		if (_leading == value) return value;
 		_form.leading = _leading = value;
@@ -489,8 +489,8 @@ class Text extends Image
 	 * Automatic word wrapping.
 	 */
 	public var wordWrap(get, set):Bool;
-	public function get_wordWrap() { return _wordWrap; }
-	public function set_wordWrap(value:Bool):Bool
+	private inline function get_wordWrap() { return _wordWrap; }
+	private inline function set_wordWrap(value:Bool):Bool
 	{
 		if (_wordWrap == value) return value;
 		_field.wordWrap = _wordWrap = value;
@@ -501,58 +501,60 @@ class Text extends Image
 	/**
 	 * Width of the text image.
 	 */
-	override public function get_width() { return _width; }
-	override public function set_width(value:UInt):UInt
+	override private function get_width() { return _width; }
+	override private function set_width(value:UInt):UInt
 	{
-		if (_width == value) return value;
-		_width = value;
-		updateTextBuffer();
+		if (_width != value) {
+			_width = value;
+			updateTextBuffer();
+		}
 		return value;
 	}
 	
 	/**
 	 * Height of the text image.
 	 */
-	override public function get_height() { return _height; }
-	override public function set_height(value:UInt):UInt
+	override private function get_height() { return _height; }
+	override private function set_height(value:UInt):UInt
 	{
-		if (_height == value) return value;
-		_height = value;
-		updateTextBuffer();
+		if (_height != value) {
+			_height = value;
+			updateTextBuffer();
+		}
 		return value;
 	}
 	
 	/**
 	 * The scaled width of the text.
 	 */
-	override public function get_scaledWidth() { return _width * scaleX * scale; }
+	override private function get_scaledWidth() { return _width * scaleX * scale; }
 	
 	/**
 	 * Set the scaled width of the text.
 	 */
-	override public function set_scaledWidth(w:Float):Float { return scaleX = w / scale / _width; }
+	override private function set_scaledWidth(w:Float):Float { return scaleX = w / scale / _width; }
 	
 	/**
 	 * The scaled height of the text.
 	 */
-	override public function get_scaledHeight() { return _height * scaleY * scale; }
+	override private function get_scaledHeight() { return _height * scaleY * scale; }
 	
 	/**
 	 * Set the scaled height of the text.
 	 */
-	override public function set_scaledHeight(h:Float):Float { return scaleY = h / scale / _height; }
+	override private function set_scaledHeight(h:Float):Float { return scaleY = h / scale / _height; }
 	
 	/**
 	 * Width of the text within the image.
 	 */
 	public var textWidth(get, null):UInt = 0;
-	public function get_textWidth() { return _textWidth; }
+	private inline function get_textWidth() { return _textWidth; }
 	
 	/**
 	 * Height of the text within the image.
 	 */
 	public var textHeight(get, null):UInt = 0;
-	public function get_textHeight() { return _textHeight; }
+	private inline function get_textHeight() { return _textHeight; }
 	
 	/** 
 	 * Set TextField or TextFormat property
@@ -596,7 +598,7 @@ class Text extends Image
 	/** @private */ private var _richText:Null<String> = null;
 	/** @private */ private var _font:String;
 	/** @private */ private var _size:UInt = 0;
-#if flash
+#if (flash || html5)
 	/** @private */ private var _align:TextFormatAlign;
 #else
 	/** @private */ private var _align:String;

@@ -75,7 +75,7 @@ class Input
 	 * If the mouse wheel was moved this frame, this was the delta.
 	 */
 	public static var mouseWheelDelta(get, null):Int = 0;
-	public static function get_mouseWheelDelta()
+	private static inline function get_mouseWheelDelta()
 	{
 		if (mouseWheel)
 		{
@@ -89,7 +89,7 @@ class Input
 	 * X position of the mouse on the screen.
 	 */
 	public static var mouseX(get, null):Int = 0;
-	public static function get_mouseX()
+	private static inline function get_mouseX()
 	{
 		return HP.screen.mouseX;
 	}
@@ -98,7 +98,7 @@ class Input
 	 * Y position of the mouse on the screen.
 	 */
 	public static var mouseY(get, null):Int = 0;
-	public static function get_mouseY()
+	private static inline function get_mouseY()
 	{
 		return HP.screen.mouseY;
 	}
@@ -107,7 +107,7 @@ class Input
 	 * The absolute mouse x position on the screen (unscaled).
 	 */
 	public static var mouseFlashX(get, null):Int = 0;
-	public static function get_mouseFlashX():Int
+	private static inline function get_mouseFlashX():Int
 	{
 		return Std.int(HP.stage.mouseX);
 	}
@@ -116,7 +116,7 @@ class Input
 	 * The absolute mouse y position on the screen (unscaled).
 	 */
 	public static var mouseFlashY(get, null):Int = 0;
-	public static function get_mouseFlashY():Int
+	private static inline function get_mouseFlashY():Int
 	{
 		return Std.int(HP.stage.mouseY);
 	}

@@ -167,8 +167,8 @@ class HP
 	 * to switch, but won't actually do so until the end of the current frame.
 	 */
 	public static var world(get, set):World;
-	public static function get_world() { return _world; }
-	public static function set_world(value:World):World
+	private static inline function get_world() { return _world; }
+	private static inline function set_world(value:World):World
 	{
 		if (_goto != null) {
 			if (_goto == value) return value;
@@ -202,8 +202,8 @@ class HP
 	 * Global volume factor for all sounds, a value from 0 to 1.
 	 */
 	public static var volume(get, set):Float = 0;
-	public static function get_volume() { return _volume; }
-	public static function set_volume(value:Float):Float
+	private static inline function get_volume() { return _volume; }
+	private static inline function set_volume(value:Float):Float
 	{
 		if (value < 0) value = 0;
 		if (_volume == value) return value;
@@ -216,8 +216,8 @@ class HP
 	 * Global panning factor for all sounds, a value from -1 to 1.
 	 */
 	public static var pan(get, set):Float = 0;
-	public static function get_pan() { return _pan; }
-	public static function set_pan(value:Float):Float
+	private static inline function get_pan() { return _pan; }
+	private static inline function set_pan(value:Float):Float
 	{
 		if (value < -1) value = -1;
 		if (value > 1) value = 1;
@@ -250,7 +250,7 @@ class HP
 	 * @return	A randomly chosen one of the provided parameters.
 	 */
 	public static var choose(get, null):Dynamic;
-	public static function get_choose():Dynamic 
+	private static inline function get_choose():Dynamic 
 	{
 		return Reflect.makeVarArgs(_choose);
 	}
@@ -575,8 +575,8 @@ class HP
 	 * The random seed used by FP's random functions.
 	 */
 	public static var randomSeed(get, set):UInt = 0;
-	public static function get_randomSeed() { return _getSeed; }
-	public static function set_randomSeed(value:UInt):UInt
+	private static inline function get_randomSeed() { return _getSeed; }
+	private static inline function set_randomSeed(value:UInt):UInt
 	{
 		_seed = Std.int(clamp(value, 1, 2147483646));
 		_getSeed = _seed;
@@ -595,7 +595,7 @@ class HP
 	 * A pseudo-random Float produced using FP's random seed, where 0 &lt;= Float &lt; 1.
 	 */
 	public static var random(get, null):Float = 0;
-	public static function get_random()
+	private static inline function get_random()
 	{
 		_seed = (_seed * 16807) % 2147483647;
 		return _seed / 2147483647;
@@ -817,7 +817,7 @@ public static function getBitmap(source:Dynamic):BitmapData
 	 * The global Console object.
 	 */
 	public static var console(get, null):Console;
-	public static function get_console()
+	private static inline function get_console()
 	{
 		if (_console == null) _console = new Console();
 		return _console;
@@ -828,7 +828,7 @@ public static function getBitmap(source:Dynamic):BitmapData
 	 * @param	data		The data parameters to log, can be variables, objects, etc. Parameters will be separated by a space (" ").
 	 */
 	public static var log(get, null):Dynamic;
-	public static function get_log()
+	private static inline function get_log()
 	{
 		return Reflect.makeVarArgs(_log);
 	}
@@ -843,7 +843,7 @@ public static function getBitmap(source:Dynamic):BitmapData
 				while (i < data.length)
 				{
 					if (i > 0) s += " ";
-					s += data[i ++].toString();
+					s += Std.string(data[i ++]);
 				}
 				_console.log(s);
 			}
@@ -857,7 +857,7 @@ public static function getBitmap(source:Dynamic):BitmapData
 	 * @param	properties		The properties (strings) to watch.
 	 */
 	public static var watch(get, null):Dynamic;
-	public static function get_watch()
+	private static inline function get_watch()
 	{
 		return Reflect.makeVarArgs(_watch);
 	}

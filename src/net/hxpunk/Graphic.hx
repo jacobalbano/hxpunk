@@ -77,8 +77,8 @@ class Graphic
 	
 	/** @private Callback for when the graphic is assigned to an Entity. */
 	public var assign(get, set):Void -> Void;
-	private function get_assign() { return _assign; }
-	private function set_assign(value:Void -> Void) { return _assign = value; }
+	private inline function get_assign() { return _assign; }
+	private inline function set_assign(value:Void -> Void) { return _assign = value; }
 	
 	// Graphic information.
 	/** @private */ public var _assign:Void -> Void;

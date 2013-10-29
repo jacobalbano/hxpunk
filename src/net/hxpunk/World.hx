@@ -144,7 +144,7 @@ class World extends Tweener
 	 * X position of the mouse in the World.
 	 */
 	public var mouseX(get, null):Int = 0;
-	public function get_mouseX()
+	private inline function get_mouseX()
 	{
 		return Std.int(HP.screen.mouseX + camera.x);
 	}
@@ -153,7 +153,7 @@ class World extends Tweener
 	 * Y position of the mouse in the world.
 	 */
 	public var mouseY(get, null):Int = 0;
-	public function get_mouseY()
+	private inline function get_mouseY()
 	{
 		return Std.int(HP.screen.mouseY + camera.y);
 	}
@@ -198,7 +198,7 @@ class World extends Tweener
 	 * @param	list		Several Entities (as arguments) or an Array/Vector of Entities.
 	 */
 	public var addList(get, null):Dynamic;
-	public function get_addList()
+	private inline function get_addList()
 	{
 		return Reflect.makeVarArgs(_addList);
 	}
@@ -220,7 +220,7 @@ class World extends Tweener
 	 * @param	list		Several Entities (as arguments) or an Array/Vector of Entities.
 	 */
 	public var removeList(get, null):Dynamic;
-	public function get_removeList()
+	private inline function get_removeList()
 	{
 		return Reflect.makeVarArgs(_removeList);
 	}
@@ -746,7 +746,7 @@ class World extends Tweener
 	 * How many Entities are in the World.
 	 */
 	public var count(get, null):Int = 0;
-	public function get_count() { return _count; }
+	private inline function get_count() { return _count; }
 	
 	/**
 	 * Returns the amount of Entities of the type are in the World.
@@ -782,13 +782,13 @@ class World extends Tweener
 	 * The first Entity in the World.
 	 */
 	public var first(get, null):Entity;
-	public function get_first() { return _updateFirst; }
+	private inline function get_first() { return _updateFirst; }
 	
 	/**
 	 * How many Entity layers the World has.
 	 */
 	public var layers(get, null):UInt = 0;
-	public function get_layers() { return _layerList.length; }
+	private inline function get_layers() { return _layerList.length; }
 	
 	/**
 	 * The first Entity of the type.
@@ -844,7 +844,7 @@ class World extends Tweener
 	 * The Entity that will be rendered first by the World.
 	 */
 	public var farthest(get, null):Entity;
-	public function get_farthest()
+	private inline function get_farthest()
 	{
 		if (_updateFirst == null) return null;
 		return cast _renderLast[cast(_layerList[_layerList.length - 1], Int)];
@@ -854,7 +854,7 @@ class World extends Tweener
 	 * The Entity that will be rendered last by the world.
 	 */
 	public var nearest(get, null):Entity;
-	public function get_nearest()
+	private inline function get_nearest()
 	{
 		if (_updateFirst == null) return null;
 		return cast _renderFirst[cast(_layerList[0], Int)];
@@ -864,7 +864,7 @@ class World extends Tweener
 	 * The layer that will be rendered first by the World.
 	 */
 	public var layerFarthest(get, null):Int = 0;
-	public function get_layerFarthest()
+	private inline function get_layerFarthest()
 	{
 		if (_updateFirst == null) return 0;
 		return cast _layerList[_layerList.length - 1];
@@ -874,7 +874,7 @@ class World extends Tweener
 	 * The layer that will be rendered last by the World.
 	 */
 	public var layerNearest(get, null):Int = 0;
-	public function get_layerNearest()
+	private inline function get_layerNearest()
 	{
 		if (_updateFirst == null) return 0;
 		return cast _layerList[0];
@@ -884,7 +884,7 @@ class World extends Tweener
 	 * How many different types have been added to the World.
 	 */
 	public var uniqueTypes(get, null):UInt = 0;
-	public function get_uniqueTypes()
+	private inline function get_uniqueTypes()
 	{
 		var i:UInt = 0;
 		for (type in _typeCount) i++;

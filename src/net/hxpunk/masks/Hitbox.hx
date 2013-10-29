@@ -50,8 +50,8 @@ class Hitbox extends Mask
 	 * X offset.
 	 */
 	public var x(get, set):Int = 0;
-	public function get_x() { return _x; }
-	public function set_x(value:Int):Int
+	private inline function get_x() { return _x; }
+	private inline function set_x(value:Int):Int
 	{
 		if (_x == value) return value;
 		_x = value;
@@ -64,8 +64,8 @@ class Hitbox extends Mask
 	 * Y offset.
 	 */
 	public var y(get, set):Int = 0;
-	public function get_y() { return _y; }
-	public function set_y(value:Int):Int
+	private inline function get_y() { return _y; }
+	private inline function set_y(value:Int):Int
 	{
 		if (_y == value) return value;
 		_y = value;
@@ -78,8 +78,8 @@ class Hitbox extends Mask
 	 * Width.
 	 */
 	public var width(get, set):Int = 0;
-	public function get_width() { return _width; }
-	public function set_width(value:Int):Int
+	private inline function get_width() { return _width; }
+	private inline function set_width(value:Int):Int
 	{
 		if (Std.int(_width) == value) return value;
 		_width = value;
@@ -92,8 +92,8 @@ class Hitbox extends Mask
 	 * Height.
 	 */
 	public var height(get, set):Int = 0;
-	public function get_height() { return _height; }
-	public function set_height(value:Int):Int
+	private inline function get_height() { return _height; }
+	private inline function set_height(value:Int):Int
 	{
 		if (Std.int(_height) == value) return value;
 		_height = value;

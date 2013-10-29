@@ -272,13 +272,14 @@ class Image extends Graphic
 	 * Change the opacity of the Image, a value from 0 to 1.
 	 */
 	public var alpha(get, set):Float = 0;
-	public function get_alpha() { return _alpha; }
-	public function set_alpha(value:Float):Float
+	private inline function get_alpha() { return _alpha; }
+	private inline function set_alpha(value:Float):Float
 	{
 		value = value < 0 ? 0 : (value > 1 ? 1 : value);
-		if (_alpha == value) return value;
-		_alpha = value;
-		updateColorTransform();
+		if (_alpha != value) {
+			_alpha = value;
+			updateColorTransform();
+		}
 		return value;
 	}
 	
@@ -288,14 +289,15 @@ class Image extends Graphic
 	 * Default: 0xFFFFFF.
 	 */
 	public var color(get, set):UInt = 0;
-	public function get_color() { return _color; }
-	public function set_color(value:UInt):UInt
+	private inline function get_color() { return _color; }
+	private inline function set_color(value:UInt):UInt
 	{
 		value &= 0xFFFFFF;
-		if (_color == value) return _color;
-		_color = value;
-		updateColorTransform();
-		return _color;
+		if (_color != value) {
+			_color = value;
+			updateColorTransform();
+		}
+		return value;
 	}
 	
 	/**
@@ -304,12 +306,13 @@ class Image extends Graphic
 	 * Default: 1.
 	 */
 	public var tinting(get, set):Float = 0;
-	public function get_tinting() { return _tintFactor; }
-	public function set_tinting(value:Float):Float
+	private inline function get_tinting() { return _tintFactor; }
+	private inline function set_tinting(value:Float):Float
 	{
-		if (_tintFactor == value) return value;
-		_tintFactor = value;
-		updateColorTransform();
+		if (_tintFactor != value) {
+			_tintFactor = value;
+			updateColorTransform();
+		}
 		return value;
 	}
 	
@@ -319,12 +322,13 @@ class Image extends Graphic
 	 * See Image.TINTING_MULTIPLY and Image.TINTING_COLORIZE.
 	 */
 	public var tintMode(get, set):Float = 0;
-	public function get_tintMode() { return _tintMode; }
-	public function set_tintMode(value:Float):Float
+	private inline function get_tintMode() { return _tintMode; }
+	private inline function set_tintMode(value:Float):Float
 	{
-		if (_tintMode == value) return value;
-		_tintMode = value;
-		updateColorTransform();
+		if (_tintMode != value) {
+			_tintMode = value;
+			updateColorTransform();
+		}
 		return value;
 	}
 	
@@ -360,8 +364,8 @@ class Image extends Graphic
 	 * faster than setting scaleX to -1 if your image isn't transformed.
 	 */
 	public var flipped(get, set):Bool;
-	public function get_flipped() { return _flipped; }
-	public function set_flipped(value:Bool):Bool
+	private inline function get_flipped() { return _flipped; }
+	private inline function set_flipped(value:Bool):Bool
 	{
 		if (_flipped == value) return value;
 		_flipped = value;
@@ -397,8 +401,8 @@ class Image extends Graphic
 	 * Set the transparency mask of the Image.
 	 */
 	public var drawMask(get, set):BitmapData;
-	public function get_drawMask() { return _drawMask; }
-	public function set_drawMask(value:BitmapData):BitmapData
+	private inline function get_drawMask() { return _drawMask; }
+	private inline function set_drawMask(value:BitmapData):BitmapData
 	{
 		// no early exit because the BitmapData contents might have changed
 		_drawMask = value;
@@ -419,47 +423,47 @@ class Image extends Graphic
 	 * Width of the image.
 	 */
 	public var width(get, set):UInt = 0;
-	public function get_width() { return Std.int(_bufferRect.width); }
-	public function set_width(value:UInt):UInt { throw new Error("Cannot modify this property!"); return 0; }
+	private function get_width() { return Std.int(_bufferRect.width); }
+	private function set_width(value:UInt):UInt { throw new Error("Cannot modify this property!"); return 0; }
 	
 	/**
 	 * Height of the image.
 	 */
 	public var height(get, set):UInt = 0;
-	public function get_height() { return Std.int(_bufferRect.height); }
-	public function set_height(value:UInt):UInt { throw new Error("Cannot modify this property!"); return 0; }
+	private function get_height() { return Std.int(_bufferRect.height); }
+	private function set_height(value:UInt):UInt { throw new Error("Cannot modify this property!"); return 0; }
 	
 	/**
 	 * The scaled width of the image.
 	 */
 	public var scaledWidth(get, set):Float = 0;
-	public function get_scaledWidth() { return _bufferRect.width * scaleX * scale; }
+	private function get_scaledWidth() { return _bufferRect.width * scaleX * scale; }
 	
 	/**
 	 * Set the scaled width of the image.
 	 */
-	public function set_scaledWidth(w:Float):Float { return scaleX = w / scale / _bufferRect.width; }
+	private function set_scaledWidth(w:Float):Float { return scaleX = w / scale / _bufferRect.width; }
 	
 	/**
 	 * The scaled height of the image.
 	 */
 	public var scaledHeight(get, set):Float = 0;
-	public function get_scaledHeight() { return _bufferRect.height * scaleY * scale; }
+	private function get_scaledHeight() { return _bufferRect.height * scaleY * scale; }
 	
 	/**
 	 * Set the scaled height of the image.
 	 */
-	public function set_scaledHeight(h:Float):Float { return scaleY = h / scale / _bufferRect.height; }
+	private function set_scaledHeight(h:Float):Float { return scaleY = h / scale / _bufferRect.height; }
 	
 	/**
 	 * Clipping rectangle for the image.
 	 */
 	public var clipRect(get, null):Rectangle;
-	public function get_clipRect() { return _sourceRect; }
+	private inline function get_clipRect() { return _sourceRect; }
 	
 	/** @private Source BitmapData image. */
 	public var source(get, null):BitmapData;
-	private function get_source() { return _source; }
+	private inline function get_source() { return _source; }
 	
 	/**
 	 * Lock the image, preventing updateBuffer() from being run until
@@ -484,7 +488,7 @@ class Image extends Graphic
 	 * True if the image is locked.
 	 */
 	public var locked(get, null):Bool;
-	public function get_locked() { return _locked; }
+	private inline function get_locked() { return _locked; }
 	
 	// Locking
 	/** @private */ private var _locked:Bool = false;

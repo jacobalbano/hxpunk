@@ -382,7 +382,7 @@ class Entity extends Tweener
 	 * If the Entity collides with the camera rectangle.
 	 */
 	public var onCamera(get, null):Bool;
-	public function get_onCamera()
+	private inline function get_onCamera()
 	{
 		return collideRect(x, y, _world.camera.x, _world.camera.y, HP.width, HP.height);
 	}
@@ -391,7 +391,7 @@ class Entity extends Tweener
 	 * The World object this Entity has been added to.
 	 */
 	public var world(get, null):World;
-	public function get_world()
+	private inline function get_world()
 	{
 		return _world;
 	}
@@ -400,67 +400,67 @@ class Entity extends Tweener
 	 * Half the Entity's width.
 	 */
 	public var halfWidth(get, null):Float = 0;
-	public function get_halfWidth() { return width / 2; }
+	private inline function get_halfWidth() { return width / 2; }
 	
 	/**
 	 * Half the Entity's height.
 	 */
 	public var halfHeight(get, null):Float = 0;
-	public function get_halfHeight() { return height / 2; }
+	private inline function get_halfHeight() { return height / 2; }
 	
 	/**
 	 * The center x position of the Entity's hitbox.
 	 */
 	public var centerX(get, null):Float = 0;
-	public function get_centerX() { return x - originX + width / 2; }
+	private inline function get_centerX() { return x - originX + width / 2; }
 	
 	/**
 	 * The center y position of the Entity's hitbox.
 	 */
 	public var centerY(get, null):Float = 0;
-	public function get_centerY() { return y - originY + height / 2; }
+	private inline function get_centerY() { return y - originY + height / 2; }
 	
 	/**
 	 * The leftmost position of the Entity's hitbox.
 	 */
 	public var left(get, null):Float = 0;
-	public function get_left() { return x - originX; }
+	private inline function get_left() { return x - originX; }
 	
 	/**
 	 * The rightmost position of the Entity's hitbox.
 	 */
 	public var right(get, null):Float = 0;
-	public function get_right() { return x - originX + width; }
+	private inline function get_right() { return x - originX + width; }
 	
 	/**
 	 * The topmost position of the Entity's hitbox.
 	 */
 	public var top(get, null):Float = 0;
-	public function get_top() { return y - originY; }
+	private inline function get_top() { return y - originY; }
 	
 	/**
 	 * The bottommost position of the Entity's hitbox.
 	 */
 	public var bottom(get, null):Float = 0;
-	public function get_bottom() { return y - originY + height; }
+	private inline function get_bottom() { return y - originY + height; }
 	
 	/**
 	 * The rendering layer of this Entity. Higher layers are rendered first.
 	 */
 	public var layer(get, set):Int = 0;
-	public function get_layer() { return _layer; }
-	public function set_layer(value:Int):Int
+	private inline function get_layer() { return _layer; }
+	private inline function set_layer(value:Int):Int
 	{
-		if (_layer == value) return value;
-		if (_world == null)
-		{
-			_layer = value;
-			return value;
+		if (_layer != value) {
+			if (_world == null)
+			{
+				_layer = value;
+			} else {
+				_world.removeRender(this);
+				_layer = value;
+				_world.addRender(this);
+			}
 		}
-		_world.removeRender(this);
-		_layer = value;
-		_world.addRender(this);
-		
 		return value;
 	}
 	
@@ -468,18 +468,19 @@ class Entity extends Tweener
 	 * The collision type, used for collision checking.
 	 */
 	public var type(get, set):String;
-	public function get_type() { return _type; }
-	public function set_type(value:String):String
+	private inline function get_type() { return _type; }
+	private inline function set_type(value:String):String
 	{
-		if (_type == value) return value;
-		if (_world == null)
-		{
-			_type = value;
-			return value;
+		if (_type != value) {
+			if (_world == null)
+			{
+				_type = value;
+			} else {
+				if (_type != null) _world.removeType(this);
+				_type = value;
+				if (value != null) _world.addType(this);
+			}
 		}
-		if (_type != null) _world.removeType(this);
-		_type = value;
-		if (value != null) _world.addType(this);
 		return value;
 	}
 	
@@ -488,13 +489,14 @@ class Entity extends Tweener
 	 * not assigned, collision checks will use the Entity's hitbox by default.
 	 */
 	public var mask(get, set):Mask;
-	public function get_mask() { return _mask; }
-	public function set_mask(value:Mask):Mask
+	private inline function get_mask() { return _mask; }
+	private inline function set_mask(value:Mask):Mask
 	{
-		if (_mask == value) return value;
-		if (_mask != null) _mask.assignTo(null);
-		_mask = value;
-		if (value != null) _mask.assignTo(this);
+		if (_mask != value) {
+			if (_mask != null) _mask.assignTo(null);
+			_mask = value;
+			if (value != null) _mask.assignTo(this);
+		}
 		return value;
 	}
 	
@@ -502,12 +504,13 @@ class Entity extends Tweener
 	 * Graphical component to render to the screen.
 	 */
 	public var graphic(get, set):Graphic;
-	public function get_graphic() { return _graphic; }
-	public function set_graphic(value:Graphic):Graphic
+	private inline function get_graphic() { return _graphic; }
+	private inline function set_graphic(value:Graphic):Graphic
 	{
-		if (_graphic == value) return value;
-		_graphic = value;
-		if (value != null && value._assign != null) value._assign();
+		if (_graphic != value) {
+			_graphic = value;
+			if (value != null && value._assign != null) value._assign();
+		}
 		return value;
 	}
 	
@@ -774,8 +777,8 @@ class Entity extends Tweener
 	 * game Entities, which can then be looked-up with World.getInstance().
 	 */
 	public var name(get, set):String;
-	public function get_name() { return _name; }
-	public function set_name(value:String):String
+	private inline function get_name() { return _name; }
+	private inline function set_name(value:String):String
 	{
 		if (_name == value) return value;
 		if (_name != null && _world != null) _world.unregisterName(this);
