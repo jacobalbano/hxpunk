@@ -389,15 +389,16 @@ class Text extends Image
 	 */
 	public var text(get, set):String;
 	private inline function get_text() { return _text; }
-	private inline function set_text(value:String):String
+	private function set_text(value:String):String
 	{
-		if (_text == value && _richText == null) return value;
-		_field.text = _text = value;
-		if (_richText != null) {
-			_richText = null;
-			super.updateColorTransform();
+		if (_text != value || _richText != null) {
+			_field.text = _text = value;
+			if (_richText != null) {
+				_richText = null;
+				super.updateColorTransform();
+			}
+			updateTextBuffer();
 		}
-		updateTextBuffer();
 		return value;
 	}
 	
@@ -407,7 +408,7 @@ class Text extends Image
 	 */
 	public var richText(get, set):String;
 	private inline function get_richText() { return _richText != null ? _richText : _text; }
-	private inline function set_richText(value:String):String
+	private function set_richText(value:String):String
 	{
 		if (_richText == value) return value;
 		var fromPlain:Bool = (_richText == null);
@@ -434,7 +435,7 @@ class Text extends Image
 	 */
 	public var font(get, set):String;
 	private inline function get_font() { return _font; }
-	private inline function set_font(value:String):String
+	private function set_font(value:String):String
 	{
 		if (_font == value) return value;
 		value = Assets.getFont(value).fontName;
@@ -448,7 +449,7 @@ class Text extends Image
 	 */
 	public var size(get, set):Int;
 	private inline function get_size() { return _size; }
-	private inline function set_size(value:Int):Int
+	private function set_size(value:Int):Int
 	{
 		if (_size == value) return value;
 		_form.size = _size = value;
@@ -462,11 +463,11 @@ class Text extends Image
 #if (flash || html5)
 	public var align(get, set):TextFormatAlign;
 	private inline function get_align() { return _align; }
-	private inline function set_align(value:TextFormatAlign):TextFormatAlign
+	private function set_align(value:TextFormatAlign):TextFormatAlign
 #else
 	public var align(get, set):String;
 	private inline function get_align() { return _align; }
-	private inline function set_align(value:String):String
+	private function set_align(value:String):String
 #end
 	{
 		if (_align == value) return value;
@@ -480,7 +481,7 @@ class Text extends Image
 	 */
 	public var leading(get, set):Float;
 	private inline function get_leading() { return _leading; }
-	private inline function set_leading(value:Float):Float
+	private function set_leading(value:Float):Float
 	{
 		if (_leading == value) return value;
 		_form.leading = _leading = value;
@@ -493,7 +494,7 @@ class Text extends Image
 	 */
 	public var wordWrap(get, set):Bool;
 	private inline function get_wordWrap() { return _wordWrap; }
-	private inline function set_wordWrap(value:Bool):Bool
+	private function set_wordWrap(value:Bool):Bool
 	{
 		if (_wordWrap == value) return value;
 		_field.wordWrap = _wordWrap = value;

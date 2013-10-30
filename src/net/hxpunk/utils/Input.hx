@@ -165,19 +165,24 @@ class Input
 	 */
 	public static function pressed(input:Dynamic):Bool
 	{
-		if (Std.is(input, String))
+		if (Std.is(input, String) && _control.exists(input))
 		{
-			var strInput:String = cast(input, String);
-			if (_control[strInput] == null || _control[strInput].length == 0) return false;
-			var v:Array<Int> = _control[strInput],
+			var v:Array<Int> = _control.get(input),
 				i:Int = v.length;
-			while (i -- > 0)
+			while (i-- > 0)
 			{
-				if ((v[i] < 0) ? _pressNum > 0 : Lambda.indexOf(_press, v[i]) >= 0) return true;
+				if (v[i] < 0 && _pressNum != 0) return true;
+				else {
+					for (j in _press) if (j == v[i]) return true;
+				}
 			}
 			return false;
 		}
-		return (input < 0) ? (_pressNum > 0): Lambda.indexOf(_press, input) >= 0;
+		if (input < 0 && _pressNum != 0) return true;
+		else {
+			for (j in _press) if (j == input) return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -189,17 +194,22 @@ class Input
 	{
 		if (Std.is(input, String))
 		{
-			var strInput:String = cast(input, String);
-			if (_control[strInput] == null || _control[strInput].length == 0) return false;
-			var v:Array<Int> = _control[strInput],
+			var v:Array<Int> = _control.get(input),
 				i:Int = v.length;
-			while (i -- > 0)
+			while (i-- > 0)
 			{
-				if ((v[i] < 0) ? _releaseNum > 0 : Lambda.indexOf(_release, v[i]) >= 0) return true;
+				if (v[i] < 0 && _releaseNum != 0) return true;
+				else {
+					for (j in _release) if (j == v[i]) return true;
+				}
 			}
 			return false;
 		}
-		return (input < 0) ? (_releaseNum > 0) : Lambda.indexOf(_release, input) >= 0;
+		if (input < 0 && _releaseNum != 0) return true;
+		else {
+			for (j in _release) if (j == input) return true;
+		}
+		return false;
 	}
 	
 	/**

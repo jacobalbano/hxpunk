@@ -33,7 +33,6 @@ class Screen
 	 */
 	public function resize():Void
 	{
-		trace("resize");
 		if (_bitmap[0] != null) {
 			sprite.removeChild(_bitmap[0]);
 			sprite.removeChild(_bitmap[1]);

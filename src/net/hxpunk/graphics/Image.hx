@@ -273,7 +273,7 @@ class Image extends Graphic
 	 */
 	public var alpha(get, set):Float;
 	private inline function get_alpha() { return _alpha; }
-	private inline function set_alpha(value:Float):Float
+	private function set_alpha(value:Float):Float
 	{
 		value = value < 0 ? 0 : (value > 1 ? 1 : value);
 		if (_alpha != value) {
@@ -290,7 +290,7 @@ class Image extends Graphic
 	 */
 	public var color(get, set):Int;
 	private inline function get_color() { return _color; }
-	private inline function set_color(value:Int):Int
+	private function set_color(value:Int):Int
 	{
 		value &= 0xFFFFFF;
 		if (_color != value) {
@@ -307,7 +307,7 @@ class Image extends Graphic
 	 */
 	public var tinting(get, set):Float;
 	private inline function get_tinting() { return _tintFactor; }
-	private inline function set_tinting(value:Float):Float
+	private function set_tinting(value:Float):Float
 	{
 		if (_tintFactor != value) {
 			_tintFactor = value;
@@ -323,7 +323,7 @@ class Image extends Graphic
 	 */
 	public var tintMode(get, set):Float;
 	private inline function get_tintMode() { return _tintMode; }
-	private inline function set_tintMode(value:Float):Float
+	private function set_tintMode(value:Float):Float
 	{
 		if (_tintMode != value) {
 			_tintMode = value;
@@ -365,7 +365,7 @@ class Image extends Graphic
 	 */
 	public var flipped(get, set):Bool;
 	private inline function get_flipped() { return _flipped; }
-	private inline function set_flipped(value:Bool):Bool
+	private function set_flipped(value:Bool):Bool
 	{
 		if (_flipped == value) return value;
 		_flipped = value;
@@ -402,7 +402,7 @@ class Image extends Graphic
 	 */
 	public var drawMask(get, set):BitmapData;
 	private inline function get_drawMask() { return _drawMask; }
-	private inline function set_drawMask(value:BitmapData):BitmapData
+	private function set_drawMask(value:BitmapData):BitmapData
 	{
 		// no early exit because the BitmapData contents might have changed
 		_drawMask = value;
@@ -469,7 +469,7 @@ class Image extends Graphic
 	 * Lock the image, preventing updateBuffer() from being run until
 	 * unlock() is called, for performance.
 	 */
-	public function lock():Void
+	public inline function lock():Void
 	{
 		_locked = true;
 	}

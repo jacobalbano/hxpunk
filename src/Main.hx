@@ -1,6 +1,7 @@
 package ;
 
 import flash.system.System;
+import net.hxpunk.debug.Console;
 import net.hxpunk.Engine;
 import net.hxpunk.Entity;
 import net.hxpunk.graphics.Image;
@@ -20,6 +21,7 @@ class Main extends Engine
 {
 	private var e:Entity;
 	var deltaScale:Float = -.1;
+	var text:Text;
 
 	
     public function new() {
@@ -41,28 +43,39 @@ class Main extends Engine
 		e.centerOrigin();
 		img.angle = 45;
 		
-		
-		
 		for (i in 0...35) HP.log(i, [1, 2, 3]);
 		
-		//HP.world.addGraphic(new Text("ecciao", 100, 100));
+		HP.world.addGraphic(text = new Text("Ecciao!", 5, 30));
     }
 	
 	override public function update():Void 
 	{
 		super.update();
 		
+		// ESC to exit
 		if (Input.pressed(Key.ESCAPE)) {
 			System.exit(1);
 		}
 		
-		if (Input.check(Key.ANY)) e.x += HP.sign(Math.random() * 4 - 2) * Math.random() * 3;
+		// move Entity with arrows
+		var dx:Float = 0;
+		var dy:Float = 0;
+		if (Input.check(Console.ARROW_KEYS)) {
+			dx += Input.check(Key.LEFT) ? -1 : Input.check(Key.RIGHT) ? 1 : 0;
+			dy += Input.check(Key.UP) ? -1 : Input.check(Key.DOWN) ? 1 : 0;
+		}
+		e.x += dx * 2;
+		e.y += dy * 2;
 		
+		// scale and rotate Entity
 		var img:Image = cast e.graphic;
-		if (img.scale > 3 || img.scale < 0.5) deltaScale *= -1;
+		if (img.scale > 2.5 || img.scale < 0.5) deltaScale *= -1;
 		img.scale += deltaScale;
-		img.angle += 1;
+		img.angle += 1.5;
 		img.angle %= 360;
+		
+		//text.text = Std.string(System.totalMemory / 1024 / 1024);
+		//text.text = Std.string(HP.frameRate);
 	}
 	
     public static function main() { 

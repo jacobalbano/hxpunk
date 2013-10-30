@@ -988,8 +988,8 @@ class World extends Tweener
 			{
 				if (e._world == null)
 				{
-					if(Lambda.indexOf(_add, e) >= 0)
-						_add.splice(Lambda.indexOf(_add, e), 1);
+					if(HP.indexOf(_add, e) >= 0)
+						_add.splice(HP.indexOf(_add, e), 1);
 					
 					continue;
 				}
@@ -1111,7 +1111,7 @@ class World extends Tweener
 				// Remove the layer from the layer list if this was the last entity.
 				if (_layerList.length > 1)
 				{
-					_layerList[Lambda.indexOf(_layerList, e._layer)] = _layerList[_layerList.length - 1];
+					_layerList[HP.indexOf(_layerList, e._layer)] = _layerList[_layerList.length - 1];
 					_layerSort = true;
 				}
 				_layerList.pop();

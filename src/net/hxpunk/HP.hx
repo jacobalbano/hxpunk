@@ -65,7 +65,7 @@ class HP
 	public static var timeInFrames:Bool;
 	
 	/**
-	 * The framerate assigned to the stage.
+	 * The current framerate.
 	 */
 	public static var frameRate:Float = 0;
 	
@@ -234,6 +234,24 @@ class HP
 		return value;
 	}
 	
+	/** Substitute of Lambda.indexOf 'cause Lambda.indexOf seems to leak memory (in flash)
+		Returns the index of the first element [v] within Iterable [it].
+		This function uses operator [==] to check for equality.
+		If [v] does not exist in [it], the result is -1.
+	**/
+	public static inline function indexOf<T>( it : Iterable<T>, v : T ) : Int {
+		var i = 0;
+		var found:Bool = false;
+		for( v2 in it ) {
+			if( v == v2 ) {
+				found = true;
+				break;
+			}
+			i++;
+		}
+		return found ? i : -1;
+	}
+	
 	/**
 	 * Remove all elements from an array
 	 * @param	array	The array to clear.
@@ -253,7 +271,7 @@ class HP
 	 */
 	public static inline function remove(array:Array<Dynamic>, toRemove:Dynamic):Bool
 	{
-		var i:Int = Lambda.indexOf(array, toRemove);
+		var i:Int = HP.indexOf(array, toRemove);
 		
 		if (i >= 0) {
 			array.splice(i, 1);
@@ -641,8 +659,8 @@ class HP
 	 */
 	public static inline function next(current:Dynamic, options:Array<Dynamic>, loop:Bool = true):Dynamic
 	{
-		if (loop) return options[(Lambda.indexOf(options, current) + 1) % options.length];
-		return options[Std.int(Math.max(Lambda.indexOf(options, current) + 1, options.length - 1))];
+		if (loop) return options[(HP.indexOf(options, current) + 1) % options.length];
+		return options[Std.int(Math.max(HP.indexOf(options, current) + 1, options.length - 1))];
 	}
 	
 	/**
@@ -654,8 +672,8 @@ class HP
 	 */
 	public static inline function prev(current:Dynamic, options:Array<Dynamic>, loop:Bool = true):Dynamic
 	{
-		if (loop) return options[((Lambda.indexOf(options, current) - 1) + options.length) % options.length];
-		return options[Std.int(Math.max(Lambda.indexOf(options, current) - 1, 0))];
+		if (loop) return options[((HP.indexOf(options, current) - 1) + options.length) % options.length];
+		return options[Std.int(Math.max(HP.indexOf(options, current) - 1, 0))];
 	}
 	
 	/**
@@ -1114,14 +1132,15 @@ public static function getBitmap(source:Dynamic):BitmapData
 	{
 		if (Math.isNaN(x) || decimalPlaces <= 0) return Std.string(Std.int(x));
 		var factor:Float = Math.pow(10, decimalPlaces);
-		var str:String = Std.string((x * factor) / factor);
-		var dotPos:Int = str.indexOf('.');
+		var strBuf:StringBuf = new StringBuf();
+		strBuf.add((x * factor) / factor);
+		var dotPos:Int = strBuf.toString().indexOf('.');
 		if (dotPos <= 0) {
-			dotPos = str.length;
-			str + '.';
+			dotPos = strBuf.toString().length;
+			strBuf.add('.');
 		}
-		for (i in dotPos...dotPos + decimalPlaces) str += '0';
-		return str.substr(0, dotPos + decimalPlaces + 1);
+		for (i in dotPos...dotPos + decimalPlaces) strBuf.add('0');
+		return strBuf.toString().substr(0, dotPos + decimalPlaces + 1);
 	}
 	
 	// World information.

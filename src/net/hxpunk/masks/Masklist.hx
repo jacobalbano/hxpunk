@@ -68,7 +68,7 @@ class Masklist extends Hitbox
 	 */
 	public function remove(mask:Mask):Mask
 	{
-		if (Lambda.indexOf(_masks, mask) < 0) return mask;
+		if (HP.indexOf(_masks, mask) < 0) return mask;
 		
 		HP.removeAll(_temp);
 		for (m in _masks)

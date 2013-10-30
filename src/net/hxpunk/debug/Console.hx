@@ -36,7 +36,7 @@ class Console
 	{
 		initVars();
 		
-		Input.define("_ARROWS", [Key.RIGHT, Key.LEFT, Key.DOWN, Key.UP]);
+		Input.define(ARROW_KEYS, [Key.RIGHT, Key.LEFT, Key.DOWN, Key.UP]);
 	}
 	
 	private inline function initVars():Void 
@@ -375,12 +375,12 @@ class Console
 						if (SELECT_LIST.length > 0)
 						{
 							// Move Entities with the arrow keys.
-							if (Input.pressed("_ARROWS")) updateKeyMoving();
+							if (Input.pressed(Console.ARROW_KEYS)) updateKeyMoving();
 						}
 						else
 						{
 							// Pan the camera with the arrow keys.
-							if (Input.check("_ARROWS")) updateKeyPanning();
+							if (Input.check(Console.ARROW_KEYS)) updateKeyPanning();
 						}
 					}
 				}
@@ -603,7 +603,7 @@ class Console
 			// Append selected Entities with new selections.
 			for (e in SCREEN_LIST)
 			{
-				if (Lambda.indexOf(SELECT_LIST, e) < 0)
+				if (HP.indexOf(SELECT_LIST, e) < 0)
 				{
 					HP.rect.x = (e.x - HP.camera.x) * sx - 3;
 					HP.rect.y = (e.y - HP.camera.y) * sy - 3;
@@ -697,7 +697,7 @@ class Console
 			for (e in SCREEN_LIST)
 			{
 				// If the Entity is not selected.
-				if (Lambda.indexOf(SELECT_LIST, e) < 0)
+				if (HP.indexOf(SELECT_LIST, e) < 0)
 				{
 					// Draw the normal hitbox and position.
 					if (e.width > 0 && e.height > 0)
@@ -1039,4 +1039,7 @@ class Console
 	
 	// Reference the Text class so we can access its embedded font
 	private static var textRef:Text;
+
+	// Arrow keys define
+	public static var ARROW_KEYS:String = "_ARROWS";
 }
