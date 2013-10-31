@@ -85,7 +85,9 @@ class Console
 		SELECT_LIST = new Array<Entity>();
 		
 		// Watch information.
-		WATCH_LIST = ["x", "y"];
+		WATCH_LIST = new Array<String>();
+		WATCH_LIST.push("x");		
+		WATCH_LIST.push("y");
 		
 		// Embedded assets.
 		CONSOLE_LOGO = Assets.getBitmapData("assets/hxpunk/console_logo.png");
@@ -238,7 +240,7 @@ class Console
 		_memReadText.embedFonts = true;
 		_memReadText.width = 110;
 		_memReadText.height = 20;
-		_memReadText.x = _fpsInfo.x + _fpsInfo.width + 5;
+		_memReadText.x = (big) ? _fpsInfo.x + _fpsInfo.width + 5 : _fpsInfo.x;
 		_memReadText.y = 1;
 		
 		// The output log text.
@@ -308,7 +310,7 @@ class Console
 		paused = false;
 		
 		// Show version info
-		log("hxpunk " + HP.VERSION);
+		log(HP.NAME + " " + HP.VERSION);
 	}
 	
 	/**
@@ -316,7 +318,7 @@ class Console
 	 */
 	public var visible(get, set):Bool;
 	private inline function get_visible() { return _sprite.visible; }
-	private inline function set_visible(value:Bool):Bool
+	private function set_visible(value:Bool):Bool
 	{
 		_sprite.visible = value;
 		if (_enabled && value) updateLog();
@@ -419,7 +421,7 @@ class Console
 	 */
 	public var paused(get, set):Bool;
 	private inline function get_paused() { return _paused; }
-	private inline function set_paused(value:Bool):Bool
+	private function set_paused(value:Bool):Bool
 	{
 		// Quit if the console isn't enabled.
 		if (_enabled) {
@@ -460,7 +462,7 @@ class Console
 	 */
 	public var debug(get, set):Bool;
 	private inline function get_debug() { return _debug; }
-	private inline function set_debug(value:Bool):Bool
+	private function set_debug(value:Bool):Bool
 	{
 		// Quit if the console isn't enabled.
 		if (_enabled) {
@@ -603,7 +605,9 @@ class Console
 			// Append selected Entities with new selections.
 			for (e in SCREEN_LIST)
 			{
-				if (HP.indexOf(SELECT_LIST, e) < 0)
+				var i:Int = SELECT_LIST.length;
+				while (i-- >= 0) if (SELECT_LIST[i] == e) break;
+				if (i < 0)
 				{
 					HP.rect.x = (e.x - HP.camera.x) * sx - 3;
 					HP.rect.y = (e.y - HP.camera.y) * sy - 3;
@@ -697,7 +701,9 @@ class Console
 			for (e in SCREEN_LIST)
 			{
 				// If the Entity is not selected.
-				if (HP.indexOf(SELECT_LIST, e) < 0)
+				var i:Int = SELECT_LIST.length;
+				while (i-- >= 0) if (SELECT_LIST[i] == e) break;
+				if (i < 0)
 				{
 					// Draw the normal hitbox and position.
 					if (e.width > 0 && e.height > 0)
@@ -844,7 +850,7 @@ class Console
 		_fpsInfoText1.text =
 			"System: " + Std.string(HP._systemTime) + "ms\n" +
 			"Logic: " + Std.string(HP._logicTime) + "ms";
-		_memReadText.text = "MEM: " + HP.toFixed(System.totalMemory/1024/1024, 2) + "MB";
+		_memReadText.text = (width > 420 ? "MEM: " : " ") + HP.toFixed(System.totalMemory/1024/1024, 2) + "MB";
 	}
 	
 	/** @private Update the debug panel text. */
