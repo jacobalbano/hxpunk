@@ -166,7 +166,7 @@ class Console
 		HP.engine.addChild(_sprite);
 		
 		// Used to determine some text sizing.
-		var big:Bool = width >= 480;
+		var big:Bool = width >= BIG_WIDTH_THRESHOLD;
 		
 		// The transparent FlashPunk logo overlay bitmap.
 		_sprite.addChild(_back);
@@ -240,7 +240,7 @@ class Console
 		_memReadText.embedFonts = true;
 		_memReadText.width = 110;
 		_memReadText.height = 20;
-		_memReadText.x = (big) ? _fpsInfo.x + _fpsInfo.width + 5 : _fpsInfo.x;
+		_memReadText.x = (big) ? _fpsInfo.x + _fpsInfo.width + 5 : _fpsInfo.x + 9;
 		_memReadText.y = 1;
 		
 		// The output log text.
@@ -850,14 +850,14 @@ class Console
 		_fpsInfoText1.text =
 			"System: " + Std.string(HP._systemTime) + "ms\n" +
 			"Logic: " + Std.string(HP._logicTime) + "ms";
-		_memReadText.text = (width > 420 ? "MEM: " : " ") + HP.toFixed(System.totalMemory/1024/1024, 2) + "MB";
+		_memReadText.text = (width >= BIG_WIDTH_THRESHOLD ? "MEM: " : "") + HP.toFixed(System.totalMemory/1024/1024, 2) + "MB";
 	}
 	
 	/** @private Update the debug panel text. */
 	private function updateDebugRead():Void
 	{
 		// Find out the screen size and set the text.
-		var big:Bool = width >= 480;
+		var big:Bool = width >= BIG_WIDTH_THRESHOLD;
 		
 		// Update the Debug read text.
 		var s:String =
@@ -913,7 +913,7 @@ class Console
 	private function updateButtons():Void
 	{
 		// Button visibility.
-		_butRead.x = _fpsInfo.x + _fpsInfo.width + Std.int((_entRead.x - (_fpsInfo.x + _fpsInfo.width)) / 2) - 30;
+		_butRead.x = (width >= BIG_WIDTH_THRESHOLD ? _fpsInfo.x + _fpsInfo.width + Std.int((_entRead.x - (_fpsInfo.x + _fpsInfo.width)) / 2) - 30 : 160 + 20);
 		_butDebug.visible = !_debug;
 		_butOutput.visible = _debug;
 		_butPlay.visible = HP.engine.paused;
@@ -1046,6 +1046,9 @@ class Console
 	// Reference the Text class so we can access its embedded font
 	private static var textRef:Text;
 
+	// Switch to small text in debug if console width > this threshold
+	private static inline var BIG_WIDTH_THRESHOLD:Int = 420;
+	
 	// Arrow keys define
-	public static var ARROW_KEYS:String = "_ARROWS";
+	public static inline var ARROW_KEYS:String = "_ARROWS";
 }
