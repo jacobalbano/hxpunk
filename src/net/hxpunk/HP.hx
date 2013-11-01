@@ -29,6 +29,11 @@ class HP
 	private static var init:Bool = initStaticVars();
 	
 	/**
+	 * The FlashPunk lib name.
+	 */
+	public static inline var NAME:String = "hxPunk";
+	
+	/**
 	 * The FlashPunk major version.
 	 */
 	public static inline var VERSION:String = "1.7.2";
@@ -296,8 +301,8 @@ class HP
 	
 	private static inline function _choose(objects:Array<Dynamic>):Dynamic 
 	{
-		if (objects.length == 1) return objects[0][Std.random(objects[0].length)];
-		return objects[Std.random(objects.length)];
+		if (objects.length == 1) return objects[0][HP.rand(objects[0].length)];
+		return objects[HP.rand(objects.length)];
 	}
 	
 	/**
@@ -811,20 +816,26 @@ class HP
 	
 	/**
 	 * Fetches a stored BitmapData object represented by the source.
-	 * @param	source		Embedded Bitmap class.
+	 * @param	source		Asset file or embedded Bitmap class.
 	 * @return	The stored BitmapData object.
 	 */
 public static function getBitmap(source:Dynamic):BitmapData
 {
+	var data:BitmapData = null;
 	var name:String = Std.string(source);
-	if (_bitmap.exists(name))
+	
+	if (_bitmap.exists(name)) {
 		return _bitmap.get(name);
-
-#if (openfl || nme)
-	var data:BitmapData = Assets.getBitmapData(source);
-#else
-	var data:BitmapData = source.bitmapData;
-#end
+	} else if (Std.is(source, BitmapData)) {
+		return source;
+	} 
+	
+	if (Std.is(source, Class)) {
+		data = Type.createInstance(source, []);
+	} else { 
+		data = Assets.getBitmapData(source);
+	}
+	
 	if (data != null)
 		_bitmap.set(name, data);
 

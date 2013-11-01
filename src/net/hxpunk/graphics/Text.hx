@@ -11,16 +11,6 @@ import net.hxpunk.HP;
 import openfl.Assets;
 
 
-// TODO fix TextField class for html5
-#if html5
-@:final extern class TextField {
-	inline function getLineMetrics(lineIndex : Int) : TextLineMetrics {
-		return new TextLineMetrics(0, 0, 0, 0, 0, 0);
-	}
-}
-#end
-
-
 /**
  * Used for drawing text using embedded fonts.
  * 
@@ -96,8 +86,6 @@ class Text extends Image
 	 */
 	public function new(text:String, x:Float = 0, y:Float = 0, options:Dynamic = null, h:Float = 0)
 	{
-		super(new BitmapData(1, 1));
-		
 		// Text information.
 		_field = new TextField();
 		_styles = new Map<String, TextFormat>();
@@ -157,7 +145,7 @@ class Text extends Image
 		}
 	}
 	
-	public static inline function initStaticVars():Bool 
+	private static inline function initStaticVars():Bool 
 	{
 		// Font
 		_FONT_DEFAULT = HP.defaultFont;

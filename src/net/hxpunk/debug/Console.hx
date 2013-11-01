@@ -85,9 +85,7 @@ class Console
 		SELECT_LIST = new Array<Entity>();
 		
 		// Watch information.
-		WATCH_LIST = new Array<String>();
-		WATCH_LIST.push("x");		
-		WATCH_LIST.push("y");
+		WATCH_LIST = ["x", "y"];
 		
 		// Embedded assets.
 		CONSOLE_LOGO = Assets.getBitmapData("assets/hxpunk/console_logo.png");

@@ -55,7 +55,7 @@ class Input
 	public static var mouseWheel:Bool = false; 
 	
 	
-	public static inline function initStaticVars():Bool 
+	private static inline function initStaticVars():Bool 
 	{
 		_key = new Array<Bool>();
 		_press = new Array<Int>();

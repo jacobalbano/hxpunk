@@ -3,6 +3,8 @@
 import flash.display.*;
 import flash.display.BitmapData;
 import flash.display.BlendMode;
+import flash.display.IBitmapDrawable;
+import flash.geom.ColorTransform;
 import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
@@ -446,10 +448,51 @@ class Draw
 		textGfx.render(_target, HP.zero, _camera);
 	}
 	
+	private static function draw(source:IBitmapDrawable, ?matrix:Matrix, ?colorTransform:ColorTransform, ?blendMode:BlendMode, ?clipRect:Rectangle, smoothing:Bool = false):Void
+	{
+		return _target.draw(source, matrix, colorTransform, blendMode != null ? blendMode : blend, clipRect, smoothing);
+	}
+	
+	private static function copyPixels(source:BitmapData, ?sourceRect:Rectangle, ?destPoint:Point, ?alphaBitmapData:BitmapData, ?alphaPoint:Point, mergeAlpha:Bool = false) : Void
+	{
+		return _target.copyPixels(source, sourceRect != null ? sourceRect : source.rect, destPoint != null ? destPoint : HP.zero, alphaBitmapData, alphaPoint, mergeAlpha); 
+	}
+	
+	public static function enqueueCall(method:String, args:Array<Dynamic> = null):Void
+	{
+		if (_callQueue == null) _callQueue = new Array<CallMethod>();
+		_callQueue.push(new CallMethod(method, args != null ? args : []));
+	}
+	
+	public static function renderQueue():Void 
+	{
+		if (_callQueue == null) return;
+		
+		var len:Int = _callQueue.length;
+		for (i in 0...len) {
+			trace("calls in queue");
+			var callMethod:CallMethod = _callQueue[i];
+			Reflect.callMethod(Draw, Reflect.field(Draw, callMethod.name), callMethod.args);
+		}
+		HP.removeAll(_callQueue);
+	}
+	
 	// Drawing information.
 	/** @private */ private static var _target:BitmapData;
 	/** @private */ private static var _camera:Point;
 	/** @private */ private static var _graphics:Graphics = HP.sprite.graphics;
 	/** @private */ private static var _rect:Rectangle = HP.rect;
+	
+	private static var _callQueue:Array<CallMethod>;
 }
 
+class CallMethod {
+	public var name:String;
+	public var args:Array<Dynamic>;
+	
+	public function new(methodName:String, args:Array<Dynamic>)
+	{
+		this.name = methodName;
+		this.args = args;
+	}
+}

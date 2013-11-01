@@ -1,6 +1,7 @@
 ﻿package net.hxpunk;
 
 import flash.geom.Point;
+import net.hxpunk.utils.Draw;
 
 /**
  * Updated by Engine, main game container that holds all currently active Entities.
@@ -30,14 +31,14 @@ class World extends Tweener
 		initVars();
 	}
 	
-	public static inline function initStaticVars():Bool 
+	private static inline function initStaticVars():Bool 
 	{
 		_recycled = new Map < String, Entity > ();
 		
 		return true;
 	}
 	
-	public inline function initVars():Void 
+	private inline function initVars():Void 
 	{
 		camera = new Point();
 		
@@ -122,6 +123,7 @@ class World extends Tweener
 				e = e._renderPrev;
 			}
 		}
+		Draw.renderQueue();
 	}
 	
 	/**

@@ -15,7 +15,7 @@ class Graphiclist extends Graphic
 	 * Constructor.
 	 * @param	graphic		Graphic objects to add to the list.
 	 */
-	public function new(graphics:Array<Graphic> = null) 
+	public function new(graphics:Iterable<Graphic> = null) 
 	{
 		super();
 		
@@ -24,7 +24,7 @@ class Graphiclist extends Graphic
 		_temp = new Array<Graphic>();
 		_camera = new Point();
 
-		for (g in graphics) add(g);
+		if (graphics != null) for (g in graphics) add(g);
 	}
 	
 	/** @private Updates the graphics in the list. */

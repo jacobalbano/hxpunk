@@ -87,19 +87,18 @@ class Image extends Graphic
 		_colorTransform = new ColorTransform();
 		_matrix = HP.matrix;
 
-		
+		// set the graphic
+		_source = HP.getBitmap(source);
 		if (Std.is(source, Class))
-		{
-			_source = HP.getBitmap(source);
 			_class = Type.getClassName(source);
-		}
-		else if (Std.is(source, BitmapData)) _source = source;
+		else if (Std.is(source, String)) 
+			_class = source;
 		if (_source == null) throw new Error("Invalid source image.");
 		_sourceRect = _source.rect;
 		if (clipRect != null)
 		{
-			if (clipRect.width > 0) clipRect.width = _sourceRect.width;
-			if (clipRect.height > 0) clipRect.height = _sourceRect.height;
+			if (clipRect.width <= 0) clipRect.width = _sourceRect.width;
+			if (clipRect.height <= 0) clipRect.height = _sourceRect.height;
 			_sourceRect = clipRect;
 		}
 		createBuffer();
@@ -263,9 +262,9 @@ class Image extends Graphic
 	/**
 	 * Clears the image buffer.
 	 */
-	public function clear():Void
+	public function clear(color:Int = 0):Void
 	{
-		_buffer.fillRect(_bufferRect, 0);
+		_buffer.fillRect(_bufferRect, color);
 	}
 	
 	/**
@@ -459,11 +458,15 @@ class Image extends Graphic
 	 * Clipping rectangle for the image.
 	 */
 	public var clipRect(get, null):Rectangle;
-	private inline function get_clipRect() { return _sourceRect; }
+	private function get_clipRect() { return _sourceRect; }
 	
-	/** @private Source BitmapData image. */
+	/** Source BitmapData image. */
 	public var source(get, null):BitmapData;
 	private inline function get_source() { return _source; }
+	
+	/** Buffer BitmapData image. */
+	public var buffer(get, null):BitmapData;
+	private inline function get_buffer() { return _buffer; }
 	
 	/**
 	 * Lock the image, preventing updateBuffer() from being run until
