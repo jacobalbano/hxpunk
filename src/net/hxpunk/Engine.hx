@@ -84,13 +84,6 @@ class Engine extends Sprite
 		addEventListener(Event.ADDED_TO_STAGE, onStage);
 		Lib.current.addChild(this);
 	#end
-		
-		// set trace() for flash targets
-	#if (flash9 || flash10)
-		haxe.Log.trace = function(v, ?pos) { untyped __global__["trace"](pos.className + "#" + pos.methodName + "(" + pos.lineNumber + "):", v); }
-	#elseif flash
-		haxe.Log.trace = function(v, ?pos) { flash.Lib.trace(pos.className + "#" + pos.methodName + "(" + pos.lineNumber + "): " + v); }
-	#end
 	}
 	
 	/**

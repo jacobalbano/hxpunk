@@ -123,7 +123,7 @@ class World extends Tweener
 				e = e._renderPrev;
 			}
 		}
-		Draw.renderQueue();
+		Draw.renderCallQueue();
 	}
 	
 	/**

@@ -1,25 +1,25 @@
 ﻿package net.hxpunk;
+import net.hxpunk.graphics.Spritemap.VoidCallback;
+import net.hxpunk.utils.Ease.EasingFunction;
+
+enum TweenType {
+
+	/** Persistent Tween type, will stop when it finishes. */
+	PERSIST;
+
+	/** Looping Tween type, will restart immediately when it finishes. */
+	LOOPING;
+
+	/** Oneshot Tween type, will stop and remove itself from its core container when it finishes. */
+	ONESHOT;
+}
+
 
 /**
  * Base class for all Tween objects, can be added to any Core-extended classes.
  */
 class Tween 
-{
-	/**
-	 * Persistent Tween type, will stop when it finishes.
-	 */
-	public static inline var PERSIST:Int = 0;
-	
-	/**
-	 * Looping Tween type, will restart immediately when it finishes.
-	 */
-	public static inline var LOOPING:Int = 1;
-	
-	/**
-	 * Oneshot Tween type, will stop and remove itself from its core container when it finishes.
-	 */
-	public static inline var ONESHOT:Int = 2;
-	
+{	
 	/**
 	 * If the tween should update.
 	 */
@@ -28,7 +28,7 @@ class Tween
 	/**
 	 * Tween completion callback.
 	 */
-	public var complete:Void -> Void;
+	public var complete:VoidCallback;
 	
 	/**
 	 * Length of time to wait before starting this tween.
@@ -42,8 +42,9 @@ class Tween
 	 * @param	complete		Optional callback for when the Tween completes.
 	 * @param	ease			Optional easer function to apply to the Tweened value.
 	 */
-	public function new(duration:Float, type:Int = 0, complete:Void -> Void = null, ease:Float -> Float = null) 
+	public function new(duration:Float, type:TweenType = null, complete:VoidCallback = null, ease:EasingFunction = null) 
 	{
+		if (type == null) type = TweenType.PERSIST;
 		_target = duration;
 		_type = type;
 		this.complete = complete;
@@ -136,8 +137,8 @@ class Tween
 	private inline function get_scale() { return _t; }
 	
 	// Tween information.
-	/** @private */ private var _type:Int = 0;
-	/** @private */ private var _ease:Float -> Float;
+	/** @private */ private var _type:TweenType;
+	/** @private */ private var _ease:EasingFunction;
 	/** @private */ private var _t:Float = 0;
 	
 	// Timing information.

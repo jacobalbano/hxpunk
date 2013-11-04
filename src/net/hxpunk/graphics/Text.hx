@@ -99,7 +99,7 @@ class Text extends Image
 		var width:Int = 0;
 		var height:Int = Std.int(h);
 		
-		if (options)
+		if (options != null)
 		{
 			if (Std.is(options, Float)) // Backwards compatibility: options parameter has replaced width
 			{
@@ -180,9 +180,10 @@ class Text extends Image
 			format = new TextFormat();
 			
 			for (key in Reflect.fields(params)) {
-				if (Reflect.hasField(format, key)) {
+				trace(key, Reflect.hasField(format, key));
+				try {	//if (Reflect.hasField(format, key)) {
 					Reflect.setProperty(format, key, Reflect.getProperty(params, key));
-				} else {
+				} catch (e:Error) {
 					throw new Error('"' + key + '" is not a TextFormat property');
 				}
 			}

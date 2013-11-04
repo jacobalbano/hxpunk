@@ -17,7 +17,7 @@ import net.hxpunk.debug.Console;
 import net.hxpunk.Screen;
 import net.hxpunk.tweens.misc.Alarm;
 import openfl.Assets;
-
+import net.hxpunk.Tween.TweenType;
 
 typedef PointLike = { var x:Dynamic; var y:Dynamic; }
 
@@ -980,11 +980,11 @@ public static function getBitmap(source:Dynamic):BitmapData
 	 * 
 	 * Example: HP.alarm(5.0, callbackFunction, Tween.LOOPING); // Calls callbackFunction every 5 seconds
 	 */
-	public static inline function alarm(delay:Float, callback:Void -> Void, type:Int = 2, tweener:Tweener = null):Alarm
+	public static inline function alarm(delay:Float, callback:Void -> Void, type:TweenType, tweener:Tweener = null):Alarm
 	{
 		if (tweener == null) tweener = HP.tweener;
 		
-		var alarm:Alarm = new Alarm(delay, callback, type);
+		var alarm:Alarm = new Alarm(delay, callback, type != null ? type : TweenType.LOOPING);
 		
 		tweener.addTween(alarm, true);
 		

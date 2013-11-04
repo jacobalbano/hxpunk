@@ -1,7 +1,7 @@
 package net.hxpunk.graphics;
 
 import flash.display.BitmapData;
-import net.hxpunk.graphics.Spritemap.AnimCompleteCallback;
+import net.hxpunk.graphics.Spritemap.VoidCallback;
 import net.hxpunk.HP;
 
 
@@ -19,7 +19,7 @@ class TiledSpritemap extends Spritemap
 	 * @param	height			Height of the block to render.
 	 * @param	callback		Optional callback function for animation end.
 	 */
-	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, width:Int = 0, height:Int = 0, callback:AnimCompleteCallback = null) 
+	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, width:Int = 0, height:Int = 0, callback:VoidCallback = null) 
 	{
 		_imageWidth = width;
 		_imageHeight = height;

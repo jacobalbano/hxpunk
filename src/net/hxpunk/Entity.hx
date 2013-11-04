@@ -782,7 +782,7 @@ class Entity extends Tweener
 	 */
 	public var name(get, set):String;
 	private inline function get_name() { return _name; }
-	private inline function set_name(value:String):String
+	private function set_name(value:String):String
 	{
 		if (_name == value) return value;
 		if (_name != null && _world != null) _world.unregisterName(this);
@@ -808,7 +808,7 @@ class Entity extends Tweener
 	/** @private */ public var _recycleNext:Entity;
 	
 	// Collision information.
-	/** @private */ private var HITBOX:Mask;
+	/** @private */ public var HITBOX:Mask;
 	/** @private */ private var _mask:Mask;
 	/** @private */ private var _x:Float = 0;
 	/** @private */ private var _y:Float = 0;

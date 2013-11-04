@@ -1,7 +1,10 @@
 ﻿package net.hxpunk.masks;
 
+import flash.display.Bitmap;
 import flash.display.BitmapData;
+import flash.display.BlendMode;
 import flash.display.Graphics;
+import flash.display.Sprite;
 import flash.errors.Error;
 import flash.geom.ColorTransform;
 import flash.geom.Matrix;
@@ -52,45 +55,6 @@ class Pixelmask extends Hitbox
 		_check.set(Type.getClassName(Pixelmask), collidePixelmask);
 	}
 	
-	public static function test(thisBMD:BitmapData, firstPoint:Point, firstAlhpaThreshold:Int, secondObject:Dynamic):Bool 
-	{
-		var rectA:Rectangle = thisBMD.rect.clone();
-		rectA.x = firstPoint.x;
-		rectA.y = firstPoint.y;
-		var firstBMD:BitmapData = thisBMD;
-		var rectB:Rectangle = null;
-		var secondBMD:BitmapData = null;
-		
-		if (Std.is(secondObject, Rectangle)) {
-			rectB = cast secondObject;
-			secondBMD = new BitmapData(Std.int(rectB.width), Std.int(rectB.height), true);
-		} else if (Std.is(secondObject, BitmapData)) {
-			secondBMD = cast secondObject;
-			rectB = secondBMD.rect;
-		} else if (Std.is(secondObject, Point)) {
-			var p:Point = cast secondObject;
-			rectB = new Rectangle(p.x, p.y, 1, 1);
-		} else throw new Error("Invalid");
-		
-		var intersectRect:Rectangle = rectA.intersection(rectB);
-		var boundsOverlap:Bool = (intersectRect.width > 0 && intersectRect.height > 0);
-		if (boundsOverlap) {
-			var colorTransform:ColorTransform = new ColorTransform();
-			var intersectBMD:BitmapData = new BitmapData(Std.int(intersectRect.width), Std.int(intersectRect.height), true, 0);
-			var transformMatrix:Matrix = new Matrix(1, 0, 0, 1, -rectA.x, -rectA.y);
-			intersectBMD.draw(firstBMD, transformMatrix, colorTransform);
-			transformMatrix.tx = rectB.x;
-			transformMatrix.ty = rectB.y;
-			//intersectBMD.draw(secondBMD, transformMatrix, colorTransform);
-			
-			Draw.enqueueCall("copyPixels", [firstBMD.clone(), null, new Point(HP.halfWidth, HP.halfHeight)]); 
-			//intersectBMD.dispose();
-			//intersectBMD = null;
-		}
-		
-		return boundsOverlap;
-	}
-	
 	/** @private Collide against an Entity. */
 	override private function collideMask(other:Mask):Bool
 	{
@@ -100,9 +64,12 @@ class Pixelmask extends Hitbox
 		_rect.y = other.parent.y - other.parent.originY;
 		_rect.width = other.parent.width;
 		_rect.height = other.parent.height;
-		trace("mask");
-		trace(Pixelmask.test(_data, _point, threshold, _rect));
+		trace("mask:", parent.name, other.parent.name);
+	#if flash
 		return _data.hitTest(_point, threshold, _rect);
+	#else
+		return Mask.hitTest(_data, _point, threshold, _rect);
+	#end
 	}
 	
 	/** @private Collide against a Hitbox. */
@@ -115,7 +82,11 @@ class Pixelmask extends Hitbox
 		_rect.width = other._width;
 		_rect.height = other._height;
 		trace("hitbox");
+	#if flash
 		return _data.hitTest(_point, threshold, _rect);
+	#else
+		return Mask.hitTest(_data, _point, threshold, _rect);
+	#end
 	}
 	
 	/** @private Collide against a Pixelmask. */
@@ -126,7 +97,11 @@ class Pixelmask extends Hitbox
 		_point2.x = other.parent.x + other._x;
 		_point2.y = other.parent.y + other._y;
 		trace("pixmask");
+	#if flash
 		return _data.hitTest(_point, threshold, other._data, _point2, other.threshold);
+	#else
+		return Mask.hitTest(_data, _point, threshold, other._data, _point2, other.threshold);
+	#end
 	}
 	
 	/**
@@ -171,6 +146,7 @@ class Pixelmask extends Hitbox
 		g.drawRect(HP.matrix.tx, HP.matrix.ty, _data.width*sx, _data.height*sy);
 		g.endFill();
 	}
+	
 	
 	// Pixelmask information.
 	/** @private */ private var _data:BitmapData;

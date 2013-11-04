@@ -51,7 +51,7 @@ class Hitbox extends Mask
 	 */
 	public var x(get, set):Int;
 	private inline function get_x() { return _x; }
-	private inline function set_x(value:Int):Int
+	private function set_x(value:Int):Int
 	{
 		if (_x == value) return value;
 		_x = value;
@@ -65,7 +65,7 @@ class Hitbox extends Mask
 	 */
 	public var y(get, set):Int;
 	private inline function get_y() { return _y; }
-	private inline function set_y(value:Int):Int
+	private function set_y(value:Int):Int
 	{
 		if (_y == value) return value;
 		_y = value;

@@ -4,7 +4,7 @@ import flash.geom.Rectangle;
 import net.hxpunk.graphics.Anim;
 
 
-typedef AnimCompleteCallback = Void -> Void;
+typedef VoidCallback = Void -> Void;
 
 /**
  * Performance-optimized animated Image. Can have multiple animations,
@@ -20,7 +20,7 @@ class Spritemap extends Image
 	/**
 	 * Optional callback function for animation end.
 	 */
-	public var callback:AnimCompleteCallback;
+	public var callback:VoidCallback;
 	
 	/**
 	 * Animation speed factor, alter this to speed up/slow down all animations.
@@ -34,7 +34,7 @@ class Spritemap extends Image
 	 * @param	frameHeight		Frame height.
 	 * @param	callback		Optional callback function for animation end.
 	 */
-	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, callback:AnimCompleteCallback = null) 
+	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, callback:VoidCallback = null) 
 	{
 		_anims = new Map<String, Anim>();
 		_rect = new Rectangle(0, 0, frameWidth, frameHeight);

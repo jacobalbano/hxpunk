@@ -221,7 +221,11 @@ class Grid extends Hitbox
 		_rect.y = Std.int(_rect.y / _tile.height);
 		_rect.width = _point.x - _rect.x;
 		_rect.height = _point.y - _rect.y;
+	#if flash
 		return _data.hitTest(HP.zero, 1, _rect);
+	#else
+		return Mask.hitTest(_data, HP.zero, 1, _rect);
+	#end
 	}
 	
 	/** @private Collides against a Hitbox. */
@@ -235,7 +239,11 @@ class Grid extends Hitbox
 		_rect.y = Std.int(_rect.y / _tile.height);
 		_rect.width = _point.x - _rect.x;
 		_rect.height = _point.y - _rect.y;
+	#if flash
 		return _data.hitTest(HP.zero, 1, _rect);
+	#else
+		return Mask.hitTest(_data, HP.zero, 1, _rect);
+	#end
 	}
 	
 	/** @private Collides against a Pixelmask. */
@@ -258,7 +266,11 @@ class Grid extends Hitbox
 			{
 				if (_data.getPixel32(x1, y1) > 0)
 				{
+				#if flash
 					if (other.data.hitTest(_point, 1, _tile)) return true;
+				#else
+					if (Mask.hitTest(other.data, _point, 1, _tile)) return true;
+				#end
 				}
 				x1 ++;
 				_tile.x += _tile.width;

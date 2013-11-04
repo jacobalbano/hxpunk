@@ -1,6 +1,10 @@
 package ;
 
+import flash.display.BitmapData;
 import flash.display.BlendMode;
+import flash.errors.Error;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 import flash.system.System;
 import haxe.ds.Vector.Vector;
 import net.hxpunk.debug.Console;
@@ -10,7 +14,10 @@ import net.hxpunk.graphics.Graphiclist;
 import net.hxpunk.graphics.Image;
 import net.hxpunk.graphics.Text;
 import net.hxpunk.HP;
+import net.hxpunk.Mask;
+import net.hxpunk.masks.Masklist;
 import net.hxpunk.masks.Pixelmask;
+import net.hxpunk.utils.Draw;
 import net.hxpunk.utils.Ease;
 import net.hxpunk.utils.Input;
 import net.hxpunk.utils.Key;
@@ -24,7 +31,22 @@ import net.hxpunk.graphics.TiledSpritemap;
 import net.hxpunk.graphics.TiledImage;
 import net.hxpunk.graphics.Tilemap;
 import net.hxpunk.graphics.PreRotation;
-import net.hxpunk.masks.Grid;
+import net.hxpunk.graphics.Particle;
+import net.hxpunk.graphics.Emitter;
+import net.hxpunk.tweens.misc.AngleTween;
+import net.hxpunk.tweens.misc.ColorTween;
+import net.hxpunk.tweens.misc.MultiVarTween;
+import net.hxpunk.tweens.misc.NumTween;
+import net.hxpunk.tweens.misc.VarTween;
+import net.hxpunk.tweens.motion.Motion;
+import net.hxpunk.tweens.motion.CircularMotion;
+import net.hxpunk.tweens.motion.LinearMotion;
+import net.hxpunk.tweens.motion.LinearPath;
+import net.hxpunk.tweens.motion.CubicMotion;
+import net.hxpunk.tweens.motion.QuadMotion;
+import net.hxpunk.tweens.motion.QuadPath;
+
+
 
 /**
  * ...
@@ -42,6 +64,8 @@ class Main extends Engine
 	var bg:Backdrop;
 	var box:Entity;
 
+	var _point:Point;
+	var _rect:Rectangle;
 	
     public function new() {
         super(320, 240, 60, false);
@@ -57,41 +81,50 @@ class Main extends Engine
 		
 		t = new TiledImage("assets/ball.png");
 		
-		HP.world.addGraphic(bg = new Backdrop(BALL));
-		bg.visible = false;
+		//HP.world.addGraphic(bg = new Backdrop(BALL));
+		//bg.visible = false;
 		
 		//var img:Image = Image.createRect(40, 40);
 		var img:Image = new Image("assets/ball.png");
 		img.centerOrigin();
 		e = new Entity(0, 0, img);
 		HP.world.add(e, HP.halfWidth, HP.halfHeight);
+		e.name = "Ball";
 		e.setHitboxTo(img);
-		e.mask = new Pixelmask("assets/ball.png");
 		e.centerOrigin();
 		img.angle = 45;
 		
-		img.blend = BlendMode.MULTIPLY;
+		//img.blend = BlendMode.SUBTRACT;
 		
 		for (i in 0...35) HP.log(i, [1, 2, 3]);
 		
 		HP.world.addGraphic(text = new Text("Ecciao!", 5, 30));
 		
-		var g:Graphiclist = new Graphiclist();
+		/*var g:Graphiclist = new Graphiclist();
 		g.add(e.graphic);
 		g.add(e.graphic);
-		HP.world.addGraphic(g);
+		HP.world.addGraphic(g, 0, 200);
+		*/
 		
 		text.scale = 2;
 		text.setStyle("bah", { color: 0x343434 } );
 		text.richText = "font color=<bah>'#343434'</bah></font>";
 		
+		text.setTextProperty("color", 0xFFFFFF);
+		
 		trace(Ease.fromPennerFormat(.5));
 		
 		box = new Entity(preRotation = new PreRotation("assets/obstacle.png"));
 		preRotation.centerOrigin();
-		box.setHitboxTo(preRotation);
+		preRotation.angle = 45;
+		
+		box.mask = new Pixelmask("assets/ball.png");
+		_point = new Point();
+		_rect = new Rectangle();
+		
 		box.centerOrigin();
-		HP.world.add(box, 50, 120);
+		HP.world.add(box, 250, 120);
+		box.name = "Box";
     }
 	
 	override public function update():Void 
@@ -120,16 +153,39 @@ class Main extends Engine
 		img.angle += 1.5;
 		img.angle %= 360;
 		
-		preRotation.angle += 1.5;
+		//preRotation.angle += 1.5;
 		preRotation.angle %= 360;
 		
-		var pixelMask:Pixelmask = cast e.mask;
+		
+		var pixelMask:Pixelmask = cast box.mask;
 		pixelMask.data = preRotation.buffer;
 		pixelMask.x = -pixelMask.width >> 1;
 		pixelMask.y = -pixelMask.height >> 1;
 		
-		if (e.collideWith(box, e.x, e.y) != null) {
+		Draw.enqueueCall(function ():Void 
+		{
+				Draw.hitbox(box, true, 0xFF0000);
+				Draw.hitbox(e, true, 0xFF0000);
+				
+		});
+		if (box.collideWith(e, box.x, box.y) != null) {
+			preRotation.color = 0xFF0000;
 			trace("collision");
+		} else {
+			preRotation.color = 0xFFFFFF;
+		}
+		
+		var hitbox:Mask = e.HITBOX;
+		
+		_point.x = pixelMask.parent.x + pixelMask.x;
+		_point.y = pixelMask.parent.y + pixelMask.y;
+		_rect.x = hitbox.parent.x - hitbox.parent.originX;
+		_rect.y = hitbox.parent.y - hitbox.parent.originY;
+		_rect.width = hitbox.parent.width;
+		_rect.height = hitbox.parent.height;
+		
+		if (Mask.hitTest(pixelMask.data, _point, 100, _rect)) {
+			preRotation.color |= 0x00FF00;
 		}
 		
 		if (Input.released(Key.B)) {
@@ -138,11 +194,34 @@ class Main extends Engine
 		
 		//text.text = Std.string(System.totalMemory / 1024 / 1024);
 		//text.text = Std.string(HP.frameRate);
+		
+		// move camera around
+		if (Input.check(Key.A)) HP.camera.x -= 2; 
+		if (Input.check(Key.D)) HP.camera.x += 2; 
+		if (Input.check(Key.W)) HP.camera.y -= 2; 
+		if (Input.check(Key.S)) HP.camera.y += 2; 
+		
+	}
+	
+	override public function render():Void 
+	{
+		super.render();
+		
+		Draw.blend = BlendMode.ADD;
+		Draw.rect(0, 0, 100, 100, 0x00FF00);
+		Draw.rect(0, 0, 100, 100, 0xFF0000);
+		Draw.blend = BlendMode.NORMAL;
 	}
 	
     public static function main() { 
 		new Main(); 
 	}
+	
+	/*
+	public static function upd():Void 
+	{
+		trace("update");
+	}*/
 }
 
 @:bitmap("assets/ball.png")
