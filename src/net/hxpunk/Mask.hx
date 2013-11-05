@@ -142,6 +142,11 @@ class Mask
 			var w:Int = Std.int(intersectRect.width);
 			var h:Int = Std.int(intersectRect.height);
 			
+			Draw.enqueueCall(function ():Void 
+			{
+				Draw.rectPlus(intersectRect.x, intersectRect.y, intersectRect.width, intersectRect.height, 0xFFFFFF, 1, false);
+			});
+
 			// firstObject
 			var xOffset:Float = intersectRect.x > rectA.x ? intersectRect.x - rectA.x : rectA.x - intersectRect.x;
 			var yOffset:Float = intersectRect.y > rectA.y ? intersectRect.y - rectA.y : rectA.y - intersectRect.y;
@@ -158,15 +163,22 @@ class Mask
 			rectB.width = w;
 			rectB.height = h;
 			
-			var pixelsA:Vector<UInt> = firstBMD.getVector(rectA);
-			var pixelsB:Vector<UInt> = secondBMD == null ? null : secondBMD.getVector(rectB);
+			var pixelsA:ByteArray = firstBMD.getPixels(rectA);
+			var pixelsB:ByteArray = null;
+			if (secondBMD != null) {
+				pixelsB = secondBMD.getPixels(rectB);
+				pixelsB.position = 0;
+			}
+			pixelsA.position = 0;
 			
 			var alphaA:Int = 0;
 			var alphaB:Int = 0;
+			var idx:Int = 0;
 			for (y in 0...h) {
 				for (x in 0...w) {
-					alphaA = pixelsA[y * w + x] >> 24;
-					alphaB = secondBMD != null ? pixelsB[y * w + x] : 255;
+					idx = (y * w + x) << 2;
+					alphaA = pixelsA[idx];
+					alphaB = secondBMD != null ? pixelsB[idx] : 255;
 					if (alphaA >= firstAlphaThreshold && alphaB >= secondAlphaThreshold) {
 						hit = true;
 						break; 
