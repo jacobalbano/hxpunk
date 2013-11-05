@@ -17,7 +17,7 @@ class Tilemap extends Canvas
 	/**
 	 * If x/y positions should be used instead of columns/rows.
 	 */
-	public var usePositions:Bool;
+	public var usePositions:Bool = false;
 	
 	/**
 	 * Constructor.

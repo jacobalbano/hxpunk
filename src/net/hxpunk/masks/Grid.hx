@@ -19,7 +19,7 @@ class Grid extends Hitbox
 	/**
 	 * If x/y positions should be used instead of columns/rows.
 	 */
-	public var usePositions:Bool;
+	public var usePositions:Bool = false;
 	
 	/**
 	 * Constructor.
@@ -96,7 +96,7 @@ class Grid extends Hitbox
 			column = Std.int(column / _tile.width);
 			row = Std.int(row / _tile.height);
 		}
-		return _data.getPixel32(column, row) > 0;
+		return _data.getPixel32(column, row) != 0;
 	}
 	
 	/**
@@ -249,8 +249,8 @@ class Grid extends Hitbox
 	/** @private Collides against a Pixelmask. */
 	private function collidePixelmask(other:Pixelmask):Bool
 	{
-		var x1:Int = Std.int(other.parent.x + other._x - parent.x - _x),
-			y1:Int = Std.int(other.parent.y + other._y - parent.y - _y),
+		var x1:Int = Std.int(other.parent.x + other._x - parent.x - _x - other.parent.originX),
+			y1:Int = Std.int(other.parent.y + other._y - parent.y - _y - other.parent.originY),
 			x2:Int = Std.int((x1 + other._width - 1) / _tile.width),
 			y2:Int = Std.int((y1 + other._height - 1) / _tile.height);
 		_point.x = x1;
@@ -264,12 +264,12 @@ class Grid extends Hitbox
 		{
 			while (x1 <= x2)
 			{
-				if (_data.getPixel32(x1, y1) > 0)
+				if (_data.getPixel32(x1, y1) != 0)
 				{
 				#if flash
-					if (other.data.hitTest(_point, 1, _tile)) return true;
+					if (other.data.hitTest(_point, other.threshold, _tile)) return true;
 				#else
-					if (Mask.hitTest(other.data, _point, 1, _tile)) return true;
+					if (Mask.hitTest(other.data, _point, other.threshold, _tile)) return true;
 				#end
 				}
 				x1 ++;
@@ -357,10 +357,10 @@ class Grid extends Hitbox
 				var bc2:Int = Std.int(((x - other.parent.x - other._x) + (tw - 1)) / other._tile.width);
 				
 				// Check all the corners for collisions
-				if ((_data.getPixel32(ac1, ar1) > 0 && other._data.getPixel32(bc1, br1) > 0)
-				 || (_data.getPixel32(ac2, ar1) > 0 && other._data.getPixel32(bc2, br1) > 0)
-				 || (_data.getPixel32(ac1, ar2) > 0 && other._data.getPixel32(bc1, br2) > 0)
-				 || (_data.getPixel32(ac2, ar2) > 0 && other._data.getPixel32(bc2, br2) > 0))
+				if ((_data.getPixel32(ac1, ar1) != 0 && other._data.getPixel32(bc1, br1) != 0)
+				 || (_data.getPixel32(ac2, ar1) != 0 && other._data.getPixel32(bc2, br1) != 0)
+				 || (_data.getPixel32(ac1, ar2) != 0 && other._data.getPixel32(bc1, br2) != 0)
+				 || (_data.getPixel32(ac2, ar2) != 0 && other._data.getPixel32(bc2, br2) != 0))
 				{
 					return true;
 				}
@@ -377,18 +377,20 @@ class Grid extends Hitbox
 		var sx:Float = HP.screen.scaleX * HP.screen.scale;
 		var sy:Float = HP.screen.scaleY * HP.screen.scale;
 		
-		g.lineStyle(1, 0xFFFFFF, 0.25);
+		g.lineStyle(1, 0xFFFFFF, 0.35);
+		g.beginFill(0xFFFFFF, 0.25);
 		
 		for (y in 0..._rows)
 		{
 			for (x in 0..._columns)
 			{
-				if (_data.getPixel32(x, y) > 0)
+				if (_data.getPixel32(x, y) != 0)
 				{
 					g.drawRect((parent.x - parent.originX - HP.camera.x + x * _tile.width) * sx, (parent.y - parent.originY - HP.camera.y + y * _tile.height) * sy, _tile.width * sx, _tile.height * sy);
 				}
 			}
 		}
+		g.endFill();
 	}
 	
 	// Grid information.

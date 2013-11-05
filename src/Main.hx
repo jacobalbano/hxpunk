@@ -3,10 +3,12 @@ package ;
 import flash.display.BitmapData;
 import flash.display.BlendMode;
 import flash.errors.Error;
+import flash.events.KeyboardEvent;
 import flash.filters.BlurFilter;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.system.System;
+import flash.ui.Keyboard;
 import haxe.ds.Vector.Vector;
 import net.hxpunk.debug.Console;
 import net.hxpunk.Engine;
@@ -16,6 +18,7 @@ import net.hxpunk.graphics.Image;
 import net.hxpunk.graphics.Text;
 import net.hxpunk.HP;
 import net.hxpunk.Mask;
+import net.hxpunk.masks.Grid;
 import net.hxpunk.masks.Masklist;
 import net.hxpunk.masks.Pixelmask;
 import net.hxpunk.utils.Draw;
@@ -128,6 +131,17 @@ class Main extends Engine
 		box.centerOrigin();
 		HP.world.add(box, 250, 120);
 		box.name = "Box";
+		
+		HP.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+		
+		var gridMask:Grid = new Grid(140, 80, 20, 20);
+		var gridStr = 
+		"1,0,0,1,1,1,0\n" +
+		"0,0,0,1,0,1,1\n" +
+		"1,0,0,0,0,0,1\n" +
+		"0,0,0,0,0,0,1\n";
+		gridMask.loadFromString(gridStr);
+		HP.world.addMask(gridMask, "solid", 0, 120);
     }
 	
 	override public function update():Void 
@@ -159,6 +173,11 @@ class Main extends Engine
 		//preRotation.angle += 1.5;
 		preRotation.angle %= 360;
 		
+		if (e.collideTypes(["solid"], e.x, e.y) != null) {
+			cast(e.graphic, Image).color = 0xFF0000;
+		} else {
+			cast(e.graphic, Image).color = 0xFFFFFF;
+		}
 		
 		var pixelMask:Pixelmask = cast box.mask;
 		pixelMask.data = preRotation.buffer;
@@ -215,6 +234,11 @@ class Main extends Engine
 		Draw.rect(0, 0, 100, 100, 0x00FF00);
 		Draw.rect(0, 0, 100, 100, 0xFF0000);
 		Draw.blend = BlendMode.NORMAL;
+	}
+	
+	public function onKeyDown(e:KeyboardEvent):Void 
+	{
+		HP.log(e.charCode, Input.lastKey, e.keyCode);
 	}
 	
     public static function main() { 
