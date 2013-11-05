@@ -142,11 +142,6 @@ class Mask
 			var w:Int = Std.int(intersectRect.width);
 			var h:Int = Std.int(intersectRect.height);
 			
-			Draw.enqueueCall(function ():Void 
-			{
-				Draw.rectPlus(intersectRect.x, intersectRect.y, intersectRect.width, intersectRect.height, 0xFFFFFF, 1, false);
-			});
-
 			// firstObject
 			var xOffset:Float = intersectRect.x > rectA.x ? intersectRect.x - rectA.x : rectA.x - intersectRect.x;
 			var yOffset:Float = intersectRect.y > rectA.y ? intersectRect.y - rectA.y : rectA.y - intersectRect.y;

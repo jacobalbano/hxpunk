@@ -87,8 +87,8 @@ class Pixelmask extends Hitbox
 	{
 		_point.x = parent.x + _x;
 		_point.y = parent.y + _y;
-		_point2.x = other.parent.x + other._x;
-		_point2.y = other.parent.y + other._y;
+		_point2.x = other.parent.x + other._x - other.parent.originX;
+		_point2.y = other.parent.y + other._y - other.parent.originY;
 	#if flash
 		return _data.hitTest(_point, threshold, other._data, _point2, other.threshold);
 	#else
@@ -104,7 +104,7 @@ class Pixelmask extends Hitbox
 	private function set_threshold(value:Int):Int 
 	{
 		if (_threshold != value) {
-			
+			_threshold = value;
 		}
 		return value;
 	}
@@ -134,8 +134,13 @@ class Pixelmask extends Hitbox
 		HP.rect.height = _data.height;
 		
 		_debug.fillRect(HP.rect, 0x0);
-		_debug.threshold(_data, HP.rect, HP.zero, ">=", threshold << 24, 0x40FFFFFF, 0xFF000000);
 		
+	#if flash
+		_debug.threshold(_data, HP.rect, HP.zero, ">=", threshold << 24, 0x40FFFFFF, 0xFF000000);
+	#else
+		_debug.draw(_data, null, new ColorTransform(1, 1, 1, 0, 0, 0, 0, (256 - threshold) / 2));
+	#end
+	
 		var sx:Float = HP.screen.scaleX * HP.screen.scale;
 		var sy:Float = HP.screen.scaleY * HP.screen.scale;
 		

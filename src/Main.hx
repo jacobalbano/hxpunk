@@ -91,7 +91,9 @@ class Main extends Engine
 		e = new Entity(0, 0, img);
 		HP.world.add(e, HP.halfWidth, HP.halfHeight);
 		e.name = "Ball";
-		e.setHitboxTo(img);
+		//e.setHitboxTo(img);
+		e.mask = new Pixelmask("assets/obstacle.png");
+		cast(e.mask, Pixelmask).threshold = 100;
 		e.centerOrigin();
 		img.angle = 45;
 		
@@ -162,7 +164,7 @@ class Main extends Engine
 		pixelMask.data = preRotation.buffer;
 		pixelMask.x = -pixelMask.width >> 1;
 		pixelMask.y = -pixelMask.height >> 1;
-		pixelMask.threshold = 50;
+		pixelMask.threshold = 90;
 		
 		Draw.enqueueCall(function ():Void 
 		{
@@ -186,7 +188,7 @@ class Main extends Engine
 		_rect.width = hitbox.parent.width;
 		_rect.height = hitbox.parent.height;
 		
-		if (Mask.hitTest(pixelMask.data, _point, 100, _rect)) {
+		if (Mask.hitTest(pixelMask.data, _point, 1, _rect)) {
 			preRotation.color |= 0x00FF00;
 		}
 		
