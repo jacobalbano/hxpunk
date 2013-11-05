@@ -8,6 +8,9 @@ import flash.geom.ColorTransform;
 import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
+import flash.Memory;
+import flash.utils.ByteArray;
+import flash.Vector;
 import net.hxpunk.masks.Masklist;
 import net.hxpunk.utils.Draw;
 
@@ -87,8 +90,6 @@ class Mask
 		
 	}
 	
-	
-	
 	/**
 	 * Replacement for BitmapData.hitTest() that is not yet available in non-flash targets. TODO: Serious testing and optimizations (for Rect and Points above all).
 	 * 
@@ -106,27 +107,31 @@ class Mask
 		if (firstPoint == null) {
 			throw new Error("firstPoint cannot be null.");
 		}
+		
 		var rectA:Rectangle = firstObject.rect.clone();
-		rectA.x = firstPoint.x;
-		rectA.y = firstPoint.y;
 		var firstBMD:BitmapData = firstObject;
 		var rectB:Rectangle = null;
 		var secondBMD:BitmapData = null;
-
-		if (Std.is(secondObject, Rectangle)) {
-			rectB = cast secondObject;
-			secondBMD = new BitmapData(Std.int(rectB.width), Std.int(rectB.height), true);
-		} else if (Std.is(secondObject, BitmapData)) {
-			secondBMD = cast secondObject;
-			rectB = secondBMD.rect;
-		} else if (Std.is(secondObject, Point)) {
+		
+		if (Std.is(secondObject, Point)) {
 			var p:Point = cast secondObject;
 			rectB = new Rectangle(p.x, p.y, 1, 1);
-		} else throw new Error("Invalid secondObjects. Must be Point, Rectangle or BitmapData.");
+			var pixel:Int = firstBMD.getPixel32(Std.int(p.x), Std.int(p.y));
+			return (pixel >> 24) >= firstAlphaThreshold;
+		} else if (Std.is(secondObject, Rectangle)) {
+			rectB = (cast secondObject).clone();
+		} else if (Std.is(secondObject, BitmapData)) {
+			secondBMD = cast secondObject;
+			rectB = secondBMD.rect.clone();
+		} else throw new Error("Invalid secondObject. Must be Point, Rectangle or BitmapData.");
 		
-		if (secondPoint != null) {
+		rectA.x = firstPoint.x;
+		rectA.y = firstPoint.y;
+		if (secondBMD != null && secondPoint != null) {
 			rectB.x = secondPoint.x;
 			rectB.y = secondPoint.y;
+		} else {
+			secondPoint = firstPoint;
 		}
 		
 		var intersectRect:Rectangle = rectA.intersection(rectB);
@@ -134,40 +139,41 @@ class Mask
 		var hit:Bool = false;
 
 		if (boundsOverlap) {
+			var w:Int = Std.int(intersectRect.width);
+			var h:Int = Std.int(intersectRect.height);
 			
-			Draw.enqueueCall(function ():Void 
-			{
-				Draw.rectPlus(intersectRect.x, intersectRect.y, intersectRect.width, intersectRect.height, 0xFFFFFF, 1, false);
-			});
-
-			var colorTransform:ColorTransform = new ColorTransform(1, 0, 0, 1, 255, 0, 0, 256 - firstAlphaThreshold);
-			var transformMatrix:Matrix = new Matrix();
-			var intersectBMD:BitmapData = new BitmapData(Std.int(intersectRect.width), Std.int(intersectRect.height), true, 0);
-			
-			// draw firstBMD
+			// firstObject
 			var xOffset:Float = intersectRect.x > rectA.x ? intersectRect.x - rectA.x : rectA.x - intersectRect.x;
 			var yOffset:Float = intersectRect.y > rectA.y ? intersectRect.y - rectA.y : rectA.y - intersectRect.y;
-			transformMatrix.translate(-xOffset, -yOffset);
-			intersectBMD.draw(firstBMD, transformMatrix, colorTransform);
-			
-			// draw secondBMD
+			rectA.x += xOffset - firstPoint.x;
+			rectA.y += yOffset - firstPoint.y;
+			rectA.width = w;
+			rectA.height = h;
+
+			// secondObject
 			xOffset = intersectRect.x > rectB.x ? intersectRect.x - rectB.x : rectB.x - intersectRect.x;
 			yOffset = intersectRect.y > rectB.y ? intersectRect.y - rectB.y : rectB.y - intersectRect.y;
-			transformMatrix.identity();
-			transformMatrix.translate( -xOffset, -yOffset);
-			colorTransform = new ColorTransform(0, 1, 0, 1, 0, 255, 0, 256 - secondAlphaThreshold);
-			intersectBMD.draw(secondBMD, transformMatrix, colorTransform, BlendMode.ADD);
+			rectB.x += xOffset - secondPoint.x;
+			rectB.y += yOffset - secondPoint.y;
+			rectB.width = w;
+			rectB.height = h;
 			
-			Draw.enqueueCall(function ():Void 
-			{
-				Draw.copyPixels(intersectBMD, null, new Point(HP.halfWidth, HP.halfHeight));
-			});
+			var pixelsA:Vector<UInt> = firstBMD.getVector(rectA);
+			var pixelsB:Vector<UInt> = secondBMD == null ? null : secondBMD.getVector(rectB);
 			
-			var intersectRect = intersectBMD.getColorBoundsRect(0xFFFFFFFF, 0xFFFFFF00);
-			hit = (intersectRect.width > 0 && intersectRect.height > 0);
-			
-			//intersectBMD.dispose();
-			//intersectBMD = null;
+			var alphaA:Int = 0;
+			var alphaB:Int = 0;
+			for (y in 0...h) {
+				for (x in 0...w) {
+					alphaA = pixelsA[y * w + x] >> 24;
+					alphaB = secondBMD != null ? pixelsB[y * w + x] : 255;
+					if (alphaA >= firstAlphaThreshold && alphaB >= secondAlphaThreshold) {
+						hit = true;
+						break; 
+					}
+				}
+				if (hit) break;
+			}
 		}
 		
 		return hit;

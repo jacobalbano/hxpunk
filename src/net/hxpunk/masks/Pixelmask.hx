@@ -21,11 +21,6 @@ import net.hxpunk.utils.Draw;
 class Pixelmask extends Hitbox
 {
 	/**
-	 * Alpha threshold of the bitmap used for collision.
-	 */
-	public var threshold:Int = 1;
-	
-	/**
 	 * Constructor.
 	 * @param	source		The image to use as a mask.
 	 * @param	x			X offset of the mask.
@@ -64,7 +59,6 @@ class Pixelmask extends Hitbox
 		_rect.y = other.parent.y - other.parent.originY;
 		_rect.width = other.parent.width;
 		_rect.height = other.parent.height;
-		trace("mask:", parent.name, other.parent.name);
 	#if flash
 		return _data.hitTest(_point, threshold, _rect);
 	#else
@@ -81,7 +75,6 @@ class Pixelmask extends Hitbox
 		_rect.y = other.parent.y + other._y;
 		_rect.width = other._width;
 		_rect.height = other._height;
-		trace("hitbox");
 	#if flash
 		return _data.hitTest(_point, threshold, _rect);
 	#else
@@ -96,7 +89,6 @@ class Pixelmask extends Hitbox
 		_point.y = parent.y + _y;
 		_point2.x = other.parent.x + other._x;
 		_point2.y = other.parent.y + other._y;
-		trace("pixmask");
 	#if flash
 		return _data.hitTest(_point, threshold, other._data, _point2, other.threshold);
 	#else
@@ -104,6 +96,18 @@ class Pixelmask extends Hitbox
 	#end
 	}
 	
+	/**
+	 * Alpha threshold of the bitmap used for collision.
+	 */
+	public var threshold(get, set):Int;
+	private inline function get_threshold():Int { return _threshold; }
+	private function set_threshold(value:Int):Int 
+	{
+		if (_threshold != value) {
+			
+		}
+		return value;
+	}
 	/**
 	 * Current BitmapData mask.
 	 */
@@ -149,6 +153,8 @@ class Pixelmask extends Hitbox
 	
 	
 	// Pixelmask information.
+	/** @private */ private var _threshold:Int = 1;
+	/** @private */ private var _bits:Array<Int>;
 	/** @private */ private var _data:BitmapData;
 	/** @private */ private var _debug:BitmapData;
 	

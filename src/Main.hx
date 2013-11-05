@@ -3,6 +3,7 @@ package ;
 import flash.display.BitmapData;
 import flash.display.BlendMode;
 import flash.errors.Error;
+import flash.filters.BlurFilter;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.system.System;
@@ -161,6 +162,7 @@ class Main extends Engine
 		pixelMask.data = preRotation.buffer;
 		pixelMask.x = -pixelMask.width >> 1;
 		pixelMask.y = -pixelMask.height >> 1;
+		pixelMask.threshold = 50;
 		
 		Draw.enqueueCall(function ():Void 
 		{
