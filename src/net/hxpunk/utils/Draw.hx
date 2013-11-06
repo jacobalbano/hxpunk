@@ -5,6 +5,8 @@ import flash.display.BitmapData;
 import flash.display.BlendMode;
 import flash.display.Graphics;
 import flash.display.IBitmapDrawable;
+import flash.display.JointStyle;
+import flash.display.LineScaleMode;
 import flash.errors.Error;
 import flash.geom.ColorTransform;
 import flash.geom.Matrix;
@@ -30,6 +32,20 @@ class Draw
 	public static var blend:BlendMode;
 	
 	/**
+	 * Whether to account for camera position in drawing.
+	 * Reset to true in resetTarget().
+	 */
+	public static var useCamera(get, set):Bool;
+	private static inline function get_useCamera():Bool { return _useCamera; };
+	private static function set_useCamera(value:Bool):Bool 
+	{
+		if (_useCamera != value) {
+			_camera = HP.camera;
+		} 
+		return value;
+	}
+	
+	/**
 	 * Sets the drawing target for Draw functions.
 	 * @param	target		The buffer to draw to.
 	 * @param	camera		The camera offset (use null for none).
@@ -49,11 +65,12 @@ class Draw
 	{
 		_target = HP.buffer;
 		_camera = HP.camera;
+		_useCamera = true;
 		Draw.blend = null;
 	}
 	
 	/**
-	 * Draws a pixelated, non-antialiased line.
+	 * Draws a pixelated, non-antialiased line (using Bresenham's algorithm).
 	 * @param	x1				Starting x position.
 	 * @param	y1				Starting y position.
 	 * @param	x2				Ending x position.
@@ -61,20 +78,26 @@ class Draw
 	 * @param	color			Color of the line.
 	 * @param	overwriteAlpha	Alpha value written to these pixels: does NOT do blending. If you want to draw a semi-transparent line over some other content, you will have to either: A) use Draw.linePlus() or B) if non-antialiasing is important, render with Draw.line() to an intermediate buffer with transparency and then render that intermediate buffer.
 	 */
-	public static function line(x1:Int, y1:Int, x2:Int, y2:Int, color:Int = 0xFFFFFF, overwriteAlpha:Float = 1.0):Void
+	public static function line(x1:Float, y1:Float, x2:Float, y2:Float, color:Int = 0xFFFFFF, overwriteAlpha:Float = 1.0):Void
 	{
 		color = (Std.int(overwriteAlpha * 0xFF) << 24) | (color & 0xFFFFFF);
+		var _x1:Int = Std.int(x1);
+		var _y1:Int = Std.int(y1);
+		var _x2:Int = Std.int(x2);
+		var _y2:Int = Std.int(y2);
 		
 		// get the drawing positions
-		x1 -= Std.int(_camera.x);
-		y1 -= Std.int(_camera.y);
-		x2 -= Std.int(_camera.x);
-		y2 -= Std.int(_camera.y);
+		if (useCamera) {
+			_x1 += Std.int(_camera.x);
+			_y1 += Std.int(_camera.y);
+			_x2 += Std.int(_camera.x);
+			_y2 += Std.int(_camera.y);
+		}
 		
 		// get the drawing difference
 		var screen:BitmapData = _target,
-			X:Float = Math.abs(x2 - x1),
-			Y:Float = Math.abs(y2 - y1),
+			X:Float = Math.abs(_x2 - _x1),
+			Y:Float = Math.abs(_y2 - _y1),
 			xx:Int,
 			yy:Int = 0;
 		
@@ -83,35 +106,35 @@ class Draw
 		{
 			if (Y == 0)
 			{
-				screen.setPixel32(x1, y1, color);
+				screen.setPixel32(_x1, _y1, color);
 				return;
 			}
 			// draw a straight vertical line
-			yy = y2 > y1 ? 1 : -1;
-			while (y1 != y2)
+			yy = _y2 > _y1 ? 1 : -1;
+			while (_y1 != _y2)
 			{
-				screen.setPixel32(x1, y1, color);
-				y1 += yy;
+				screen.setPixel32(_x1, _y1, color);
+				_y1 += yy;
 			}
-			screen.setPixel32(x2, y2, color);
+			screen.setPixel32(_x2, _y2, color);
 			return;
 		}
 		
 		if (Y == 0)
 		{
 			// draw a straight horizontal line
-			xx = x2 > x1 ? 1 : -1;
-			while (x1 != x2)
+			xx = _x2 > _x1 ? 1 : -1;
+			while (_x1 != _x2)
 			{
-				screen.setPixel32(x1, y1, color);
-				x1 += xx;
+				screen.setPixel32(_x1, _y1, color);
+				_x1 += xx;
 			}
-			screen.setPixel32(x2, y2, color);
+			screen.setPixel32(_x2, _y2, color);
 			return;
 		}
 		
-		xx = x2 > x1 ? 1 : -1;
-		yy = y2 > y1 ? 1 : -1;
+		xx = _x2 > _x1 ? 1 : -1;
+		yy = _y2 > _y1 ? 1 : -1;
 		var c:Float = 0,
 			slope:Float = 0;
 		
@@ -119,35 +142,35 @@ class Draw
 		{
 			slope = Y / X;
 			c = .5;
-			while (x1 != x2)
+			while (_x1 != _x2)
 			{
-				screen.setPixel32(x1, y1, color);
-				x1 += xx;
+				screen.setPixel32(_x1, _y1, color);
+				_x1 += xx;
 				c += slope;
 				if (c >= 1)
 				{
-					y1 += yy;
+					_y1 += yy;
 					c -= 1;
 				}
 			}
-			screen.setPixel32(x2, y2, color);
+			screen.setPixel32(_x2, _y2, color);
 		}
 		else
 		{
 			slope = X / Y;
 			c = .5;
-			while (y1 != y2)
+			while (_y1 != _y2)
 			{
-				screen.setPixel32(x1, y1, color);
-				y1 += yy;
+				screen.setPixel32(_x1, _y1, color);
+				_y1 += yy;
 				c += slope;
 				if (c >= 1)
 				{
-					x1 += xx;
+					_x1 += xx;
 					c -= 1;
 				}
 			}
-			screen.setPixel32(x2, y2, color);
+			screen.setPixel32(_x2, _y2, color);
 		}
 	}
 	
@@ -163,10 +186,17 @@ class Draw
 	 */
 	public static function linePlus(x1:Float, y1:Float, x2:Float, y2:Float, color:Int = 0xFF000000, alpha:Float = 1, thick:Float = 1):Void
 	{
+		if (useCamera) {
+			x1 += _camera.x;
+			y1 += _camera.y;
+			x2 += _camera.x;
+			y2 += _camera.y;
+		}
+		
 		_graphics.clear();
 		_graphics.lineStyle(thick, color, alpha, false, LineScaleMode.NONE);
-		_graphics.moveTo(x1 - _camera.x, y1 - _camera.y);
-		_graphics.lineTo(x2 - _camera.x, y2 - _camera.y);
+		_graphics.moveTo(x1, y1);
+		_graphics.lineTo(x2, y2);
 		_target.draw(HP.sprite, null, null, blend);
 	}
 	
@@ -302,8 +332,8 @@ class Draw
 
 	/**
 	 * Draws an ellipse to the screen.
-	 * @param	x		X position of the ellipse's center.
-	 * @param	y		Y position of the ellipse's center.
+	 * @param	x			X position of the ellipse's center.
+	 * @param	y			Y position of the ellipse's center.
 	 * @param	width		Width of the ellipse.
 	 * @param	height		Height of the ellipse.
 	 * @param	color		Color of the ellipse.
@@ -450,6 +480,277 @@ class Draw
 		textGfx.render(_target, HP.zero, _camera);
 	}
 	
+	/**
+	 * Draws a tiny centered at x, y.
+	 * @param	x			The point's x.
+	 * @param	y			The point's y.
+	 * @param	color		Color of the rectangle.
+	 * @param	alpha		Alpha of the rectangle.
+	 * @param	size		Size of the rectangle.
+	 */
+	public static function dot(x:Float, y:Float, color:Int=0xFFFFFF, alpha:Float = 1, size:Float = 3):Void 
+	{
+		if (useCamera) {
+			x += _camera.x;
+			y += _camera.y;
+		}
+		var halfSize:Float = size / 2;
+		Draw.rectPlus(x - halfSize, y - halfSize, size, size, color, alpha, false);
+	}
+
+	/**
+	 * Draws a smooth, antialiased line with an arrow head at the ending point.
+	 * @param	x1			Starting x position.
+	 * @param	y1			Starting y position.
+	 * @param	x2			Ending x position.
+	 * @param	y2			Ending y position.
+	 * @param	color		Color of the line.
+	 * @param	alpha		Alpha of the line.
+	 */
+	public static function arrow(x1:Float, y1:Float, x2:Float, y2:Float, color:Int=0xFFFFFF, alpha:Float = 1):Void 
+	{
+		if (useCamera) {
+			x1 -= _camera.x;
+			y1 -= _camera.y;
+			x2 -= _camera.x;
+			y2 -= _camera.y;
+		}
+		
+		var lineAngleRad:Float = HP.angle(x1, y1, x2, y2) * HP.RAD;
+		var dx:Float = x2 - x1;
+		var dy:Float = y2 - y1;
+		var len:Float = Math.sqrt(dx * dx + dy * dy);
+		if (len == 0) return;
+		
+		var arrowStartX:Float = (len-5) * Math.cos(lineAngleRad);
+		var arrowStartY:Float = (len-5) * Math.sin(lineAngleRad);
+		HP.point.x = -dy;
+		HP.point.y = dx;
+		HP.point.normalize(1);
+		
+		Draw.linePlus(x1, y1, x2, y2, color, alpha);
+		Draw.linePlus(x1 + arrowStartX + HP.point.x * 3, y1 + arrowStartY + HP.point.y * 3, x2, y2, color, alpha);
+		Draw.linePlus(x1 + arrowStartX - HP.point.x * 3, y1 + arrowStartY - HP.point.y * 3, x2, y2, color, alpha);
+	}
+	
+	/**
+	 * Draws a smooth, antialiased line with optional arrow heads at the start and end point.
+	 * @param	x1				Starting x position.
+	 * @param	y1				Starting y position.
+	 * @param	x2				Ending x position.
+	 * @param	y2				Ending y position.
+	 * @param	color			Color of the line.
+	 * @param	alpha			Alpha of the line.
+	 * @param	thick			Thickness of the line.
+	 * @param	arrowAngleRad	Angle (in rad) between the line and the arm of the arrow heads (defaults to Math.Pi / 6).
+	 * @param	arrowLength		Pixel length of each arm of the arrow heads.
+	 * @param	arrowAtStart		Whether or not to draw and arrow head over the starting point.
+	 * @param	arrowAtEnd		Whether or not to draw and arrow head over the ending point.
+	 */
+	public static function arrowPlus(x1:Float, y1:Float, x2:Float, y2:Float, color:Int = 0xFFFFFF, alpha:Float = 1, thick:Float = 1, arrowAngleRad:Float=0.5235987755 /* Math.PI / 6 */, arrowLength:Float=6, arrowAtStart:Bool = false, arrowAtEnd:Bool = true):Void
+	{
+		if (useCamera) {
+			x1 += _camera.x;
+			y1 += _camera.y;
+			x2 += _camera.x;
+			y2 += _camera.y;
+		}
+
+		if (color > 0xFFFFFF) color = 0xFFFFFF & color;
+		_graphics.clear();
+		
+		_graphics.lineStyle(thick, color, alpha, false, LineScaleMode.NORMAL, null, JointStyle.MITER);
+		
+		linePlus(x1, y1, x2, y2, color, alpha, thick);
+		
+		var dir:Point = HP.point;
+		var normal:Point = HP.point2;
+		
+		dir.x = x2 - x1;
+		dir.y = y2 - y1;
+		normal.x = -dir.y;
+		normal.y = dir.x;
+		dir.normalize(1);
+		normal.normalize(1);
+		
+		var orthoLen:Float = arrowLength * Math.sin(arrowAngleRad);
+		var paralLen:Float = arrowLength * Math.cos(arrowAngleRad);
+		
+		if (arrowAtStart) {
+			linePlus(x1 + paralLen * dir.x + orthoLen * normal.x, y1 + paralLen * dir.y + orthoLen * normal.y, x1, y1, color, alpha, thick);
+			linePlus(x1 + paralLen * dir.x - orthoLen * normal.x, y1 + paralLen * dir.y - orthoLen * normal.y, x1, y1, color, alpha, thick);
+		}
+		
+		if (arrowAtEnd) {
+			linePlus(x2 - paralLen * dir.x + orthoLen * normal.x, y2 - paralLen * dir.y + orthoLen * normal.y, x2, y2, color, alpha, thick);
+			linePlus(x2 - paralLen * dir.x - orthoLen * normal.x, y2 - paralLen * dir.y - orthoLen * normal.y, x2, y2, color, alpha, thick);
+		}
+	}
+	
+	/**
+	 * Draws a circular arc (using lines) with an optional arrow head at the end point.
+	 * @param	centerX			Center x of the arc.
+	 * @param	centerY			Center y of the arc.
+	 * @param	radius			Radius of the arc.
+	 * @param	startAngleRad	Starting angle (in rad) of the arc.
+	 * @param	endAngleRad		Ending angle (in rad) of the arc.
+	 * @param	color			Color of the arc.
+	 * @param	alpha			Alpha of the arc.
+	 * @param	drawArrow		Whether or not to draw an arrow head over the ending point.
+	 */
+	public static function arc(centerX:Float, centerY:Float, radius:Float, startAngleRad:Float, endAngleRad:Float, color:Int = 0xFFFFFF, alpha:Float = 1, drawArrow:Bool = false):Void 
+	{
+		if (useCamera) {
+			centerX -= _camera.x;
+			centerY -= _camera.y;
+		}
+		
+		var totalArcSpan:Float = Math.abs(endAngleRad - startAngleRad);
+		if (totalArcSpan > 2 * Math.PI) startAngleRad = endAngleRad -HP.sign(startAngleRad - endAngleRad) * 2 * Math.PI;
+
+		var steps:Int = Std.int(Math.abs(endAngleRad - startAngleRad) * 10);
+		steps = steps > 0 ? steps : 1;
+		var angleStep:Float = (endAngleRad - startAngleRad) / steps;
+		
+		var x1:Float = centerX + Math.cos(startAngleRad) * radius;
+		var y1:Float = centerY + Math.sin(startAngleRad) * radius;
+		var x2:Float;
+		var y2:Float;
+		
+		for (i in 0...steps) {
+			var angle:Float = startAngleRad + (i+1) * angleStep;
+			x2 = centerX + Math.cos(angle) * radius;
+			y2 = centerY + Math.sin(angle) * radius;
+			if (i == (steps-1) && drawArrow)
+				arrow(x1, y1, x2, y2, color, alpha);
+			else
+				Draw.linePlus(x1, y1, x2, y2, color, alpha);
+			x1 = x2;
+			y1 = y2;
+		}
+	}
+	
+	/**
+	 * Draws a circular arc (using bezier curves) with an optional arrow head on the end point and other optional values.
+	 * @param	centerX			Center x of the arc.
+	 * @param	centerY			Center y of the arc.
+	 * @param	radius			Radius of the arc.
+	 * @param	startAngleRad	Starting angle (in rad) of the arc.
+	 * @param	endAngleRad		Ending angle (in rad) of the arc.
+	 * @param	color			Color of the arc.
+	 * @param	alpha			Alpha of the arc.
+	 * @param	fill			If the arc should be filled with the color (true) or just an outline (false).
+	 * @param	thick			Thickness of the outline (only applicable when fill = false).
+	 * @param	drawArrow		Whether or not to draw an arrow head over the ending point.
+	 */
+	public static function arcPlus(centerX:Float, centerY:Float, radius:Float, startAngleRad:Float, endAngleRad:Float, color:UInt = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1, drawArrow:Bool = false):Void
+	{
+		if (useCamera) {
+			centerX += _camera.x;
+			centerY += _camera.y;
+		}
+		
+		if (color > 0xFFFFFF) color = 0xFFFFFF & color;
+		_graphics.clear();
+		
+		var totalArcSpan:Float = Math.abs(endAngleRad - startAngleRad);
+		if (totalArcSpan > 2 * Math.PI) startAngleRad = endAngleRad -HP.sign(endAngleRad - startAngleRad) * 2 * Math.PI;
+		totalArcSpan = Math.abs(endAngleRad - startAngleRad);
+		
+		var steps:Int = Std.int(Math.floor(totalArcSpan / (Math.PI / 4)) + 1);
+		var angleStep:Float = (endAngleRad-startAngleRad) / (2 * steps);
+		var controlRadius:Float = radius / Math.cos(angleStep);
+
+		var startX:Float = centerX + Math.cos(startAngleRad) * radius;
+		var startY:Float = centerY + Math.sin(startAngleRad) * radius;
+		
+		if (fill) {
+			_graphics.beginFill(color, alpha);
+			_graphics.moveTo(centerX, centerY);
+			_graphics.lineTo(startX, startY);
+		} else {
+			_graphics.lineStyle(thick, color, alpha, false, LineScaleMode.NORMAL, null, JointStyle.MITER);
+			_graphics.moveTo(startX, startY);
+		}
+
+		var controlPoint:Point = HP.point;
+		var anchorPoint:Point = HP.point2;
+
+		for (i in 0...steps)
+		{
+			endAngleRad = startAngleRad + angleStep;
+			startAngleRad = endAngleRad + angleStep;
+			
+			controlPoint.x = centerX + Math.cos(endAngleRad) * controlRadius;
+			controlPoint.y = centerY + Math.sin(endAngleRad) * controlRadius;
+			
+			anchorPoint.x = centerX + Math.cos(startAngleRad) * radius;
+			anchorPoint.y = centerY + Math.sin(startAngleRad) * radius;
+			
+			_graphics.curveTo(controlPoint.x, controlPoint.y, anchorPoint.x, anchorPoint.y);
+		}
+		
+		if (fill) _graphics.lineTo(centerX, centerY);
+		
+		HP.matrix.identity();
+		HP.matrix.translate(-_camera.x, -_camera.y);
+		_target.draw(HP.sprite, HP.matrix, null, blend);
+		
+		if (drawArrow) {
+			HP.point.x = anchorPoint.x - centerX;
+			HP.point.y = anchorPoint.y - centerY;
+			HP.point.normalize(1);
+			Draw.arrowPlus(anchorPoint.x + HP.sign(angleStep) * HP.point.y, anchorPoint.y - HP.sign(angleStep) * HP.point.x, anchorPoint.x, anchorPoint.y, color, alpha, thick);
+		}
+	}
+		
+	/**
+	 * Draws a rotated rectangle (with optional pivot point).
+	 * @param	x			X position of the rectangle.
+	 * @param	y			Y position of the rectangle.
+	 * @param	width		Width of the rectangle.
+	 * @param	height		Height of the rectangle.
+	 * @param	color		Color of the rectangle.
+	 * @param	alpha		Alpha of the rectangle.
+	 * @param	fill		If the rectangle should be filled with the color (true) or just an outline (false).
+	 * @param	thick		How thick the outline should be (only applicable when fill = false).
+	 * @param	radius		Round rectangle corners by this amount.
+	 * @param	angleRad	Rotation of the rectangle (in rad).
+	 * @param	pivotX		X position around which the rotation should be performed (defaults to 0).
+	 * @param	pivotX		Y position around which the rotation should be performed (defaults to 0).
+	 */
+	public static function rotatedRect(x:Float, y:Float, width:Float, height:Float, color:UInt = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1, radius:Float = 0, angleRad:Float=0, pivotX:Float=0, pivotY:Float=0):Void
+	{
+		if (useCamera) {
+			x += _camera.x;
+			y += _camera.y;
+		}
+		
+		if (color > 0xFFFFFF) color = 0xFFFFFF & color;
+		_graphics.clear();
+		
+		if (fill) {
+			_graphics.beginFill(color, alpha);
+		} else {
+			_graphics.lineStyle(thick, color, alpha, false, LineScaleMode.NORMAL, null, JointStyle.MITER);
+		}
+		
+		if (radius <= 0) {
+			_graphics.drawRect(0, 0, width, height);
+		} else {
+			_graphics.drawRoundRect(0, 0, width, height, radius);
+		}
+		
+		HP.matrix.identity();
+		HP.matrix.translate(-pivotX, -pivotY);
+		HP.matrix.rotate(angleRad);
+		//HP.matrix.translate(pivotX + x - _camera.x, pivotY + y - _camera.y);
+		HP.matrix.tx += -HP.matrix.tx + x - _camera.x;	// <= that -tx was the culprit here (and not -pivotX as I was assuming)
+		HP.matrix.ty += -HP.matrix.ty + y - _camera.y;	// <= that -ty was the culprit here (and not -pivotY as I was assuming)
+
+		_target.draw(HP.sprite, HP.matrix, null, blend);
+	}
+
 	public static function draw(source:IBitmapDrawable, ?matrix:Matrix, ?colorTransform:ColorTransform, ?blendMode:BlendMode, ?clipRect:Rectangle, smoothing:Bool = false):Void
 	{
 		return _target.draw(source, matrix, colorTransform, blendMode != null ? blendMode : blend, clipRect, smoothing);
@@ -485,6 +786,7 @@ class Draw
 	// Drawing information.
 	/** @private */ private static var _target:BitmapData;
 	/** @private */ private static var _camera:Point;
+	/** @private */ private static var _useCamera:Bool = true;
 	/** @private */ private static var _graphics:Graphics = HP.sprite.graphics;
 	/** @private */ private static var _rect:Rectangle = HP.rect;
 	
