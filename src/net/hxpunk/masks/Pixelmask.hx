@@ -35,7 +35,7 @@ class Pixelmask extends Hitbox
 		_point2 = HP.point2;
 
 		// fetch mask data
-		_data = HP.getBitmapData(source);
+		_data = HP.getBitmap(source);
 		if (_data == null) throw new Error("Invalid Pixelmask source image.");
 		
 		// set mask properties

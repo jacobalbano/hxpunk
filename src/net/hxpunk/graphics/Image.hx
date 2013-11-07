@@ -88,12 +88,12 @@ class Image extends Graphic
 		_matrix = HP.matrix;
 
 		// set the graphic
-		_source = HP.getBitmapData(source);
+		_source = HP.getBitmap(source);
 		if (Std.is(source, Class))
 			_class = Type.getClassName(source);
 		else if (Std.is(source, String)) 
 			_class = source;
-		if (_source == null) throw new Error("Image source must be of type BitmapData, String or Class.");
+		if (_source == null) throw new Error("Invalid source image.");
 		_sourceRect = _source.rect;
 		if (clipRect != null)
 		{

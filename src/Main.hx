@@ -49,7 +49,7 @@ import net.hxpunk.tweens.motion.LinearPath;
 import net.hxpunk.tweens.motion.CubicMotion;
 import net.hxpunk.tweens.motion.QuadMotion;
 import net.hxpunk.tweens.motion.QuadPath;
-import net.hxpunk.Sfx;
+
 
 
 /**
@@ -59,10 +59,6 @@ import net.hxpunk.Sfx;
 
 class Main extends Engine
 {
-	var BG_MUSIC_ID:String = #if flash "assets/theme.mp3" #else "assets/theme.ogg" #end;
-	
-	var bgMusic:Sfx;
-	
 	var t:TiledImage;
 	
 	private var e:Entity;
@@ -163,10 +159,6 @@ class Main extends Engine
 		
 		
 		HP.log("WASD - camera | ARROWS - ball | SHIFT + ARROWS - grid");
-		
-		bgMusic = new Sfx(BG_MUSIC_ID, null, "bg_music");
-		
-		bgMusic.loop();
     }
 	
 	override public function update():Void 
@@ -214,14 +206,11 @@ class Main extends Engine
 		pixelMask.y = -pixelMask.height >> 1;
 		pixelMask.threshold = 90;
 		
-		preRotation.originX = 20;
-		preRotation.originY = 20;
-		
 		Draw.enqueueCall(function ():Void 
 		{
-			Draw.hitbox(box, true, 0xFF0000);
-			Draw.hitbox(e, true, 0xFF0000);
-			
+				Draw.hitbox(box, true, 0xFF0000);
+				Draw.hitbox(e, true, 0xFF0000);
+				
 		});
 		if (box.collideWith(e, box.x, box.y) != null) {
 			preRotation.color = 0xFF0000;
@@ -262,6 +251,21 @@ class Main extends Engine
 	{
 		super.render();
 		
+		if (Input.check(Key.C)) Draw.setTarget(HP.buffer);
+		else Draw.resetTarget();
+		/*
+		Draw.blend = BlendMode.ADD;
+		Draw.rect(0, 0, 100, 100, 0x00FF00);
+		Draw.rect(0, 0, 100, 100, 0xFF0000);
+		Draw.blend = BlendMode.NORMAL;
+		*/
+		Draw.dot(e.x, e.y, 0xFF, .4, 3);
+		Draw.arc(e.x, e.y, 50, 0, 180, 0xFF0000, .5, true);
+		Draw.arrow(HP.width, HP.height, HP.halfWidth, HP.halfHeight);
+		Draw.rotatedRect(e.x, e.y, 100, 60, 0xFFFFFF, .75, true, 1, 0, 0, 20, 20);
+		Draw.arcPlus(e.x, e.y, 60, 180, 360, 0xFF00FF, .5, true, 1, true);
+		Draw.arrowPlus(20, 50, HP.width - 20, 50, 0xFF0000, .7, 3, 90, 16, true, true);
+		//Draw.line(HP.halfWidth, HP.halfHeight, HP.width, HP.height);
 	}
 	
 	public function onKeyDown(e:KeyboardEvent):Void 

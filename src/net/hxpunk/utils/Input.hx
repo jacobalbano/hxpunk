@@ -66,7 +66,7 @@ class Input
 			_press.push(0);
 			_release.push(0);
 		}
-		_control = new Map <String, Array<Int>> ();
+		_control = new Map < String, Array<Int> > ();
 	
 		return true;
 	}

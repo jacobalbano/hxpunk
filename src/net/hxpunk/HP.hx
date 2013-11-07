@@ -7,7 +7,6 @@ import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.Lib;
-import flash.media.Sound;
 #if flash
 import flash.media.SoundMixer;
 #end
@@ -146,9 +145,6 @@ class HP
 
 		// Bitmap storage.
 		_bitmap = new Map<String, BitmapData>();
-		
-		// Sound storage.
-		_sound = new Map<String, Sound>();
 		
 		// Volume control.
 		_soundTransform = new SoundTransform();
@@ -834,28 +830,28 @@ class HP
 	 * @param	source		Asset file or embedded Bitmap class.
 	 * @return	The stored BitmapData object.
 	 */
-	public static function getBitmapData(source:Dynamic):BitmapData
-	{
-		var data:BitmapData = null;
-		var name:String = Std.string(source);
-		
-		if (_bitmap.exists(name)) {
-			return _bitmap.get(name);
-		} else if (Std.is(source, BitmapData)) {
-			return source;
-		} 
-		
-		if (Std.is(source, Class)) {
-			data = Type.createInstance(source, []);
-		} else { 
-			data = Assets.getBitmapData(source);
-		}
-		
-		if (data != null)
-			_bitmap.set(name, data);
-
-		return data;
+public static function getBitmap(source:Dynamic):BitmapData
+{
+	var data:BitmapData = null;
+	var name:String = Std.string(source);
+	
+	if (_bitmap.exists(name)) {
+		return _bitmap.get(name);
+	} else if (Std.is(source, BitmapData)) {
+		return source;
+	} 
+	
+	if (Std.is(source, Class)) {
+		data = Type.createInstance(source, []);
+	} else { 
+		data = Assets.getBitmapData(source);
 	}
+	
+	if (data != null)
+		_bitmap.set(name, data);
+
+	return data;
+}
 	
 	/**
 	 * Clears the cache of BitmapData objects used by the getBitmap method.
@@ -863,34 +859,6 @@ class HP
 	public static inline function clearBitmapCache():Void
 	{
 		_bitmap = new Map<String, BitmapData>();
-	}
-	
-	/**
-	 * Fetches a stored Sound object represented by the source.
-	 * @param	source		Asset file or embedded Sound class.
-	 * @return	The stored Sound object.
-	 */
-	public static function getSound(source:Dynamic):Sound
-	{
-		var data:Sound = null;
-		var name:String = Std.string(source);
-		
-		if (_sound.exists(name)) {
-			return _sound.get(name);
-		} else if (Std.is(source, Sound)) {
-			return source;
-		} 
-		
-		if (Std.is(source, Class)) {
-			data = Type.createInstance(source, []);
-		} else { 
-			data = Assets.getSound(source);
-		}
-		
-		if (data != null)
-			_sound.set(name, data);
-
-		return data;
 	}
 	
 	/**
@@ -969,7 +937,7 @@ class HP
 	 * @param	file		The embedded file to load.
 	 * @return	An XML object representing the file.
 	 */
-	public static function getXML(file:Class<ByteArray>):Xml
+	public static inline function getXML(file:Class<ByteArray>):Xml
 	{
 		var bytes:ByteArray = Type.createInstance(file, []);
 		return cast(bytes.readUTFBytes(bytes.length), Xml);
@@ -1213,9 +1181,6 @@ class HP
 	
 	// Bitmap storage.
 	/** @private */ private static var _bitmap:Map<String, BitmapData>;
-	
-	// Sound storage.
-	/** @private */ private static var _sound:Map<String, Sound>;
 	
 	// Pseudo-random number generation (the seed is set in Engine's constructor).
 	/** @private */ private static var _seed:Int = 0;
