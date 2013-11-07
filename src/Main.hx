@@ -264,7 +264,7 @@ class Main extends Engine
 	
 	public function onKeyDown(e:KeyboardEvent):Void 
 	{
-		HP.log(e.charCode, Input.lastKey, e.keyCode);
+		//trace("Keys:", e.charCode, Input.lastKey, e.keyCode);
 	}
 	
     public static function main() { 
