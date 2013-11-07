@@ -180,8 +180,7 @@ class Text extends Image
 			format = new TextFormat();
 			
 			for (key in Reflect.fields(params)) {
-				trace(key, Reflect.hasField(format, key));
-				try {	//if (Reflect.hasField(format, key)) {
+				try {	// if (Reflect.hasField(format, key)) seems to not work in this case
 					Reflect.setProperty(format, key, Reflect.getProperty(params, key));
 				} catch (e:Error) {
 					throw new Error('"' + key + '" is not a TextFormat property');

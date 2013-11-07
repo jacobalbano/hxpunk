@@ -1,12 +1,12 @@
 ﻿package net.hxpunk.masks;
 
-import flash.display.*;
 import flash.display.BitmapData;
 import flash.display.Graphics;
 import flash.errors.Error;
+import flash.geom.ColorTransform;
+import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-import net.hxpunk.*;
 import net.hxpunk.HP;
 import net.hxpunk.Mask;
 
@@ -249,8 +249,8 @@ class Grid extends Hitbox
 	/** @private Collides against a Pixelmask. */
 	private function collidePixelmask(other:Pixelmask):Bool
 	{
-		var x1:Int = Std.int(other.parent.x + other._x - parent.x - _x - other.parent.originX),
-			y1:Int = Std.int(other.parent.y + other._y - parent.y - _y - other.parent.originY),
+		var x1:Int = Std.int(other.parent.x + other._x - parent.x - _x - other.parent.originX - other.x + parent.originX),
+			y1:Int = Std.int(other.parent.y + other._y - parent.y - _y - other.parent.originY - other.y + parent.originY),
 			x2:Int = Std.int((x1 + other._width - 1) / _tile.width),
 			y2:Int = Std.int((y1 + other._height - 1) / _tile.height);
 		_point.x = x1;
@@ -349,6 +349,7 @@ class Grid extends Hitbox
 			var ar2:Int = Std.int(((y - parent.y - _y) + (th - 1)) / _tile.height);
 			var br2:Int = Std.int(((y - other.parent.y - other._y) + (th - 1)) / other._tile.height);
 			
+			x = ox1;
 			while (x < ox2) {
 				// Get the column indices for the left and right edges of the tile
 				var ac1:Int = Std.int((x - parent.x - _x) / _tile.width);

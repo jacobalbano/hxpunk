@@ -70,6 +70,7 @@ class Main extends Engine
 
 	var _point:Point;
 	var _rect:Rectangle;
+	var gridEntity2:Entity;
 	
     public function new() {
         super(320, 240, 60, false);
@@ -79,7 +80,9 @@ class Main extends Engine
         super.init();
 		HP.screen.scale = 2;
         HP.console.enable();
-		HP.watch("right");
+		HP.watch("name");
+		HP.watch("originX");
+		HP.watch("originY");
 		
 		trace(HP.NAME + " is running!");
 		
@@ -94,6 +97,7 @@ class Main extends Engine
 		e = new Entity(0, 0, img);
 		HP.world.add(e, HP.halfWidth, HP.halfHeight);
 		e.name = "Ball";
+		e.type = "solid";
 		//e.setHitboxTo(img);
 		e.mask = new Pixelmask("assets/obstacle.png");
 		cast(e.mask, Pixelmask).threshold = 100;
@@ -128,9 +132,10 @@ class Main extends Engine
 		_point = new Point();
 		_rect = new Rectangle();
 		
-		box.centerOrigin();
+		//box.centerOrigin();
 		HP.world.add(box, 250, 120);
 		box.name = "Box";
+		box.type = "pixelmask";
 		
 		HP.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		
@@ -142,6 +147,18 @@ class Main extends Engine
 		"0,0,0,0,0,0,1\n";
 		gridMask.loadFromString(gridStr);
 		HP.world.addMask(gridMask, "solid", 0, 120);
+		
+		var gridMask2:Grid = new Grid(140, 80, 20, 20);
+		var gridStr2 = 
+		"1,0,0,0,0,0,0\n" +
+		"0,0,0,0,0,0,0\n" +
+		"0,0,0,0,0,0,0\n" +
+		"0,0,0,0,0,0,0\n";
+		gridMask2.loadFromString(gridStr2);
+		gridEntity2 = HP.world.addMask(gridMask2, "solid", 150, 150);
+		
+		
+		HP.log("WASD - camera | ARROWS - ball | SHIFT + ARROWS - grid");
     }
 	
 	override public function update():Void 
@@ -160,8 +177,12 @@ class Main extends Engine
 			dx += Input.check(Key.LEFT) ? -1 : Input.check(Key.RIGHT) ? 1 : 0;
 			dy += Input.check(Key.UP) ? -1 : Input.check(Key.DOWN) ? 1 : 0;
 		}
-		e.x += dx * 2;
-		e.y += dy * 2;
+		
+		if (Input.check(Key.SHIFT)) {
+			gridEntity2.moveBy(dx * 2, dy * 2, ["solid", "pixelmask"], true);
+		} else {
+			e.moveBy(dx * 2, dy * 2, ["solid"], true);
+		}
 		
 		// scale and rotate Entity
 		var img:Image = cast e.graphic;
@@ -230,10 +251,15 @@ class Main extends Engine
 	{
 		super.render();
 		
+		/*
 		Draw.blend = BlendMode.ADD;
 		Draw.rect(0, 0, 100, 100, 0x00FF00);
 		Draw.rect(0, 0, 100, 100, 0xFF0000);
 		Draw.blend = BlendMode.NORMAL;
+		*/
+		Draw.useCamera = false;
+		Draw.arc(e.x, e.y, 50, 0, 3.14, 0xFF0000, .5, true);
+		//Draw.line(HP.halfWidth, HP.halfHeight, HP.width, HP.height);
 	}
 	
 	public function onKeyDown(e:KeyboardEvent):Void 

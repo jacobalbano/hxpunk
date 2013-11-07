@@ -181,6 +181,9 @@ class Mask
 				}
 				if (hit) break;
 			}
+			
+			pixelsA = null;
+			pixelsB = null;
 		}
 		
 		return hit;

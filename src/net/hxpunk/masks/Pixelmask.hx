@@ -135,11 +135,11 @@ class Pixelmask extends Hitbox
 		
 		_debug.fillRect(HP.rect, 0x0);
 		
-	#if !flash
+	#if flash
 		_debug.threshold(_data, HP.rect, HP.zero, ">=", threshold << 24, 0x40FFFFFF, 0xFF000000);
 	#else
-		/* will not take the alpha threshold into consideration */
-		_debug.draw(_data, null, new ColorTransform(1, 1, 1, 0, 0, 0, 0, (256 - threshold) / 2));
+		/* will not take the alpha threshold into consideration in the debug view (just show the bitmapdata)*/
+		_debug.draw(_data, null, new ColorTransform(1, 1, 1, 0, 0, 0, 0, 0x20));
 	#end
 	
 		var sx:Float = HP.screen.scaleX * HP.screen.scale;
@@ -160,7 +160,6 @@ class Pixelmask extends Hitbox
 	
 	// Pixelmask information.
 	/** @private */ private var _threshold:Int = 1;
-	/** @private */ private var _bits:Array<Int>;
 	/** @private */ private var _data:BitmapData;
 	/** @private */ private var _debug:BitmapData;
 	
