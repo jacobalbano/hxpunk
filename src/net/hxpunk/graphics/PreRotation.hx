@@ -68,6 +68,8 @@ class PreRotation extends Image
 				o:Int = Std.int(_frame.width) >> 1,
 				x:Int = 0,
 				y:Int = 0;
+			_sourceWidth = temp.width;
+			_sourceHeight = temp.height;
 			while (y < height)
 			{
 				while (x < width)
@@ -84,6 +86,8 @@ class PreRotation extends Image
 				y += Std.int(_frame.height);
 			}
 		}
+		_prevOriginX = Math.POSITIVE_INFINITY;
+		_prevOriginY = Math.POSITIVE_INFINITY;
 		_source = r;
 		_width = r.width;
 		_frameCount = frameCount;
@@ -107,17 +111,68 @@ class PreRotation extends Image
 			_frame.x %= _width;
 			updateBuffer();
 		}
+
+		// If the origin has changed then we need to recalculate
+		if (_prevOriginX != originX || _prevOriginY != originY) {
+			_prevOriginX = originX; _prevOriginY = originY;
+			recalcOriginOffsets();
+		}
+		
+		// Set the origins for the 'Image' to use
+		originX = _frameOrigins[_current].x;
+		originY = _frameOrigins[_current].y;
 		angle = 0;
+		
 		super.render(target, point, camera);
+
+		// Change them back
 		angle = _angle;
+		originX = _prevOriginX;
+		originY = _prevOriginY;
 	}
 	
+	/** @private Recalculates the offsets for each frame. */
+	private function recalcOriginOffsets():Void
+	{
+		if (_frameOrigins == null) {
+			_frameOrigins = new Array<Point>();
+			_frameOrigins[_frameCount - 1] = null;
+		}
+		var angle:Float = 0, 
+			deltaAngle:Float = (Math.PI * 2) / -_frameCount;
+		var m:Matrix = HP.matrix, 
+			p:Point = HP.point;
+		p.x = _frame.width * 0.5 - _sourceWidth * 0.5 + originX - _frame.width * 0.5;
+		p.y = _frame.height * 0.5 - _sourceHeight * 0.5 + originY - _frame.height * 0.5;
+		for (i in 0..._frameCount) {
+			m.identity();
+			m.rotate(angle);
+			m.translate(_frame.width * 0.5, _frame.height * 0.5);
+			
+			_frameOrigins[i] = m.transformPoint(p);
+			angle += deltaAngle;
+		}
+	}
+	
+	/**
+	 * Centers the Image's originX/Y to its center.
+	 */
+	override public function centerOrigin():Void {
+			originX = _sourceWidth * 0.5;
+			originY = _sourceHeight * 0.5;
+	}
+
 	// Rotation information.
 	/** @private */ private var _width:Int = 0;
 	/** @private */ private var _frame:Rectangle;
 	/** @private */ private var _frameCount:Int = 0;
 	/** @private */ private var _last:Int = -1;
 	/** @private */ private var _current:Int = -1;
+    /** @private */ private var _sourceWidth:Float;
+    /** @private */ private var _sourceHeight:Float;
+    /** @private */ private var _prevOriginX:Float;
+    /** @private */ private var _prevOriginY:Float;
+    /** @private */ private var _frameOrigins:Array<Point>;
 	
 	// Global information.
 	/** @private */ private static var _rotated:Map<String, BitmapData>;
