@@ -49,7 +49,7 @@ class PreRotation extends Image
 		if (r == null)
 		{
 			// produce a rotated bitmap strip
-			var temp:BitmapData = HP.getBitmap(source),
+			var temp:BitmapData = HP.getBitmapData(source),
 				size:Int = _size[name] = Math.ceil(HP.distance(0, 0, temp.width, temp.height));
 			_frame.width = _frame.height = size;
 			var width:Int = Std.int(_frame.width * frameCount),

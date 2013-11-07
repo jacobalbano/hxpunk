@@ -44,7 +44,7 @@ class Emitter extends Graphic
 	 */
 	public function setSource(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0):Void
 	{
-		_source = HP.getBitmap(source);
+		_source = HP.getBitmapData(source);
 		if (_source == null) throw new Error("Invalid source image.");
 		_width = _source.width;
 		_height = _source.height;

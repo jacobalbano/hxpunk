@@ -19,7 +19,7 @@ class Backdrop extends Canvas
 	 */
 	override public function new(texture:Dynamic, repeatX:Bool = true, repeatY:Bool = true) 
 	{
-		_texture = HP.getBitmap(texture);
+		_texture = HP.getBitmapData(texture);
 		if (_texture == null) _texture = new BitmapData(HP.width, HP.height, true, 0);
 		
 		_repeatX = repeatX;

@@ -453,13 +453,6 @@ class Draw
 		textGfx.render(_target, HP.zero, _camera);
 	}
 	
-	public static function mask(mask:Mask):Void 
-	{
-		_graphics.clear();
-		mask.renderDebug(_graphics);
-		_target.draw(HP.sprite, null, null, blend);
-	}
-	
 	/**
 	 * Draws a tiny rectangle centered at x, y.
 	 * @param	x			The point's x.
