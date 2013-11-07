@@ -16,6 +16,7 @@ import net.hxpunk.Entity;
 import net.hxpunk.Graphic;
 import net.hxpunk.graphics.Text;
 import net.hxpunk.HP;
+import net.hxpunk.Mask;
 
 /**
  * Static class with access to miscellaneous drawing functions.
@@ -32,28 +33,14 @@ class Draw
 	public static var blend:BlendMode;
 	
 	/**
-	 * Whether to account for camera position in drawing.
-	 * Reset to true in resetTarget().
-	 */
-	public static var useCamera(get, set):Bool;
-	private static inline function get_useCamera():Bool { return _useCamera; };
-	private static function set_useCamera(value:Bool):Bool 
-	{
-		if (_useCamera != value) {
-			_camera = HP.camera;
-		} 
-		return value;
-	}
-	
-	/**
 	 * Sets the drawing target for Draw functions.
-	 * @param	target		The buffer to draw to.
+	 * @param	target		The buffer to draw to (use null for HP.buffer).
 	 * @param	camera		The camera offset (use null for none).
 	 * @param	blend		The blend mode to use.
 	 */
-	public static function setTarget(target:BitmapData, camera:Point = null, blend:BlendMode = null):Void
+	public static function setTarget(target:BitmapData = null, camera:Point = null, blend:BlendMode = null):Void
 	{
-		_target = target;
+		_target = target != null ? target : HP.buffer;
 		_camera = camera != null ? camera : HP.zero;
 		Draw.blend = blend;
 	}
@@ -65,12 +52,11 @@ class Draw
 	{
 		_target = HP.buffer;
 		_camera = HP.camera;
-		_useCamera = true;
 		Draw.blend = null;
 	}
 	
 	/**
-	 * Draws a pixelated, non-antialiased line (using Bresenham's algorithm).
+	 * Draws a pixelated, non-antialiased line.
 	 * @param	x1				Starting x position.
 	 * @param	y1				Starting y position.
 	 * @param	x2				Ending x position.
@@ -81,18 +67,12 @@ class Draw
 	public static function line(x1:Float, y1:Float, x2:Float, y2:Float, color:Int = 0xFFFFFF, overwriteAlpha:Float = 1.0):Void
 	{
 		color = (Std.int(overwriteAlpha * 0xFF) << 24) | (color & 0xFFFFFF);
-		var _x1:Int = Std.int(x1);
-		var _y1:Int = Std.int(y1);
-		var _x2:Int = Std.int(x2);
-		var _y2:Int = Std.int(y2);
 		
 		// get the drawing positions
-		if (useCamera) {
-			_x1 += Std.int(_camera.x);
-			_y1 += Std.int(_camera.y);
-			_x2 += Std.int(_camera.x);
-			_y2 += Std.int(_camera.y);
-		}
+		var _x1:Int = Std.int(x1 - _camera.x);
+		var _y1:Int = Std.int(y1 - _camera.y);
+		var _x2:Int = Std.int(x2 - _camera.x);
+		var _y2:Int = Std.int(y2 - _camera.y);
 		
 		// get the drawing difference
 		var screen:BitmapData = _target,
@@ -186,17 +166,10 @@ class Draw
 	 */
 	public static function linePlus(x1:Float, y1:Float, x2:Float, y2:Float, color:Int = 0xFF000000, alpha:Float = 1, thick:Float = 1):Void
 	{
-		if (useCamera) {
-			x1 += _camera.x;
-			y1 += _camera.y;
-			x2 += _camera.x;
-			y2 += _camera.y;
-		}
-		
 		_graphics.clear();
 		_graphics.lineStyle(thick, color, alpha, false, LineScaleMode.NONE);
-		_graphics.moveTo(x1, y1);
-		_graphics.lineTo(x2, y2);
+		_graphics.moveTo(x1 - _camera.x, y1 - _camera.y);
+		_graphics.lineTo(x2 - _camera.x, y2 - _camera.y);
 		_target.draw(HP.sprite, null, null, blend);
 	}
 	
@@ -469,8 +442,8 @@ class Draw
 	/**
 	 * Draws text.
 	 * @param	text		The text to render.
-	 * @param	x		X position.
-	 * @param	y		Y position.
+	 * @param	x			X position.
+	 * @param	y			Y position.
 	 * @param	options		Options (see Text constructor).
 	 */
 	public static function text(text:String, x:Float = 0, y:Float = 0, options:Dynamic = null):Void
@@ -480,8 +453,15 @@ class Draw
 		textGfx.render(_target, HP.zero, _camera);
 	}
 	
+	public static function mask(mask:Mask):Void 
+	{
+		_graphics.clear();
+		mask.renderDebug(_graphics);
+		_target.draw(HP.sprite, null, null, blend);
+	}
+	
 	/**
-	 * Draws a tiny centered at x, y.
+	 * Draws a tiny rectangle centered at x, y.
 	 * @param	x			The point's x.
 	 * @param	y			The point's y.
 	 * @param	color		Color of the rectangle.
@@ -490,12 +470,11 @@ class Draw
 	 */
 	public static function dot(x:Float, y:Float, color:Int=0xFFFFFF, alpha:Float = 1, size:Float = 3):Void 
 	{
-		if (useCamera) {
-			x += _camera.x;
-			y += _camera.y;
-		}
+		x -= _camera.x;
+		y -= _camera.y;
+
 		var halfSize:Float = size / 2;
-		Draw.rectPlus(x - halfSize, y - halfSize, size, size, color, alpha, false);
+		Draw.rectPlus(x - halfSize + _camera.x, y - halfSize + _camera.y, size, size, color, alpha, false);
 	}
 
 	/**
@@ -509,13 +488,15 @@ class Draw
 	 */
 	public static function arrow(x1:Float, y1:Float, x2:Float, y2:Float, color:Int=0xFFFFFF, alpha:Float = 1):Void 
 	{
-		if (useCamera) {
-			x1 -= _camera.x;
-			y1 -= _camera.y;
-			x2 -= _camera.x;
-			y2 -= _camera.y;
-		}
+		x1 -= _camera.x;
+		y1 -= _camera.y;
+		x2 -= _camera.x;
+		y2 -= _camera.y;
 		
+		// temporarily set camera to zero, otherwise it will be reapplied in called functions
+		var _savedCamera:Point = _camera;
+		_camera = HP.zero;
+
 		var lineAngleRad:Float = HP.angle(x1, y1, x2, y2) * HP.RAD;
 		var dx:Float = x2 - x1;
 		var dy:Float = y2 - y1;
@@ -531,6 +512,9 @@ class Draw
 		Draw.linePlus(x1, y1, x2, y2, color, alpha);
 		Draw.linePlus(x1 + arrowStartX + HP.point.x * 3, y1 + arrowStartY + HP.point.y * 3, x2, y2, color, alpha);
 		Draw.linePlus(x1 + arrowStartX - HP.point.x * 3, y1 + arrowStartY - HP.point.y * 3, x2, y2, color, alpha);
+		
+		// restore camera
+		_camera = _savedCamera;
 	}
 	
 	/**
@@ -542,19 +526,21 @@ class Draw
 	 * @param	color			Color of the line.
 	 * @param	alpha			Alpha of the line.
 	 * @param	thick			Thickness of the line.
-	 * @param	arrowAngleRad	Angle (in rad) between the line and the arm of the arrow heads (defaults to Math.Pi / 6).
+	 * @param	arrowAngle		Angle (in degrees) between the line and the arm of the arrow heads (defaults to 30).
 	 * @param	arrowLength		Pixel length of each arm of the arrow heads.
-	 * @param	arrowAtStart		Whether or not to draw and arrow head over the starting point.
+	 * @param	arrowAtStart	Whether or not to draw and arrow head over the starting point.
 	 * @param	arrowAtEnd		Whether or not to draw and arrow head over the ending point.
 	 */
-	public static function arrowPlus(x1:Float, y1:Float, x2:Float, y2:Float, color:Int = 0xFFFFFF, alpha:Float = 1, thick:Float = 1, arrowAngleRad:Float=0.5235987755 /* Math.PI / 6 */, arrowLength:Float=6, arrowAtStart:Bool = false, arrowAtEnd:Bool = true):Void
+	public static function arrowPlus(x1:Float, y1:Float, x2:Float, y2:Float, color:Int = 0xFFFFFF, alpha:Float = 1, thick:Float = 1, arrowAngle:Float=30, arrowLength:Float=6, arrowAtStart:Bool = false, arrowAtEnd:Bool = true):Void
 	{
-		if (useCamera) {
-			x1 += _camera.x;
-			y1 += _camera.y;
-			x2 += _camera.x;
-			y2 += _camera.y;
-		}
+		x1 -= _camera.x;
+		y1 -= _camera.y;
+		x2 -= _camera.x;
+		y2 -= _camera.y;
+
+		// temporarily set camera to zero, otherwise it will be reapplied in called functions
+		var _savedCamera:Point = _camera;
+		_camera = HP.zero;
 
 		if (color > 0xFFFFFF) color = 0xFFFFFF & color;
 		_graphics.clear();
@@ -563,6 +549,7 @@ class Draw
 		
 		linePlus(x1, y1, x2, y2, color, alpha, thick);
 		
+		var arrowAngleRad:Float = arrowAngle * HP.RAD;
 		var dir:Point = HP.point;
 		var normal:Point = HP.point2;
 		
@@ -585,6 +572,9 @@ class Draw
 			linePlus(x2 - paralLen * dir.x + orthoLen * normal.x, y2 - paralLen * dir.y + orthoLen * normal.y, x2, y2, color, alpha, thick);
 			linePlus(x2 - paralLen * dir.x - orthoLen * normal.x, y2 - paralLen * dir.y - orthoLen * normal.y, x2, y2, color, alpha, thick);
 		}
+
+		// restore camera
+		_camera = _savedCamera;
 	}
 	
 	/**
@@ -592,19 +582,23 @@ class Draw
 	 * @param	centerX			Center x of the arc.
 	 * @param	centerY			Center y of the arc.
 	 * @param	radius			Radius of the arc.
-	 * @param	startAngleRad	Starting angle (in rad) of the arc.
-	 * @param	endAngleRad		Ending angle (in rad) of the arc.
+	 * @param	startAngle		Starting angle (in degrees) of the arc.
+	 * @param	endAngle		Ending angle (in degrees) of the arc.
 	 * @param	color			Color of the arc.
 	 * @param	alpha			Alpha of the arc.
 	 * @param	drawArrow		Whether or not to draw an arrow head over the ending point.
 	 */
-	public static function arc(centerX:Float, centerY:Float, radius:Float, startAngleRad:Float, endAngleRad:Float, color:Int = 0xFFFFFF, alpha:Float = 1, drawArrow:Bool = false):Void 
+	public static function arc(centerX:Float, centerY:Float, radius:Float, startAngle:Float, endAngle:Float, color:Int = 0xFFFFFF, alpha:Float = 1, drawArrow:Bool = false):Void 
 	{
-		if (useCamera) {
-			centerX -= _camera.x;
-			centerY -= _camera.y;
-		}
+		centerX -= _camera.x;
+		centerY -= _camera.y;
 		
+		// temporarily set camera to zero, otherwise it will be reapplied in called functions
+		var _savedCamera:Point = _camera;
+		_camera = HP.zero;
+
+		var startAngleRad:Float = startAngle * HP.RAD;
+		var endAngleRad:Float = endAngle * HP.RAD;
 		var totalArcSpan:Float = Math.abs(endAngleRad - startAngleRad);
 		if (totalArcSpan > 2 * Math.PI) startAngleRad = endAngleRad -HP.sign(startAngleRad - endAngleRad) * 2 * Math.PI;
 
@@ -628,6 +622,9 @@ class Draw
 			x1 = x2;
 			y1 = y2;
 		}
+
+		// restore camera
+		_camera = _savedCamera;
 	}
 	
 	/**
@@ -635,24 +632,28 @@ class Draw
 	 * @param	centerX			Center x of the arc.
 	 * @param	centerY			Center y of the arc.
 	 * @param	radius			Radius of the arc.
-	 * @param	startAngleRad	Starting angle (in rad) of the arc.
-	 * @param	endAngleRad		Ending angle (in rad) of the arc.
+	 * @param	startAngle		Starting angle (in degrees) of the arc.
+	 * @param	endAngle		Ending angle (in degrees) of the arc.
 	 * @param	color			Color of the arc.
 	 * @param	alpha			Alpha of the arc.
 	 * @param	fill			If the arc should be filled with the color (true) or just an outline (false).
 	 * @param	thick			Thickness of the outline (only applicable when fill = false).
 	 * @param	drawArrow		Whether or not to draw an arrow head over the ending point.
 	 */
-	public static function arcPlus(centerX:Float, centerY:Float, radius:Float, startAngleRad:Float, endAngleRad:Float, color:UInt = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1, drawArrow:Bool = false):Void
+	public static function arcPlus(centerX:Float, centerY:Float, radius:Float, startAngle:Float, endAngle:Float, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1, drawArrow:Bool = false):Void
 	{
-		if (useCamera) {
-			centerX += _camera.x;
-			centerY += _camera.y;
-		}
+		centerX -= _camera.x;
+		centerY -= _camera.y;
 		
+		// temporarily set camera to zero, otherwise it will be reapplied in called functions
+		var _savedCamera:Point = _camera;
+		_camera = HP.zero;
+
 		if (color > 0xFFFFFF) color = 0xFFFFFF & color;
 		_graphics.clear();
 		
+		var startAngleRad:Float = startAngle * HP.RAD;
+		var endAngleRad:Float = endAngle * HP.RAD;
 		var totalArcSpan:Float = Math.abs(endAngleRad - startAngleRad);
 		if (totalArcSpan > 2 * Math.PI) startAngleRad = endAngleRad -HP.sign(endAngleRad - startAngleRad) * 2 * Math.PI;
 		totalArcSpan = Math.abs(endAngleRad - startAngleRad);
@@ -702,6 +703,9 @@ class Draw
 			HP.point.normalize(1);
 			Draw.arrowPlus(anchorPoint.x + HP.sign(angleStep) * HP.point.y, anchorPoint.y - HP.sign(angleStep) * HP.point.x, anchorPoint.x, anchorPoint.y, color, alpha, thick);
 		}
+
+		// restore camera
+		_camera = _savedCamera;
 	}
 		
 	/**
@@ -715,16 +719,14 @@ class Draw
 	 * @param	fill		If the rectangle should be filled with the color (true) or just an outline (false).
 	 * @param	thick		How thick the outline should be (only applicable when fill = false).
 	 * @param	radius		Round rectangle corners by this amount.
-	 * @param	angleRad	Rotation of the rectangle (in rad).
+	 * @param	angle		Rotation of the rectangle (in degrees).
 	 * @param	pivotX		X position around which the rotation should be performed (defaults to 0).
-	 * @param	pivotX		Y position around which the rotation should be performed (defaults to 0).
+	 * @param	pivotY		Y position around which the rotation should be performed (defaults to 0).
 	 */
-	public static function rotatedRect(x:Float, y:Float, width:Float, height:Float, color:UInt = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1, radius:Float = 0, angleRad:Float=0, pivotX:Float=0, pivotY:Float=0):Void
+	public static function rotatedRect(x:Float, y:Float, width:Float, height:Float, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1, radius:Float = 0, angle:Float=0, pivotX:Float=0, pivotY:Float=0):Void
 	{
-		if (useCamera) {
-			x += _camera.x;
-			y += _camera.y;
-		}
+		x -= _camera.x;
+		y -= _camera.y;
 		
 		if (color > 0xFFFFFF) color = 0xFFFFFF & color;
 		_graphics.clear();
@@ -741,26 +743,62 @@ class Draw
 			_graphics.drawRoundRect(0, 0, width, height, radius);
 		}
 		
+		var angleRad:Float = angle * HP.RAD;
 		HP.matrix.identity();
 		HP.matrix.translate(-pivotX, -pivotY);
 		HP.matrix.rotate(angleRad);
-		//HP.matrix.translate(pivotX + x - _camera.x, pivotY + y - _camera.y);
-		HP.matrix.tx += -HP.matrix.tx + x - _camera.x;	// <= that -tx was the culprit here (and not -pivotX as I was assuming)
-		HP.matrix.ty += -HP.matrix.ty + y - _camera.y;	// <= that -ty was the culprit here (and not -pivotY as I was assuming)
+		HP.matrix.tx += x;
+		HP.matrix.ty += y;
 
 		_target.draw(HP.sprite, HP.matrix, null, blend);
 	}
 
+	/**
+	 * Draws the source display object onto the current target (doesn't use camera).
+	 * 
+	 * @see BitmapData.draw()
+	 * 
+	 * @param	source				The display object or BitmapData to draw onto the cuurent target.
+	 * @param	matrix				A Matrix object used to scale, rotate, or translate the coordinates of the bitmap.
+	 * @param	colorTransform		A ColorTransform object that you use to adjust the color values of the bitmap.
+	 * @param	blendMode			The blend mode to be applied to the resulting bitmap.
+	 * @param	clipRect			A Rectangle object that defines the area of the source object to draw.
+	 * @param	smoothing			Whether the source object has to be smoothed when scaled or rotated.
+	 */
 	public static function draw(source:IBitmapDrawable, ?matrix:Matrix, ?colorTransform:ColorTransform, ?blendMode:BlendMode, ?clipRect:Rectangle, smoothing:Bool = false):Void
 	{
 		return _target.draw(source, matrix, colorTransform, blendMode != null ? blendMode : blend, clipRect, smoothing);
 	}
 	
+	/**
+	 * Copies a rectangular area of a source image to a rectangular area of the same size at the destination point of the current target (doesn't use camera).
+	 * 
+	 * @see BitmapData.copyPixels()
+	 * 
+	 * @param	source				The input bitmap image from which to copy pixels.
+	 * @param	sourceRect			A rectangle that defines the area of the source image to use as input.
+	 * @param	destPoint			The destination point that represents the upper-left corner of the rectangular area where the new pixels are placed.
+	 * @param	alphaBitmapData		A secondary, alpha BitmapData object source.
+	 * @param	alphaPoint			The point in the alpha BitmapData object source that corresponds to the upper-left corner of the sourceRect parameter.
+	 * @param	mergeAlpha			To use the alpha channel, set the value to true. To copy pixels with no alpha channel, set the value to false.
+	 */
 	public static function copyPixels(source:BitmapData, ?sourceRect:Rectangle, ?destPoint:Point, ?alphaBitmapData:BitmapData, ?alphaPoint:Point, mergeAlpha:Bool = false) : Void
 	{
 		return _target.copyPixels(source, sourceRect != null ? sourceRect : source.rect, destPoint != null ? destPoint : HP.zero, alphaBitmapData, alphaPoint, mergeAlpha); 
 	}
 	
+	/**
+	 * Enqueues a call to a function to be executed at the end of the next render step. 
+	 * Useful to debug draw directly from the update step, rather than having to override the render method.
+	 * 
+	 * Ex.:
+	 * Draw.enqueueCall(function():Void {
+	 *     Draw.line(player.x, player.y, enemy.x, enemy.y);
+	 * });
+	 * 
+	 * 
+	 * @param	method		The function to be enqueued.
+	 */
 	public static function enqueueCall(method:Dynamic):Void
 	{
 		if (_callQueue == null) _callQueue = new Array<Dynamic>();
@@ -771,6 +809,9 @@ class Draw
 			throw new Error("[method] must be a function.");
 	}
 	
+	/**
+	 * Executes all the functions enqueued with Draw.enqueueCall() and clears the queue (called from World.render()).
+	 */
 	public static function renderCallQueue():Void 
 	{
 		if (_callQueue == null) return;
@@ -786,9 +827,7 @@ class Draw
 	// Drawing information.
 	/** @private */ private static var _target:BitmapData;
 	/** @private */ private static var _camera:Point;
-	/** @private */ private static var _useCamera:Bool = true;
 	/** @private */ private static var _graphics:Graphics = HP.sprite.graphics;
 	/** @private */ private static var _rect:Rectangle = HP.rect;
-	
-	private static var _callQueue:Array<Dynamic>;
+	/** @private */ private static var _callQueue:Array<Dynamic>;
 }

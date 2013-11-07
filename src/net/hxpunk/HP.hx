@@ -19,7 +19,18 @@ import net.hxpunk.tweens.misc.Alarm;
 import openfl.Assets;
 import net.hxpunk.Tween.TweenType;
 
-typedef PointLike = { var x:Dynamic; var y:Dynamic; }
+typedef PointLike = { 
+	var x:Dynamic; 
+	var y:Dynamic; 
+}
+
+typedef RectangleLike = { 
+	var x:Dynamic; 
+	var y:Dynamic; 
+	var width:Dynamic; 
+	var height:Dynamic; 
+}
+
 
 /**
  * Static catch-all class used to access global properties and functions.
