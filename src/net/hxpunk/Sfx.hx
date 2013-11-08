@@ -110,6 +110,11 @@ class Sfx
 			addPlaying();
 			_channel.addEventListener(Event.SOUND_COMPLETE, onComplete);
 		}
+	#if !flash
+		// take global volume and pan into account for nonflash targets
+		volume = _vol;
+		pan = _pan;
+	#end
 		_position = 0;
 	}
 	

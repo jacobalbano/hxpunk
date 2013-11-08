@@ -63,7 +63,7 @@ class Main extends Engine
 	var BG_MUSIC_ID:String = "BGMUSIC";
 	var bgMusic:Sfx;
 	
-	var SFX_WHIFF_ID:String = #if flash "assets/whiff.mp3" #else "assets/whiff.ogg" #end;
+	var SFX_WHIFF_ID:String = #if flash "assets/whiff.mp3" #else "assets/whiff.wav" #end;
 	var whiffSfx:Sfx;
 	
 	var t:TiledImage;
