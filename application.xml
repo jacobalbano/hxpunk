@@ -23,7 +23,16 @@
 	
 	<!-- assets -->
 	<icon path="assets/openfl.svg" />
-	<assets path="assets" include="*" />
+	<assets path="assets" include="*" exclude="*.mp3|*.wav|*.ogg" />
+	
+	<assets path="assets" if="flash">
+		<music path="theme.mp3" id="BGMUSIC" />
+		<sound path="whiff.mp3" id="assets/whiff.mp3" />
+	</assets>
+	<assets path="assets" unless="flash" >
+		<music path="theme.ogg" id="BGMUSIC" />
+		<sound path="whiff.ogg" id="assets/whiff.ogg" />
+	</assets>
 	
 	<!-- optimize output -->
 	<haxeflag name="-dce std" />

@@ -133,13 +133,13 @@ class Text extends Image
 		this.x = x;
 		this.y = y;
 		
-		if (options)
+		if (options != null)
 		{
 			for (property in Reflect.fields(options)) {
-				if (Reflect.hasField(this, property)) {
+				try {	// if (Reflect.hasField(this, property)) seems to not work in this case
 					Reflect.setProperty(this, property, Reflect.getProperty(options, property));
-				} else {
-					throw new Error('"' + property + '" is not a property of Text');
+				} catch (e:Error) {
+					throw new Error('"' + property + '" is not a property of Text.');
 				}
 			}
 		}
@@ -183,7 +183,7 @@ class Text extends Image
 				try {	// if (Reflect.hasField(format, key)) seems to not work in this case
 					Reflect.setProperty(format, key, Reflect.getProperty(params, key));
 				} catch (e:Error) {
-					throw new Error('"' + key + '" is not a TextFormat property');
+					throw new Error('"' + key + '" is not a TextFormat property.');
 				}
 			}
 		}

@@ -49,7 +49,8 @@ import net.hxpunk.tweens.motion.LinearPath;
 import net.hxpunk.tweens.motion.CubicMotion;
 import net.hxpunk.tweens.motion.QuadMotion;
 import net.hxpunk.tweens.motion.QuadPath;
-
+import flash.media.Sound;
+import net.hxpunk.Sfx;
 
 
 /**
@@ -59,6 +60,12 @@ import net.hxpunk.tweens.motion.QuadPath;
 
 class Main extends Engine
 {
+	var BG_MUSIC_ID:String = "BGMUSIC";
+	var bgMusic:Sfx;
+	
+	var SFX_WHIFF_ID:String = #if flash "assets/whiff.mp3" #else "assets/whiff.ogg" #end;
+	var whiffSfx:Sfx;
+	
 	var t:TiledImage;
 	
 	private var e:Entity;
@@ -108,7 +115,7 @@ class Main extends Engine
 		
 		for (i in 0...35) HP.log(i, [1, 2, 3]);
 		
-		HP.world.addGraphic(text = new Text("Ecciao!", 5, 30));
+		HP.world.addGraphic(text = new Text("Ecciao!", 5, 30, {color:0}));
 		
 		/*var g:Graphiclist = new Graphiclist();
 		g.add(e.graphic);
@@ -120,7 +127,7 @@ class Main extends Engine
 		text.setStyle("bah", { color: 0x343434 } );
 		text.richText = "font color=<bah>'#343434'</bah></font>";
 		
-		text.setTextProperty("color", 0xFFFFFF);
+		text.color = 0xFFF000;
 		
 		trace(Ease.fromPennerFormat(.5));
 		
@@ -159,6 +166,11 @@ class Main extends Engine
 		
 		
 		HP.log("WASD - camera | ARROWS - ball | SHIFT + ARROWS - grid");
+		
+		bgMusic = new Sfx(BG_MUSIC_ID, null, "bg_music");
+		
+		bgMusic.loop(1, 0);
+		whiffSfx = new Sfx(SFX_WHIFF_ID);
     }
 	
 	override public function update():Void 
@@ -206,11 +218,14 @@ class Main extends Engine
 		pixelMask.y = -pixelMask.height >> 1;
 		pixelMask.threshold = 90;
 		
+		preRotation.originX = 20;
+		preRotation.originY = 20;
+		
 		Draw.enqueueCall(function ():Void 
 		{
-				Draw.hitbox(box, true, 0xFF0000);
-				Draw.hitbox(e, true, 0xFF0000);
-				
+			Draw.hitbox(box, true, 0xFF0000);
+			Draw.hitbox(e, true, 0xFF0000);
+			
 		});
 		if (box.collideWith(e, box.x, box.y) != null) {
 			preRotation.color = 0xFF0000;
@@ -245,27 +260,27 @@ class Main extends Engine
 		if (Input.check(Key.W)) HP.camera.y -= 2; 
 		if (Input.check(Key.S)) HP.camera.y += 2; 
 		
+		if (Input.pressed(Key.Z)) {
+			new Sfx(SFX_WHIFF_ID).play();
+		}
+		
+		if (Input.pressed(Key.SPACE)) {
+			bgMusic.isPlaying ? bgMusic.stop() : bgMusic.resume();
+		}
+		
+		
+		if (Input.check(Key.I)) HP.volume += .05;
+		if (Input.check(Key.K)) HP.volume -= .05;
+		if (Input.check(Key.L)) HP.pan += .05;
+		if (Input.check(Key.J)) HP.pan -= .05;
+		
+		text.text = "v:" + HP.toFixed(HP.volume, 1) + " p:" + HP.toFixed(HP.pan, 1);
 	}
 	
 	override public function render():Void 
 	{
 		super.render();
 		
-		if (Input.check(Key.C)) Draw.setTarget(HP.buffer);
-		else Draw.resetTarget();
-		/*
-		Draw.blend = BlendMode.ADD;
-		Draw.rect(0, 0, 100, 100, 0x00FF00);
-		Draw.rect(0, 0, 100, 100, 0xFF0000);
-		Draw.blend = BlendMode.NORMAL;
-		*/
-		Draw.dot(e.x, e.y, 0xFF, .4, 3);
-		Draw.arc(e.x, e.y, 50, 0, 180, 0xFF0000, .5, true);
-		Draw.arrow(HP.width, HP.height, HP.halfWidth, HP.halfHeight);
-		Draw.rotatedRect(e.x, e.y, 100, 60, 0xFFFFFF, .75, true, 1, 0, 0, 20, 20);
-		Draw.arcPlus(e.x, e.y, 60, 180, 360, 0xFF00FF, .5, true, 1, true);
-		Draw.arrowPlus(20, 50, HP.width - 20, 50, 0xFF0000, .7, 3, 90, 16, true, true);
-		//Draw.line(HP.halfWidth, HP.halfHeight, HP.width, HP.height);
 	}
 	
 	public function onKeyDown(e:KeyboardEvent):Void 
@@ -286,3 +301,4 @@ class Main extends Engine
 
 @:bitmap("assets/ball.png")
 class BALL extends flash.display.BitmapData { }
+
