@@ -1021,7 +1021,7 @@ class HP
 	
 	/**
 	 * Schedules a callback for the future. Shorthand for creating an Alarm tween, starting it and adding it to a Tweener.
-	 * @param	delay		The duration to wait before calling the callback.
+	 * @param	delay		The duration to wait before calling the callback (in seconds).
 	 * @param	callback	The function to be called.
 	 * @param	type		The tween type (PERSIST, LOOPING or ONESHOT). Defaults to ONESHOT.
 	 * @param	tweener		The Tweener object to add this Alarm to. Defaults to HP.tweener.
@@ -1029,11 +1029,11 @@ class HP
 	 * 
 	 * Example: HP.alarm(5.0, callbackFunction, Tween.LOOPING); // Calls callbackFunction every 5 seconds
 	 */
-	public static inline function alarm(delay:Float, callback:Void -> Void, type:TweenType, tweener:Tweener = null):Alarm
+	public static inline function alarm(delay:Float, callback:Void -> Void, type:TweenType = null, tweener:Tweener = null):Alarm
 	{
 		if (tweener == null) tweener = HP.tweener;
 		
-		var alarm:Alarm = new Alarm(delay, callback, type != null ? type : TweenType.LOOPING);
+		var alarm:Alarm = new Alarm(delay, callback, type != null ? type : TweenType.ONESHOT);
 		
 		tweener.addTween(alarm, true);
 		
