@@ -8,6 +8,9 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.Lib;
 import flash.media.Sound;
+import net.hxpunk.graphics.Spritemap.VoidCallback;
+import net.hxpunk.tweens.misc.MultiVarTween;
+import net.hxpunk.utils.Ease.EasingFunction;
 #if flash
 import flash.media.SoundMixer;
 #end
@@ -996,28 +999,27 @@ class HP
 	 * 
 	 * Example: HP.tween(object, { x: 500, y: 350 }, 2.0, { ease: easeFunction, complete: onComplete } );
 	 */
-	/*public static function tween(object:Dynamic, values:Dynamic, duration:Float, options:Dynamic = null):MultiVarTween
+	public static function tween(object:Dynamic, values:Dynamic, duration:Float, options:Dynamic = null):MultiVarTween
 	{
-		var type:Int = Tween.ONESHOT,
-			complete:Function = null,
-			ease:Function = null,
+		var type:TweenType = TweenType.ONESHOT,
+			complete:VoidCallback = null,
+			ease:EasingFunction = null,
 			tweener:Tweener = HP.tweener,
 			delay:Float = 0;
 		if (Std.is(object, Tweener)) tweener = cast(object, Tweener);
-		if (options)
+		if (options != null)
 		{
-			if (Std.is(options, Function)) complete = cast(options, Function);
-			if (Reflect.hasField(options, "type")) type = options.type;
-			if (Reflect.hasField(options, "complete")) complete = options.complete;
-			if (Reflect.hasField(options, "ease")) ease = options.ease;
-			if (Reflect.hasField(options, "tweener")) tweener = options.tweener;
-			if (Reflect.hasField(options, "delay")) delay = options.delay;
+			if (Reflect.hasField(options, "type")) type = Reflect.getProperty(options, "type");
+			if (Reflect.hasField(options, "complete")) complete = Reflect.getProperty(options, "complete");
+			if (Reflect.hasField(options, "ease")) ease = Reflect.getProperty(options, "ease");
+			if (Reflect.hasField(options, "tweener")) tweener = Reflect.getProperty(options, "tweener");
+			if (Reflect.hasField(options, "delay")) delay = Reflect.getProperty(options, "delay");
 		}
 		var tween:MultiVarTween = new MultiVarTween(complete, type);
 		tween.tween(object, values, duration, ease, delay);
 		tweener.addTween(tween);
 		return tween;
-	}*/
+	}
 	
 	/**
 	 * Schedules a callback for the future. Shorthand for creating an Alarm tween, starting it and adding it to a Tweener.
