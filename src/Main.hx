@@ -180,8 +180,9 @@ class Main extends Engine
 		Data.save();
 		trace(Data.toString());
 		Data.clear();
+		//Data.save();
 		trace(Data.toString());
-		Data.load("savegame");
+		Data.load();
 		trace(Data.toString());
     }
 	

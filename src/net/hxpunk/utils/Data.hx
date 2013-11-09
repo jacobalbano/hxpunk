@@ -4,6 +4,8 @@ import flash.net.SharedObject;
 
 /**
  * Static helper class used for saving and loading data from stored cookies.
+ * 
+ * Be sure to load and save from/to the same file or you might lose data.
  */
 class Data 
 {
@@ -149,9 +151,9 @@ class Data
 	}
 	
 	/**
-	 * Returns a string representation of the contents of the current SharedObject (might not be saved yet).
+	 * Returns a string representation of the contents of the current SharedObject (you must save() it for changes to take effect).
 	 * 
-	 * @param showPropertyClass		includes each property's class name to the string.
+	 * @param showPropertyClass		adds each property's class name to the string.
 	 */
 	public static function toString(showPropertyClass:Bool = true):String 
 	{
