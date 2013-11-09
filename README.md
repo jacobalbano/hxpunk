@@ -1,7 +1,7 @@
 hxpunk
 ======
 
-FlashPunk 1.7.2 port to [Haxe 3](http://haxe.org/) + [OpenFL 1.1](http://www.openfl.org/). (alpha)
+[FlashPunk 1.7.2](http://useflashpunk.net/) port to [Haxe 3](http://haxe.org/) + [OpenFL 1.1](http://www.openfl.org/). (alpha)
 
 Experimenting with Haxe + OpenFL, mainly to learn the language and see if there's some performance gain 
 in compiling for the Flash target. 
