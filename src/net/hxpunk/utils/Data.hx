@@ -1,6 +1,7 @@
 ﻿package net.hxpunk.utils;
 
 import flash.net.SharedObject;
+import net.hxpunk.HP;
 
 /**
  * Static helper class used for saving and loading data from stored cookies.
@@ -9,6 +10,8 @@ import flash.net.SharedObject;
  */
 class Data 
 {
+	private static var init:Bool = initStaticVars();
+	
 	/**
 	 * If you want to share data between different SWFs on the same host, use this id.
 	 */
@@ -17,8 +20,16 @@ class Data
 	/**
 	 * Prefix to use for stored object files.
 	 */
-	public static var prefix:String = "hxpunk";
+	public static var prefix:String;
 
+	
+	public static inline function initStaticVars():Bool
+	{
+		prefix = HP.NAME;
+		
+		return true;
+	}
+	
 	/**
 	 * Overwrites the current data with the file.
 	 * @param	file		The filename to load.
@@ -164,7 +175,7 @@ class Data
 		stringBuf.add("[");
 		for (i in _dataMap.keys()) {
 			value = _dataMap[i];
-			type = (showPropertyClass ? " [" + Type.getClassName(Type.getClass(value)) + "]" : "");
+			type = (showPropertyClass ? " [" + Type.typeof(value) + "]" : "");
 			stringBuf.add("\n  " + i + type + ": " + value);
 		}
 		stringBuf.add("\n]");
@@ -174,6 +185,7 @@ class Data
 	// Data information.
 	/** @private */ private static var _shared:SharedObject;
 	/** @private */ private static var _dataMap:Map<String, Dynamic>;
+	
 	/** @private */ private static var DEFAULT_FILE:String = "_file";
 	/** @private */ private static var SIZE:UInt = 10000;
 }
