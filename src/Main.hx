@@ -7,6 +7,7 @@ import flash.events.KeyboardEvent;
 import flash.filters.BlurFilter;
 import flash.geom.Point;
 import flash.geom.Rectangle;
+import flash.net.SharedObject;
 import flash.system.System;
 import flash.ui.Keyboard;
 import haxe.ds.Vector.Vector;
@@ -51,6 +52,7 @@ import net.hxpunk.tweens.motion.QuadMotion;
 import net.hxpunk.tweens.motion.QuadPath;
 import flash.media.Sound;
 import net.hxpunk.Sfx;
+import net.hxpunk.utils.Data;
 
 
 /**
@@ -63,7 +65,7 @@ class Main extends Engine
 	var BG_MUSIC_ID:String = "BGMUSIC";
 	var bgMusic:Sfx;
 	
-	var SFX_WHIFF_ID:String = #if flash "assets/whiff.mp3" #else "assets/whiff.wav" #end;
+	var SFX_WHIFF_ID:String = #if flash "assets/whiff.mp3" #else "assets/whiff.ogg" #end;
 	var whiffSfx:Sfx;
 	
 	var t:TiledImage;
@@ -169,8 +171,18 @@ class Main extends Engine
 		
 		bgMusic = new Sfx(BG_MUSIC_ID, null, "bg_music");
 		
-		bgMusic.loop(1, 0);
+		bgMusic.loop(0, 0);
 		whiffSfx = new Sfx(SFX_WHIFF_ID);
+		
+		Data.prefix = "personal";
+		Data.load("savegame");
+		Data.writeString("whats", "up");
+		Data.save();
+		trace(Data.toString());
+		Data.clear();
+		trace(Data.toString());
+		Data.load("savegame");
+		trace(Data.toString());
     }
 	
 	override public function update():Void 
