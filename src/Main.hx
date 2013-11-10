@@ -299,7 +299,7 @@ class Main extends Engine
 		if (Input.check(Key.S)) HP.camera.y += 2; 
 		
 		if (Input.check(Key.Z)) {
-			//new Sfx(SFX_WHIFF_ID).play();
+			new Sfx(SFX_WHIFF_ID).play();
 			emitter.emit("squares", 0, 0);
 			Draw.enqueueCall(function ():Void 
 			{
