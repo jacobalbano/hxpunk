@@ -49,9 +49,14 @@ class HP
 	public static inline var NAME:String = "hxPunk";
 	
 	/**
-	 * The FlashPunk major version.
+	 * The FlashPunk version.
 	 */
 	public static inline var VERSION:String = "1.7.2";
+	
+	/**
+	 * The FlashPunk package name.
+	 */
+	public static inline var PACKAGE:String = "net.hxpunk";
 	
 	/**
 	 * Width of the game.

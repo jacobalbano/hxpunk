@@ -635,7 +635,7 @@ class Entity extends Tweener
 	public function toString():String
 	{
 		var s:String = Std.string(_class);
-		return s.substring(7, s.length - 1);
+		return s.substr(HP.PACKAGE.length + 1);
 	}
 	
 	/**

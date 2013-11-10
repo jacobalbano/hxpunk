@@ -1,59 +1,30 @@
 package ;
 
 import flash.display.BitmapData;
-import flash.display.BlendMode;
-import flash.errors.Error;
 import flash.events.KeyboardEvent;
-import flash.filters.BlurFilter;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-import flash.net.SharedObject;
 import flash.system.System;
-import flash.ui.Keyboard;
-import haxe.ds.Vector.Vector;
 import net.hxpunk.debug.Console;
 import net.hxpunk.Engine;
 import net.hxpunk.Entity;
-import net.hxpunk.graphics.Graphiclist;
+import net.hxpunk.graphics.Backdrop;
+import net.hxpunk.graphics.Emitter;
 import net.hxpunk.graphics.Image;
 import net.hxpunk.graphics.ParticleType;
+import net.hxpunk.graphics.PreRotation;
 import net.hxpunk.graphics.Text;
+import net.hxpunk.graphics.TiledImage;
 import net.hxpunk.HP;
 import net.hxpunk.Mask;
 import net.hxpunk.masks.Grid;
-import net.hxpunk.masks.Masklist;
 import net.hxpunk.masks.Pixelmask;
+import net.hxpunk.Sfx;
+import net.hxpunk.utils.Data;
 import net.hxpunk.utils.Draw;
 import net.hxpunk.utils.Ease;
 import net.hxpunk.utils.Input;
 import net.hxpunk.utils.Key;
-import openfl.Assets;
-import net.hxpunk.graphics.Stamp;
-import net.hxpunk.graphics.Backdrop;
-import net.hxpunk.graphics.Canvas;
-import net.hxpunk.graphics.TiledImage;
-import net.hxpunk.graphics.Spritemap;
-import net.hxpunk.graphics.TiledSpritemap;
-import net.hxpunk.graphics.TiledImage;
-import net.hxpunk.graphics.Tilemap;
-import net.hxpunk.graphics.PreRotation;
-import net.hxpunk.graphics.Particle;
-import net.hxpunk.graphics.Emitter;
-import net.hxpunk.tweens.misc.AngleTween;
-import net.hxpunk.tweens.misc.ColorTween;
-import net.hxpunk.tweens.misc.MultiVarTween;
-import net.hxpunk.tweens.misc.NumTween;
-import net.hxpunk.tweens.misc.VarTween;
-import net.hxpunk.tweens.motion.Motion;
-import net.hxpunk.tweens.motion.CircularMotion;
-import net.hxpunk.tweens.motion.LinearMotion;
-import net.hxpunk.tweens.motion.LinearPath;
-import net.hxpunk.tweens.motion.CubicMotion;
-import net.hxpunk.tweens.motion.QuadMotion;
-import net.hxpunk.tweens.motion.QuadPath;
-import flash.media.Sound;
-import net.hxpunk.Sfx;
-import net.hxpunk.utils.Data;
 
 
 /**
@@ -66,7 +37,7 @@ class Main extends Engine
 	var BG_MUSIC_ID:String = "BGMUSIC";
 	var bgMusic:Sfx;
 	
-	var SFX_WHIFF_ID:String = #if flash "assets/whiff.mp3" #else "assets/whiff.ogg" #end;
+	var SFX_WHIFF_ID:String = #if flash "assets/whiff.mp3" #else "assets/whiff_mono.ogg" #end;
 	var whiffSfx:Sfx;
 	
 	var t:TiledImage;
@@ -203,10 +174,10 @@ class Main extends Engine
 		emitter = new Emitter(particlesBMD, 10, 10);
 		var p:ParticleType = emitter.newType("squares", HP.frames(0, 1));
 		p.setMotion(0, 50, 1.5, 360, 20, 0, null);
-		p.setRotation(0, 360, 0, 0, null);
-		//p.setColor(0xFFFFFF, 0xFF3366, Ease.quadIn);
-		p.setAlpha();
-		//p.setGravity(15, 2);
+		p.setRotation(0, 360, 0, -720, Ease.backOut);
+		p.setColor(0xFFFFFF, 0xFF3366, Ease.quadIn);
+		p.setAlpha(1, 0, Ease.cubeIn);
+		p.setGravity(85, 2);
 		emitterEntity.graphic = emitter;
 		HP.world.add(emitterEntity);
     }
