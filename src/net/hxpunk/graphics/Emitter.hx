@@ -298,9 +298,9 @@ class Emitter extends Graphic
 	
 	// Particle information.
 	/** @private */ private var _types:Map<String, ParticleType>;
-	/** @private */ private var _particle:Particle;
-	/** @private */ private var _cache:Particle;
-	/** @private */ private var _particleCount:Int;
+	/** @private */ private var _particle:Particle = null;
+	/** @private */ private var _cache:Particle = null;
+	/** @private */ private var _particleCount:Int = 0;
 	
 	// Source information.
 	/** @private */ private var _source:BitmapData;

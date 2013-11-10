@@ -222,11 +222,11 @@ class ParticleType
 	/** @private */ private var _frameCount:Int;
 	
 	// Motion information.
-	/** @private */ private var _angle:Float;
+	/** @private */ private var _angle:Float = 0;
 	/** @private */ private var _angleRange:Float = 0;
-	/** @private */ private var _distance:Float;
+	/** @private */ private var _distance:Float = 0;
 	/** @private */ private var _distanceRange:Float = 0;
-	/** @private */ private var _duration:Float;
+	/** @private */ private var _duration:Float = 0;
 	/** @private */ private var _durationRange:Float = 0;
 	/** @private */ private var _ease:EasingFunction;
 	
@@ -234,9 +234,9 @@ class ParticleType
 	public var originX:Float;
 	public var originY:Float;
 	/** @private */ private var _isRotating:Bool = false;
-	/** @private */ private var _startAngle:Float;
+	/** @private */ private var _startAngle:Float = 0;
 	/** @private */ private var _startAngleRange:Float = 0;
-	/** @private */ private var _spanAngle:Float;
+	/** @private */ private var _spanAngle:Float = 0;
 	/** @private */ private var _spanAngleRange:Float = 0;
 	/** @private */ private var _rotationEase:EasingFunction;
 

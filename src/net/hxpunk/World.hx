@@ -660,7 +660,7 @@ class World extends Tweener
 	public function nearestToRect(type:String, x:Float, y:Float, width:Float, height:Float, ignore:Entity = null):Entity
 	{
 		var n:Entity = _typeFirst[type],
-			nearDist:Float = 1 << 29,
+			nearDist:Float = Math.POSITIVE_INFINITY,
 			near:Entity = null, dist:Float = 0;
 		while (n != null)
 		{
@@ -688,7 +688,7 @@ class World extends Tweener
 	{
 		if (useHitboxes) return nearestToRect(type, e.x - e.originX, e.y - e.originY, e.width, e.height);
 		var n:Entity = _typeFirst[type],
-			nearDist:Float = 1 << 29,
+			nearDist:Float = Math.POSITIVE_INFINITY,
 			near:Entity = null, dist:Float,
 			x:Float = e.x - e.originX,
 			y:Float = e.y - e.originY;
@@ -719,7 +719,7 @@ class World extends Tweener
 	public function nearestToPoint(type:String, x:Float, y:Float, useHitboxes:Bool = false):Entity
 	{
 		var n:Entity = _typeFirst[type],
-			nearDist:Float = 1 << 29,
+			nearDist:Float = Math.POSITIVE_INFINITY,
 			near:Entity = null, dist:Float = 0;
 		if (useHitboxes)
 		{
