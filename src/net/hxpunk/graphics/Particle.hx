@@ -22,6 +22,10 @@ class Particle
 	/** @private */ public var _moveX:Float;
 	/** @private */ public var _moveY:Float;
 	
+	// Rotation information.
+	/** @private */ public var _rotation:Float;
+	/** @private */ public var _totalRotation:Float;
+
 	// Gravity information.
 	/** @private */ public var _gravity:Float;
 	

@@ -3,9 +3,11 @@
 import flash.display.BitmapData;
 import flash.errors.Error;
 import flash.geom.ColorTransform;
+import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import net.hxpunk.HP;
+import net.hxpunk.utils.Draw;
 import net.hxpunk.utils.Ease.EasingFunction;
 import net.hxpunk.graphics.ParticleType;
 import net.hxpunk.HP;
@@ -31,6 +33,7 @@ class Emitter extends Graphic
 		_types = new Map<String, ParticleType>();
 		_p = new Point();
 		_tint = new ColorTransform();
+		_matrix = new Matrix();
 		
 		setSource(source, frameWidth, frameHeight);
 		active = true;
@@ -44,7 +47,7 @@ class Emitter extends Graphic
 	 */
 	public function setSource(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0):Void
 	{
-		_source = HP.getBitmap(source);
+		_source = HP.getBitmapData(source);
 		if (_source == null) throw new Error("Invalid source image.");
 		_width = _source.width;
 		_height = _source.height;
@@ -53,6 +56,44 @@ class Emitter extends Graphic
 		_frameCount = Std.int(_width / _frameWidth) * Std.int(_height / _frameHeight);
 	}
 	
+	/**
+	 * Emits a particle.
+	 * @param	name		Particle type to emit.
+	 * @param	x			X point to emit from.
+	 * @param	y			Y point to emit from.
+	 * @return
+	 */
+	public function emit(name:String, x:Float = 0, y:Float = 0):Particle
+	{
+		if (!_types.exists(name)) throw new Error("Particle type \"" + name + "\" does not exist.");
+		var p:Particle, type:FriendlyParticleType = _types[name];
+		
+		if (_cache != null)
+		{
+			p = _cache;
+			_cache = p._next;
+		}
+		else p = new Particle();
+		p._next = _particle;
+		p._prev = null;
+		if (p._next != null) p._next._prev = p;
+		
+		p._type = cast type;
+		p._time = 0;
+		p._duration = type._duration + type._durationRange * HP.random;
+		var a:Float = type._angle + type._angleRange * HP.random,
+			d:Float = type._distance + type._distanceRange * HP.random;
+		p._moveX = Math.cos(a) * d;
+		p._moveY = Math.sin(a) * d;
+		p._x = x;
+		p._y = y;
+		p._gravity = type._gravity + type._gravityRange * HP.random;
+		p._rotation = type._startAngle + type._startAngleRange * HP.random;
+		p._totalRotation = type._spanAngle + type._spanAngleRange * HP.random;
+		_particleCount ++;
+		return (_particle = p);
+	}
+
 	override public function update():Void 
 	{
 		// quit if there are no particles
@@ -142,9 +183,22 @@ class Emitter extends Graphic
 				type._buffer.colorTransform(type._bufferRect, _tint);
 				
 				// draw particle
-				target.copyPixels(type._buffer, type._bufferRect, _p, null, null, true);
+				if (type._isRotating) {
+					var _rotationT:Float = (type._rotationEase == null) ? t : type._rotationEase(t);
+					_matrix.identity();
+					_matrix.tx = -type.originX;
+					_matrix.ty = -type.originY;
+					_matrix.rotate(p._rotation + _rotationT * p._totalRotation);
+					_matrix.tx += type.originX + _p.x;
+					_matrix.ty += type.originY * .5 + _p.y;
+					target.draw(type._buffer, _matrix);
+				} else {
+					target.copyPixels(type._buffer, type._bufferRect, _p, null, null, true);
+				}
 			}
-			else target.copyPixels(type._source, rect, _p, null, null, true);
+			else {
+				target.copyPixels(type._source, rect, _p, null, null, true);
+			}
 			
 			// get next particle
 			p = p._next;
@@ -183,6 +237,21 @@ class Emitter extends Graphic
 	}
 	
 	/**
+	 * Defines the rotation range for a particle type.
+	 * @param	name			The particle type.
+	 * @param	startAngle		Starting angle.
+	 * @param	spanAngle		Total amount of degrees to rotate.
+	 * @param	startAngleRange	Random amount to add to the particle's starting angle.
+	 * @param	spanAngleRange	Random amount to add to the particle's span angle.
+	 * @param	ease			Optional easer function.
+	 * @return	This ParticleType object.
+	 */
+	public function setRotation(name:String, startAngle:Float, spanAngle:Float, startAngleRange:Float = 0, spanAngleRange:Float = 0, ease:EasingFunction = null):ParticleType
+	{
+		return _types[name].setRotation(startAngle, spanAngle, startAngleRange, spanAngleRange, ease);
+	}
+	
+	/**
 	 * Sets the gravity range for a particle type.
 	 * @param	name			The particle type.
 	 * @param	gravity			Gravity amount to affect to the particle y velocity.
@@ -218,43 +287,7 @@ class Emitter extends Graphic
 	public function setColor(name:String, start:Int = 0xFFFFFF, finish:Int = 0, ease:EasingFunction = null):ParticleType
 	{
 		return _types[name].setColor(start, finish, ease);
-	}
-	
-	/**
-	 * Emits a particle.
-	 * @param	name		Particle type to emit.
-	 * @param	x			X point to emit from.
-	 * @param	y			Y point to emit from.
-	 * @return
-	 */
-	public function emit(name:String, x:Float, y:Float):Particle
-	{
-		if (!_types.exists(name)) throw new Error("Particle type \"" + name + "\" does not exist.");
-		var p:Particle, type:FriendlyParticleType = _types[name];
-		
-		if (_cache != null)
-		{
-			p = _cache;
-			_cache = p._next;
-		}
-		else p = new Particle();
-		p._next = _particle;
-		p._prev = null;
-		if (p._next != null) p._next._prev = p;
-		
-		p._type = cast type;
-		p._time = 0;
-		p._duration = type._duration + type._durationRange * HP.random;
-		var a:Float = type._angle + type._angleRange * HP.random,
-			d:Float = type._distance + type._distanceRange * HP.random;
-		p._moveX = Math.cos(a) * d;
-		p._moveY = Math.sin(a) * d;
-		p._x = x;
-		p._y = y;
-		p._gravity = type._gravity + type._gravityRange * HP.random;
-		_particleCount ++;
-		return (_particle = p);
-	}
+	}	
 	
 	/**
 	 * Amount of currently existing particles.
@@ -280,4 +313,5 @@ class Emitter extends Graphic
 	// Drawing information.
 	/** @private */ private var _p:Point;
 	/** @private */ private var _tint:ColorTransform;
+	/** @private */ private var _matrix:Matrix;
 }

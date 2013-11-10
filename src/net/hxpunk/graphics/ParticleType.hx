@@ -27,6 +27,16 @@ typedef FriendlyParticleType = {
 	/** @private */ private var _durationRange:Float;
 	/** @private */ private var _ease:EasingFunction;
 	
+	// Rotation information.
+	public var originX:Float;
+	public var originY:Float;
+	/** @private */ private var _isRotating:Bool;
+	/** @private */ private var _startAngle:Float;
+	/** @private */ private var _startAngleRange:Float;
+	/** @private */ private var _spanAngle:Float;
+	/** @private */ private var _spanAngleRange:Float;
+	/** @private */ private var _rotationEase:EasingFunction;
+
 	// Gravity information.
 	/** @private */ private var _gravity:Float;
 	/** @private */ private var _gravityRange:Float;
@@ -64,8 +74,10 @@ class ParticleType
 	 * @param	source			Source image.
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
+	 * @param	originX			Origin x offset used for rotations (defaults to half frameWidth).
+	 * @param	originY			Origin y offset used for rotations (defaults to half frameHeight).
 	 */
-	public function new(name:String, frames:Array<Int>, source:BitmapData, frameWidth:Int, frameHeight:Int)
+	public function new(name:String, frames:Array<Int>, source:BitmapData, frameWidth:Int, frameHeight:Int, ?originX:Float, ?originY:Float)
 	{
 		_name = name;
 		_source = source;
@@ -73,6 +85,8 @@ class ParticleType
 		_frame = new Rectangle(0, 0, frameWidth, frameHeight);
 		_frames = frames;
 		_frameCount = frames.length;
+		this.originX = originX != null ? originX : frameWidth * .5;
+		this.originY = originY != null  ?originY : frameHeight * .5;
 	}
 	
 	/**
@@ -98,6 +112,27 @@ class ParticleType
 		return this;
 	}
 	
+	/**
+	 * Defines the rotation range for this particle type.
+	 * @param	name			The particle type.
+	 * @param	startAngle		Starting angle.
+	 * @param	spanAngle		Total amount of degrees to rotate.
+	 * @param	startAngleRange	Random amount to add to the particle's starting angle.
+	 * @param	spanAngleRange	Random amount to add to the particle's span angle.
+	 * @param	ease			Optional easer function.
+	 * @return	This ParticleType object.
+	 */
+	public function setRotation(startAngle:Float, spanAngle:Float, startAngleRange:Float = 0, spanAngleRange:Float = 0, ease:EasingFunction = null):ParticleType
+	{
+		_isRotating = true;
+		_startAngle = startAngle * HP.RAD;
+		_spanAngle = spanAngle * HP.RAD;
+		_startAngleRange = startAngleRange * HP.RAD;
+		_spanAngleRange = spanAngleRange * HP.RAD;
+		_rotationEase = ease;
+		return this;
+	}
+
 	/**
 	 * Defines the motion range for this particle type based on the vector.
 	 * @param	x				X distance to move.
@@ -188,13 +223,23 @@ class ParticleType
 	
 	// Motion information.
 	/** @private */ private var _angle:Float;
-	/** @private */ private var _angleRange:Float;
+	/** @private */ private var _angleRange:Float = 0;
 	/** @private */ private var _distance:Float;
-	/** @private */ private var _distanceRange:Float;
+	/** @private */ private var _distanceRange:Float = 0;
 	/** @private */ private var _duration:Float;
-	/** @private */ private var _durationRange:Float;
+	/** @private */ private var _durationRange:Float = 0;
 	/** @private */ private var _ease:EasingFunction;
 	
+	// Rotation information.
+	public var originX:Float;
+	public var originY:Float;
+	/** @private */ private var _isRotating:Bool = false;
+	/** @private */ private var _startAngle:Float;
+	/** @private */ private var _startAngleRange:Float = 0;
+	/** @private */ private var _spanAngle:Float;
+	/** @private */ private var _spanAngleRange:Float = 0;
+	/** @private */ private var _rotationEase:EasingFunction;
+
 	// Gravity information.
 	/** @private */ private var _gravity:Float = 0;
 	/** @private */ private var _gravityRange:Float = 0;

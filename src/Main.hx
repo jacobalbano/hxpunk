@@ -16,6 +16,7 @@ import net.hxpunk.Engine;
 import net.hxpunk.Entity;
 import net.hxpunk.graphics.Graphiclist;
 import net.hxpunk.graphics.Image;
+import net.hxpunk.graphics.ParticleType;
 import net.hxpunk.graphics.Text;
 import net.hxpunk.HP;
 import net.hxpunk.Mask;
@@ -80,6 +81,8 @@ class Main extends Engine
 	var _point:Point;
 	var _rect:Rectangle;
 	var gridEntity2:Entity;
+	var emitter:Emitter;
+	var emitterEntity:Entity;
 	
     public function new() {
         super(320, 240, 60, false);
@@ -177,6 +180,7 @@ class Main extends Engine
 		Data.prefix = "personal";
 		Data.load("savegame");
 		Data.writeString("whats", "up");
+		Data.writeBool("whats", true);
 		Data.save();
 		trace(Data.toString());
 		Data.clear();
@@ -184,6 +188,27 @@ class Main extends Engine
 		trace(Data.toString());
 		Data.load();
 		trace(Data.toString());
+		Data.clear();
+		Data.save("savegame");
+		HP.alarm(5, function ():Void 
+		{
+			trace("alarrrm!");
+		});
+		
+		emitterEntity = new Entity(HP.halfWidth, HP.halfHeight / 2);
+		var particlesBMD:BitmapData = new BitmapData(20, 10);
+		Draw.setTarget(particlesBMD);
+		Draw.rect(0, 0, 10, 10, 0x00FF00);
+		Draw.rect(10, 0, 10, 10, 0xFF0000);
+		emitter = new Emitter(particlesBMD, 10, 10);
+		var p:ParticleType = emitter.newType("squares", HP.frames(0, 1));
+		p.setMotion(0, 50, 1.5, 360, 0, 0, Ease.cubeOut);
+		p.setRotation(0, 360, 0, 0, null);
+		p.setColor(0xFFFFFF, 0xFF3366, Ease.quadIn);
+		p.setAlpha();
+		//p.setGravity(15, 2);
+		emitterEntity.graphic = emitter;
+		HP.world.add(emitterEntity);
     }
 	
 	override public function update():Void 
@@ -273,8 +298,13 @@ class Main extends Engine
 		if (Input.check(Key.W)) HP.camera.y -= 2; 
 		if (Input.check(Key.S)) HP.camera.y += 2; 
 		
-		if (Input.pressed(Key.Z)) {
-			new Sfx(SFX_WHIFF_ID).play();
+		if (Input.check(Key.Z)) {
+			//new Sfx(SFX_WHIFF_ID).play();
+			emitter.emit("squares", 0, 0);
+			Draw.enqueueCall(function ():Void 
+			{
+				Draw.dot(emitterEntity.x, emitterEntity.y);
+			});
 		}
 		
 		if (Input.pressed(Key.SPACE)) {
