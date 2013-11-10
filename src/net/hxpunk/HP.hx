@@ -642,11 +642,11 @@ class HP
 	 * The random seed used by FP's random functions.
 	 */
 	public static var randomSeed(get, set):Int;
-	private static inline function get_randomSeed() { return _getSeed; }
+	private static inline function get_randomSeed() { return _randomSeed; }
 	private static inline function set_randomSeed(value:Int):Int
 	{
 		_seed = Std.int(clamp(value, 1, 2147483646));
-		_getSeed = _seed;
+		_randomSeed = _seed;
 		return value;
 	}
 	
@@ -664,7 +664,7 @@ class HP
 	public static var random(get, null):Float;
 	private static inline function get_random()
 	{
-		_seed = (_seed * 16807) % 2147483647;
+		_seed = Std.int((_seed * 16807.0) % 2147483647);
 		return _seed / 2147483647;
 	}
 	
@@ -675,7 +675,7 @@ class HP
 	 */
 	public static inline function rand(amount:Int):Int
 	{
-		_seed = (_seed * 16807) % 2147483647;
+		_seed = Std.int((_seed * 16807.0) % 2147483647);
 		return Std.int((_seed / 2147483647) * amount);
 	}
 	
@@ -1227,7 +1227,7 @@ class HP
 	
 	// Pseudo-random number generation (the seed is set in Engine's constructor).
 	/** @private */ private static var _seed:Int = 0;
-	/** @private */ private static var _getSeed:Int = 0;
+	/** @private */ private static var _randomSeed:Int = 0;
 	
 	// Volume control.
 	/** @private */ private static var _volume:Float = 1;
