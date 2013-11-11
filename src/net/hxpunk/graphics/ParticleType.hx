@@ -130,6 +130,7 @@ class ParticleType
 		_startAngleRange = startAngleRange * HP.RAD;
 		_spanAngleRange = spanAngleRange * HP.RAD;
 		_rotationEase = ease;
+		createBuffer();
 		return this;
 	}
 
