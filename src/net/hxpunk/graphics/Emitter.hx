@@ -191,7 +191,7 @@ class Emitter extends Graphic
 					_matrix.rotate(p._rotation + _rotationT * p._totalRotation);
 					_matrix.tx += type.originX + _p.x;
 					_matrix.ty += type.originY * .5 + _p.y;
-					target.draw(type._buffer, _matrix);
+					target.draw(type._buffer, _matrix, null, null, null, type._smooth);
 				} else {
 					target.copyPixels(type._buffer, type._bufferRect, _p, null, null, true);
 				}
@@ -244,12 +244,13 @@ class Emitter extends Graphic
 	 * @param	spanAngle		Total amount of degrees to rotate.
 	 * @param	startAngleRange	Random amount to add to the particle's starting angle.
 	 * @param	spanAngleRange	Random amount to add to the particle's span angle.
+	 * @param	smooth			Whether to smooth the resulting rotated particle.
 	 * @param	ease			Optional easer function.
 	 * @return	This ParticleType object.
 	 */
-	public function setRotation(name:String, startAngle:Float, spanAngle:Float, startAngleRange:Float = 0, spanAngleRange:Float = 0, ease:EasingFunction = null):ParticleType
+	public function setRotation(name:String, startAngle:Float, spanAngle:Float, startAngleRange:Float = 0, spanAngleRange:Float = 0, smooth:Bool = false, ease:EasingFunction = null):ParticleType
 	{
-		return _types[name].setRotation(startAngle, spanAngle, startAngleRange, spanAngleRange, ease);
+		return _types[name].setRotation(startAngle, spanAngle, startAngleRange, spanAngleRange, smooth, ease);
 	}
 	
 	/**

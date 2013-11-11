@@ -35,6 +35,7 @@ typedef FriendlyParticleType = {
 	/** @private */ private var _startAngleRange:Float;
 	/** @private */ private var _spanAngle:Float;
 	/** @private */ private var _spanAngleRange:Float;
+	/** @private */ private var _smooth:Bool;
 	/** @private */ private var _rotationEase:EasingFunction;
 
 	// Gravity information.
@@ -119,16 +120,18 @@ class ParticleType
 	 * @param	spanAngle		Total amount of degrees to rotate.
 	 * @param	startAngleRange	Random amount to add to the particle's starting angle.
 	 * @param	spanAngleRange	Random amount to add to the particle's span angle.
+	 * @param	smooth			Whether to smooth the resulting rotated particle.
 	 * @param	ease			Optional easer function.
 	 * @return	This ParticleType object.
 	 */
-	public function setRotation(startAngle:Float, spanAngle:Float, startAngleRange:Float = 0, spanAngleRange:Float = 0, ease:EasingFunction = null):ParticleType
+	public function setRotation(startAngle:Float, spanAngle:Float, startAngleRange:Float = 0, spanAngleRange:Float = 0, smooth:Bool = false, ease:EasingFunction = null):ParticleType
 	{
 		_isRotating = true;
 		_startAngle = startAngle * HP.RAD;
 		_spanAngle = spanAngle * HP.RAD;
 		_startAngleRange = startAngleRange * HP.RAD;
 		_spanAngleRange = spanAngleRange * HP.RAD;
+		_smooth = smooth;
 		_rotationEase = ease;
 		createBuffer();
 		return this;
@@ -239,6 +242,7 @@ class ParticleType
 	/** @private */ private var _startAngleRange:Float = 0;
 	/** @private */ private var _spanAngle:Float = 0;
 	/** @private */ private var _spanAngleRange:Float = 0;
+	/** @private */ private var _smooth:Bool = false;
 	/** @private */ private var _rotationEase:EasingFunction;
 
 	// Gravity information.

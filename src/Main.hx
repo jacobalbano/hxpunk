@@ -174,10 +174,10 @@ class Main extends Engine
 		emitter = new Emitter(particlesBMD, 10, 10);
 		var p:ParticleType = emitter.newType("squares", HP.frames(0, 1));
 		p.setMotion(0, 50, 1.5, 360, 20, 0, null);
-		p.setRotation(0, 360, 0, -720, Ease.backOut);
+		p.setRotation(0, 360, 0, -720, true, Ease.backOut);
 		p.setColor(0xFFFFFF, 0xFF3366, Ease.quadIn);
 		p.setAlpha(1, 0, Ease.cubeIn);
-		p.setGravity(85, 2);
+		//p.setGravity(85, 2);
 		emitterEntity.graphic = emitter;
 		HP.world.add(emitterEntity);
     }
