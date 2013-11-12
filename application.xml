@@ -26,12 +26,13 @@
 	<assets path="assets" include="*" exclude="*.mp3|*.wav|*.ogg" />
 	
 	<assets path="assets" if="flash">
-		<music path="theme.mp3" id="BGMUSIC" />
+		<music path="guitar-loop.mp3" id="BGMUSIC" />
 		<sound path="whiff.mp3" id="assets/whiff.mp3" />
 	</assets>
 	<assets path="assets" unless="flash" >
-		<music path="theme.ogg" id="BGMUSIC" />
+		<music path="guitar-loop.ogg" id="BGMUSIC" />
 		<sound path="whiff.ogg" id="assets/whiff.ogg" />
+		<sound path="whiff_mono.wav" id="assets/whiff_mono.ogg" />
 	</assets>
 	
 	<!-- optimize output -->
