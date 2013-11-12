@@ -236,7 +236,7 @@ class HP
 	private static inline function get_volume() { return _volume; }
 	private static inline function set_volume(value:Float):Float
 	{
-		if (value < 0) value = 0;
+		value = clamp(value, 0, 1);
 		if (_volume != value) {
 			_soundTransform.volume = _volume = value;
 		#if flash
@@ -255,8 +255,7 @@ class HP
 	private static inline function get_pan() { return _pan; }
 	private static inline function set_pan(value:Float):Float
 	{
-		if (value < -1) value = -1;
-		if (value > 1) value = 1;
+		value = clamp(value, -1, 1);
 		if (_pan != value) {
 			_soundTransform.pan = _pan = value;
 		#if flash

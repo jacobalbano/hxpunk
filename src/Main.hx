@@ -145,7 +145,8 @@ class Main extends Engine
 		
 		bgMusic = new Sfx(BG_MUSIC_ID, null, "bg_music");
 		
-		bgMusic.loop(0, 0);
+		bgMusic.loop(.025, 0);
+		
 		whiffSfx = new Sfx(SFX_WHIFF_ID);
 		
 		Data.prefix = "personal";
@@ -172,9 +173,9 @@ class Main extends Engine
 		Draw.rect(0, 0, 10, 10, 0x00FF00);
 		Draw.rect(10, 0, 10, 10, 0xFF0000);
 		emitter = new Emitter(particlesBMD, 10, 10);
-		var p:ParticleType = emitter.newType("squares", HP.frames(0, 1));
-		p.setMotion(0, 50, 1.5, 360, 20, 0, null);
-		p.setRotation(0, 360, 0, -720, true, Ease.backOut);
+		var p:ParticleType = emitter.newType("squares", HP.frames(1, 1, 0));
+		p.setMotion(0, 80, 1.5, 360, 20, 0, null);
+		p.setRotation(0, 360, 360, -720, false, Ease.quadIn);
 		p.setColor(0xFFFFFF, 0xFF3366, Ease.quadIn);
 		p.setAlpha(1, 0, Ease.cubeIn);
 		//p.setGravity(85, 2);
@@ -288,7 +289,7 @@ class Main extends Engine
 		if (Input.check(Key.L)) HP.pan += .05;
 		if (Input.check(Key.J)) HP.pan -= .05;
 		
-		text.text = "v:" + HP.toFixed(HP.volume, 1) + " p:" + HP.toFixed(HP.pan, 1);
+		text.text = "v:" + HP.toFixed(HP.volume, 1) + " p:" + HP.toFixed(HP.pan, 1) + "  part:" + emitter.particleCount;
 	}
 	
 	override public function render():Void 

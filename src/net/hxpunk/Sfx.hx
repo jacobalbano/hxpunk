@@ -58,8 +58,12 @@ class Sfx
 	{
 		if (_channel != null) stop();
 		_pan = HP.clamp(pan, -1, 1);
-		_vol = vol < 0 ? 0 : vol;
-		_filteredPan = HP.clamp(_pan + getPan(_type) #if !flash + HP.pan #end, -1, 1);
+		_vol = HP.clamp(vol, 0, 1);
+	#if flash
+		_filteredPan = HP.clamp(_pan + getPan(_type), -1, 1);
+	#else
+		_filteredPan = HP.clamp(_pan + getPan(_type) + HP.pan, -1, 1);
+	#end
 		_filteredVol = Math.max(0, _vol * getVolume(_type) #if !flash * HP.volume #end);
 		_transform.pan = _filteredPan;
 		_transform.volume = _filteredVol;
@@ -148,10 +152,13 @@ class Sfx
 	private function set_volume(value:Float):Float
 	{
 		if (_channel == null) return value;
-		if (value < 0) value = 0;
+		value = HP.clamp(value, 0, 1);
 		_vol = value;
-		var filteredVol:Float = value * getVolume(_type) #if !flash * HP.volume #end;
-		if (filteredVol < 0) filteredVol = 0;
+	#if flash
+		var filteredVol:Float = value * getVolume(_type);
+	#else
+		var filteredVol:Float = value * getVolume(_type) * HP.volume;
+	#end
 		if (_filteredVol == filteredVol) return value;
 		_filteredVol = _transform.volume = filteredVol;
 		_channel.soundTransform = _transform;
@@ -167,7 +174,11 @@ class Sfx
 	{
 		if (_channel == null) return value;
 		value = HP.clamp(value, -1, 1);
-		var filteredPan:Float = HP.clamp(value + getPan(_type) #if !flash + HP.pan #end, -1, 1);
+	#if flash
+		var filteredPan:Float = HP.clamp(value + getPan(_type), -1, 1);
+	#else
+		var filteredPan:Float = HP.clamp(value + getPan(_type) + HP.pan, -1, 1);
+	#end
 		if (_filteredPan == filteredPan) return value;
 		_pan = value;
 		_filteredPan = _transform.pan = filteredPan;
@@ -259,7 +270,8 @@ class Sfx
 	{
 		var transform:SoundTransform = _typeTransforms[type];
 		if (transform == null) transform = _typeTransforms[type] = new SoundTransform();
-		transform.volume = volume < 0 ? 0 : volume;
+		volume = HP.clamp(volume, 0, 1);
+		transform.volume = volume;
 		for (sfx in _typePlaying[type])
 		{
 			sfx.volume = sfx.volume;
@@ -276,8 +288,6 @@ class Sfx
 	{
 		if (globalVolume == null) globalVolume = HP.volume;
 		if (globalPan == null) globalPan = HP.pan;
-		if (globalVolume < 0) globalVolume = 0;
-		HP.clamp(globalPan, -1, 1);
 		
 		for (type in _typePlaying.keys()) {
 			Sfx.setVolume(type, globalVolume);
