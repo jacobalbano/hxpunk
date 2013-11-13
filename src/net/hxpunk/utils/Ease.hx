@@ -204,18 +204,22 @@ class Ease
 	/** 
 	 * Convert ease function from Penner format to FlashPunk format.
 	 * 
-	 * Paramaters are the polynomial coeffients
+	 * Paramaters are the polynomial coefficients
 	 * 
 	 * @see http://timotheegroleau.com/Flash/experiments/easing_function_generator.htm
 	 * @see http://www.robertpenner.com/easing/penner_chapter7_tweening.pdf
 	 * 
-	 * @return A function to use as a ease function
+	 * Ex. (out elastic (big)):
+	       var customEase:EasingFunction = Ease.fromPennerFormat(20, -100, 200, -175, 56);
+		   HP.tween(entity, {x: HP.halfWidth, y:HP.halfHeight}, .75, {ease:customEase});
+	 * 
+	 * @return A function to use as an ease function
 	 */
-	public static function fromPennerFormat(t1:Float=1, t2:Float=0, t3:Float=0, t4:Float=0, t5:Float=0):Float -> Float 
+	public static function fromPennerFormat(t1:Float=1, t2:Float=0, t3:Float=0, t4:Float=0, t5:Float=0):EasingFunction 
 	{
 		return function (t:Float):Float {
-			var ts:Float = t;
-			var tc:Float = t * t;
+			var ts:Float = t * t;
+			var tc:Float = ts * t;
 			return (t5 * tc * ts + t4 * ts * ts + t3 * tc + t2 * ts + t1 * t);
 		}
 	}
