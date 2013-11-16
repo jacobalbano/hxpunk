@@ -36,7 +36,7 @@ class PreRotation extends Image
 
 	/**
 	 * Constructor.
-	 * @param	source			The source image to be rotated.
+	 * @param	source			The source image to be rotated. An asset id/file, BitmapData object, or embedded BitmapData class.
 	 * @param	frameCount		How many frames to use. More frames result in smoother rotations.
 	 * @param	syncFrameAngle	Whether to automatically change frameAngle when angle is modified.
 	 * @param	smooth			Make the rotated graphic appear less pixelly.
@@ -49,7 +49,7 @@ class PreRotation extends Image
 		if (r == null)
 		{
 			// produce a rotated bitmap strip
-			var temp:BitmapData = HP.getBitmap(source),
+			var temp:BitmapData = HP.getBitmapData(source),
 				size:Int = _size[name] = Math.ceil(HP.distance(0, 0, temp.width, temp.height));
 			_frame.width = _frame.height = size;
 			var width:Int = Std.int(_frame.width * frameCount),

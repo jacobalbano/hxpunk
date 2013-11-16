@@ -43,7 +43,8 @@ class Console
 	{
 		// Console display objects.
 		_sprite = new Sprite();
-		_format = new TextFormat(HP.defaultFontName);
+		if (HP.defaultFont == null) HP.defaultFont = Assets.getFont(HP.defaultFontName);
+		_format = new TextFormat(HP.defaultFont.fontName);
 		_back = new Bitmap();
 		
 		// FPS panel information.

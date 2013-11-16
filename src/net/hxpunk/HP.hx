@@ -41,6 +41,12 @@ typedef RectangleLike = {
  */
 class HP 
 {
+	/**
+	 * The default font file to use.
+	 */
+	public static var defaultFontName:String = "assets/hxpunk/04B_03__.ttf";
+	public static var defaultFont:Font;
+
 	private static var init:Bool = initStaticVars();
 	
 	/**
@@ -57,6 +63,11 @@ class HP
 	 * The FlashPunk package name.
 	 */
 	public static inline var PACKAGE:String = "net.hxpunk";
+	
+	/**
+	 * Max Int number
+	 */
+	public static inline var MAX_INT:Int = 2147483647;
 	
 	/**
 	 * Width of the game.
@@ -138,15 +149,7 @@ class HP
 	 * If the game currently has input focus or not. Note: may not be correct initially.
 	 */
 	public static var focused:Bool = true;
-	
-	/**
-	 * The default font file to use.
-	 * See DefaultFont
-	 */
-	public static var defaultFontName:String;	
-	public static var defaultFont:Font;
-
-	
+		
 	private static inline function initStaticVars():Bool 
 	{
 		// Tweener
@@ -171,8 +174,8 @@ class HP
 		entity = new Entity();
 
 		// Default Font
-		defaultFont = new DefaultFont();
-		defaultFontName = defaultFont.fontName;
+		defaultFont = Assets.getFont(defaultFontName);
+		//defaultFontName = defaultFont.fontName;
 		
 		return true;
 	}
@@ -649,7 +652,7 @@ class HP
 	private static inline function get_randomSeed() { return _randomSeed; }
 	private static inline function set_randomSeed(value:Int):Int
 	{
-		_seed = Std.int(clamp(value, 1, 2147483646));
+		_seed = Std.int(clamp(value, 1, MAX_INT - 1));
 		_randomSeed = _seed;
 		return value;
 	}
@@ -659,7 +662,7 @@ class HP
 	 */
 	public static inline function randomizeSeed():Void
 	{
-		randomSeed = Std.int(2147483647 * Math.random());
+		randomSeed = Std.int(MAX_INT * Math.random());
 	}
 	
 	/**
@@ -668,8 +671,8 @@ class HP
 	public static var random(get, null):Float;
 	private static inline function get_random()
 	{
-		_seed = Std.int((_seed * 16807.0) % 2147483647);
-		return _seed / 2147483647;
+		_seed = Std.int((_seed * 16807.0) % MAX_INT);
+		return _seed / MAX_INT;
 	}
 	
 	/**
@@ -679,8 +682,8 @@ class HP
 	 */
 	public static inline function rand(amount:Int):Int
 	{
-		_seed = Std.int((_seed * 16807.0) % 2147483647);
-		return Std.int((_seed / 2147483647) * amount);
+		_seed = Std.int((_seed * 16807.0) % MAX_INT);
+		return Std.int((_seed / MAX_INT) * amount);
 	}
 	
 	/**
@@ -844,7 +847,7 @@ class HP
 	
 	/**
 	 * Fetches a stored BitmapData object represented by the source.
-	 * @param	source		Asset file or embedded Bitmap class.
+	 * @param	source		Asset id/file, BitmapData object, or embedded BitmapData class.
 	 * @return	The stored BitmapData object.
 	 */
 	public static function getBitmapData(source:Dynamic):BitmapData
@@ -876,11 +879,12 @@ class HP
 	public static inline function clearBitmapCache():Void
 	{
 		_bitmap = new Map<String, BitmapData>();
+		Assets.cache.bitmapData = new Map<String, BitmapData>();
 	}
 	
 	/**
 	 * Fetches a stored Sound object represented by the source.
-	 * @param	source		Asset file or embedded Sound class.
+	 * @param	source		Asset id/file, Sound object, or embedded Sound class.
 	 * @return	The stored Sound object.
 	 */
 	public static function getSound(source:Dynamic):Sound
@@ -904,6 +908,15 @@ class HP
 			_sound.set(name, data);
 
 		return data;
+	}
+	
+	/**
+	 * Clears the cache of Sound objects used by the getBitmap method.
+	 */
+	public static inline function clearSoundCache():Void
+	{
+		_sound = new Map<String, Sound>();
+		Assets.cache.sound = new Map<String, Sound>();
 	}
 	
 	/**
@@ -1255,7 +1268,4 @@ class HP
 	/** @private */ public static var sprite:Sprite;
 	/** @private */ public static var entity:Entity;
 }
-
-// Embedded default font
-@:font("assets/hxpunk/04B_03__.ttf") class DefaultFont extends Font { }
 

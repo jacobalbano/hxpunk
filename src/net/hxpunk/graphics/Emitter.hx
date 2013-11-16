@@ -21,7 +21,7 @@ class Emitter extends Graphic
 {
 	/**
 	 * Constructor. Sets the source image to use for newly added particle types.
-	 * @param	source			Source image.
+	 * @param	source			Source image. An asset id/file, BitmapData object, or embedded BitmapData class.
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
 	 */

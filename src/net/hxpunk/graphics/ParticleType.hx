@@ -72,7 +72,7 @@ class ParticleType
 	 * Constructor.
 	 * @param	name			Name of the particle type.
 	 * @param	frames			Array of frame indices to animate through.
-	 * @param	source			Source image.
+	 * @param	source			Source image BitmapData.
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
 	 * @param	originX			Origin x offset used for rotations (defaults to half frameWidth).

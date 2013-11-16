@@ -12,7 +12,7 @@ class TiledImage extends Image
 {
 	/**
 	 * Constructs the TiledImage.
-	 * @param	texture		Source texture.
+	 * @param	texture		Source texture. An asset id/file, BitmapData object, or embedded BitmapData class.
 	 * @param	width		The width of the image (the texture will be drawn to fill this area).
 	 * @param	height		The height of the image (the texture will be drawn to fill this area).
 	 * @param	clipRect	An optional area of the source texture to use (eg. a tile from a tileset).

@@ -12,7 +12,7 @@ class TiledSpritemap extends Spritemap
 {
 	/**
 	 * Constructs the tiled spritemap.
-	 * @param	source			Source image.
+	 * @param	source			Source image. An asset id/file, BitmapData object, or embedded BitmapData class.
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.	
 	 * @param	width			Width of the block to render.

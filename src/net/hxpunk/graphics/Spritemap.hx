@@ -29,7 +29,7 @@ class Spritemap extends Image
 	
 	/**
 	 * Constructor.
-	 * @param	source			Source image.
+	 * @param	source			Source image. An asset id/file, BitmapData object, or embedded BitmapData class.
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
 	 * @param	callback		Optional callback function for animation end.

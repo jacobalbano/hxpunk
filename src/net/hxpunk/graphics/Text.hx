@@ -330,8 +330,11 @@ class Text extends Image
 		
 		var i:Int = 0;
 		
-		var tlm: TextLineMetrics;
-		var remainder: Float;
+		// reassign text to force a recalc of TextLineMetrics and so be sure they report correct values
+		_field.htmlText = _field.htmlText;
+		
+		var tlm:TextLineMetrics;
+		var remainder:Float;
 		var tlm_y:Float = 2;
 		for (i in 0..._field.numLines) {
 			tlm = _field.getLineMetrics(i);

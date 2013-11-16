@@ -13,13 +13,13 @@ class Backdrop extends Canvas
 {
 	/**
 	 * Constructor.
-	 * @param	texture		Source texture.
+	 * @param	texture		Source texture. An asset id/file, BitmapData object, or embedded BitmapData class.
 	 * @param	repeatX		Repeat horizontally.
 	 * @param	repeatY		Repeat vertically.
 	 */
 	override public function new(texture:Dynamic, repeatX:Bool = true, repeatY:Bool = true) 
 	{
-		_texture = HP.getBitmap(texture);
+		_texture = HP.getBitmapData(texture);
 		if (_texture == null) _texture = new BitmapData(HP.width, HP.height, true, 0);
 		
 		_repeatX = repeatX;

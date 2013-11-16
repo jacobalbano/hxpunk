@@ -75,7 +75,7 @@ class Image extends Graphic
 	
 	/**
 	 * Constructor.
-	 * @param	source		Source image.
+	 * @param	source		Source image. An asset id/file, BitmapData object, or embedded BitmapData class.
 	 * @param	clipRect	Optional rectangle defining area of the source image to draw.
 	 */
 	public function new(source:Dynamic, clipRect:Rectangle = null) 
@@ -88,12 +88,12 @@ class Image extends Graphic
 		_matrix = HP.matrix;
 
 		// set the graphic
-		_source = HP.getBitmap(source);
+		_source = HP.getBitmapData(source);
 		if (Std.is(source, Class))
 			_class = Type.getClassName(source);
 		else if (Std.is(source, String)) 
 			_class = source;
-		if (_source == null) throw new Error("Invalid source image.");
+		if (_source == null) throw new Error("Image source must be of type BitmapData, String or Class.");
 		_sourceRect = _source.rect;
 		if (clipRect != null)
 		{

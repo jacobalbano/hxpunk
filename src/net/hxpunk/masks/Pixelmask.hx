@@ -22,7 +22,7 @@ class Pixelmask extends Hitbox
 {
 	/**
 	 * Constructor.
-	 * @param	source		The image to use as a mask.
+	 * @param	source		The image to use as a mask. An asset id/file, BitmapData object, or embedded BitmapData class.
 	 * @param	x			X offset of the mask.
 	 * @param	y			Y offset of the mask.
 	 */
@@ -35,7 +35,7 @@ class Pixelmask extends Hitbox
 		_point2 = HP.point2;
 
 		// fetch mask data
-		_data = HP.getBitmap(source);
+		_data = HP.getBitmapData(source);
 		if (_data == null) throw new Error("Invalid Pixelmask source image.");
 		
 		// set mask properties

@@ -21,7 +21,7 @@ class Tilemap extends Canvas
 	
 	/**
 	 * Constructor.
-	 * @param	tileset			The source tileset image.
+	 * @param	tileset			The source tileset image. An asset id/file, BitmapData object, or embedded BitmapData class.
 	 * @param	width			Width of the tilemap, in pixels.
 	 * @param	height			Height of the tilemap, in pixels.
 	 * @param	tileWidth		Tile width.
@@ -44,7 +44,7 @@ class Tilemap extends Canvas
 		super(_width, _height);
 		
 		// load the tileset graphic
-		_set = HP.getBitmap(tileset);
+		_set = HP.getBitmapData(tileset);
 		if (_set == null) throw new Error("Invalid tileset graphic provided.");
 		_setColumns = Math.ceil(_set.width / tileWidth);
 		_setRows = Math.ceil(_set.height / tileHeight);

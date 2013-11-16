@@ -14,7 +14,7 @@ class Stamp extends Graphic
 {
 	/**
 	 * Constructor.
-	 * @param	source		Source image.
+	 * @param	source		Source image. An asset id/file, BitmapData object, or embedded BitmapData class.
 	 * @param	x			X offset.
 	 * @param	y			Y offset.
 	 */
@@ -27,7 +27,7 @@ class Stamp extends Graphic
 		this.y = y;
 		
 		// set the graphic
-		_source = HP.getBitmap(source);
+		_source = HP.getBitmapData(source);
 		if (_source == null) throw new Error("Invalid source image.");
 		_sourceRect = _source.rect;
 	}
