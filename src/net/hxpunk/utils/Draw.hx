@@ -453,13 +453,6 @@ class Draw
 		textGfx.render(_target, HP.zero, _camera);
 	}
 	
-	public static function mask(mask:Mask):Void 
-	{
-		_graphics.clear();
-		mask.renderDebug(_graphics);
-		_target.draw(HP.sprite, null, null, blend);
-	}
-	
 	/**
 	 * Draws a tiny rectangle centered at x, y.
 	 * @param	x			The point's x.
@@ -583,12 +576,12 @@ class Draw
 	 * @param	centerY			Center y of the arc.
 	 * @param	radius			Radius of the arc.
 	 * @param	startAngle		Starting angle (in degrees) of the arc.
-	 * @param	endAngle		Ending angle (in degrees) of the arc.
+	 * @param	spanAngle		Angular span (in degrees) of the arc.
 	 * @param	color			Color of the arc.
 	 * @param	alpha			Alpha of the arc.
 	 * @param	drawArrow		Whether or not to draw an arrow head over the ending point.
 	 */
-	public static function arc(centerX:Float, centerY:Float, radius:Float, startAngle:Float, endAngle:Float, color:Int = 0xFFFFFF, alpha:Float = 1, drawArrow:Bool = false):Void 
+	public static function arc(centerX:Float, centerY:Float, radius:Float, startAngle:Float, spanAngle:Float, color:Int = 0xFFFFFF, alpha:Float = 1, drawArrow:Bool = false):Void 
 	{
 		centerX -= _camera.x;
 		centerY -= _camera.y;
@@ -598,13 +591,19 @@ class Draw
 		_camera = HP.zero;
 
 		var startAngleRad:Float = startAngle * HP.RAD;
-		var endAngleRad:Float = endAngle * HP.RAD;
-		var totalArcSpan:Float = Math.abs(endAngleRad - startAngleRad);
-		if (totalArcSpan > 2 * Math.PI) startAngleRad = endAngleRad -HP.sign(startAngleRad - endAngleRad) * 2 * Math.PI;
+		var spanAngleRad:Float;
+		
+		// adjust angles if |span| > 360
+		if (Math.abs(spanAngle) > 360) {
+			startAngleRad += (spanAngle % 360) * HP.RAD;
+			spanAngleRad = -HP.sign(spanAngle) * Math.PI * 2;
+		} else {
+			spanAngleRad = spanAngle * HP.RAD;
+		}
 
-		var steps:Int = Std.int(Math.abs(endAngleRad - startAngleRad) * 10);
+		var steps:Int = Std.int(Math.abs(spanAngleRad) * 10);
 		steps = steps > 0 ? steps : 1;
-		var angleStep:Float = (endAngleRad - startAngleRad) / steps;
+		var angleStep:Float = spanAngleRad / steps;
 		
 		var x1:Float = centerX + Math.cos(startAngleRad) * radius;
 		var y1:Float = centerY + Math.sin(startAngleRad) * radius;
@@ -633,14 +632,14 @@ class Draw
 	 * @param	centerY			Center y of the arc.
 	 * @param	radius			Radius of the arc.
 	 * @param	startAngle		Starting angle (in degrees) of the arc.
-	 * @param	endAngle		Ending angle (in degrees) of the arc.
+	 * @param	spanAngle		Angular span (in degrees) of the arc.
 	 * @param	color			Color of the arc.
 	 * @param	alpha			Alpha of the arc.
 	 * @param	fill			If the arc should be filled with the color (true) or just an outline (false).
 	 * @param	thick			Thickness of the outline (only applicable when fill = false).
 	 * @param	drawArrow		Whether or not to draw an arrow head over the ending point.
 	 */
-	public static function arcPlus(centerX:Float, centerY:Float, radius:Float, startAngle:Float, endAngle:Float, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1, drawArrow:Bool = false):Void
+	public static function arcPlus(centerX:Float, centerY:Float, radius:Float, startAngle:Float, spanAngle:Float, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1, drawArrow:Bool = false):Void
 	{
 		centerX -= _camera.x;
 		centerY -= _camera.y;
@@ -653,13 +652,18 @@ class Draw
 		_graphics.clear();
 		
 		var startAngleRad:Float = startAngle * HP.RAD;
-		var endAngleRad:Float = endAngle * HP.RAD;
-		var totalArcSpan:Float = Math.abs(endAngleRad - startAngleRad);
-		if (totalArcSpan > 2 * Math.PI) startAngleRad = endAngleRad -HP.sign(endAngleRad - startAngleRad) * 2 * Math.PI;
-		totalArcSpan = Math.abs(endAngleRad - startAngleRad);
+		var spanAngleRad:Float;
 		
-		var steps:Int = Std.int(Math.floor(totalArcSpan / (Math.PI / 4)) + 1);
-		var angleStep:Float = (endAngleRad-startAngleRad) / (2 * steps);
+		// adjust angles if |span| > 360
+		if (Math.abs(spanAngle) > 360) {
+			startAngleRad += (spanAngle % 360) * HP.RAD;
+			spanAngleRad = -HP.sign(spanAngle) * Math.PI * 2;
+		} else {
+			spanAngleRad = spanAngle * HP.RAD;
+		}
+
+		var steps:Int = Math.floor(Math.abs(spanAngleRad / (Math.PI / 4))) + 1;
+		var angleStep:Float = spanAngleRad / (2 * steps);
 		var controlRadius:Float = radius / Math.cos(angleStep);
 
 		var startX:Float = centerX + Math.cos(startAngleRad) * radius;
@@ -674,6 +678,7 @@ class Draw
 			_graphics.moveTo(startX, startY);
 		}
 
+		var endAngleRad:Float = 0;
 		var controlPoint:Point = HP.point;
 		var anchorPoint:Point = HP.point2;
 
@@ -758,11 +763,11 @@ class Draw
 	 * 
 	 * @see BitmapData.draw()
 	 * 
-	 * @param	source				The display object or BitmapData to draw onto the cuurent target.
+	 * @param	source				The display object or BitmapData to draw onto the current target.
 	 * @param	matrix				A Matrix object used to scale, rotate, or translate the coordinates of the bitmap.
 	 * @param	colorTransform		A ColorTransform object that you use to adjust the color values of the bitmap.
 	 * @param	blendMode			The blend mode to be applied to the resulting bitmap.
-	 * @param	clipRect			A Rectangle object that defines the area of the source object to draw.
+	 * @param	clipRect			A Rectangle object that defines the area of the source object to draw (don't trust this - AS3 docs are wrong!).
 	 * @param	smoothing			Whether the source object has to be smoothed when scaled or rotated.
 	 */
 	public static function draw(source:IBitmapDrawable, ?matrix:Matrix, ?colorTransform:ColorTransform, ?blendMode:BlendMode, ?clipRect:Rectangle, smoothing:Bool = false):Void
