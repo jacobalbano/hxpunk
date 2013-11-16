@@ -208,16 +208,14 @@ class Emitter extends Graphic
 	 * Creates a new Particle type for this Emitter.
 	 * @param	name		Name of the particle type.
 	 * @param	frames		Array of frame indices for the particles to animate.
-	 * @param	originX		Origin x offset used for rotations (defaults to half frameWidth).
-	 * @param	originY		Origin y offset used for rotations (defaults to half frameHeight).
 	 * @return	A new ParticleType object.
 	 */
-	public function newType(name:String, frames:Array<Int> = null, ?originX:Float, ?originY:Float):ParticleType
+	public function newType(name:String, frames:Array<Int> = null):ParticleType
 	{
 		if (frames == null) frames = new Array<Int>();
 		if (frames.length == 0) frames[0] = 0;
 		if (_types.exists(name)) throw new Error("Cannot add multiple particle types of the same name");
-		return (_types[name] = new ParticleType(name, frames, _source, _frameWidth, _frameHeight, originX, originY));
+		return (_types[name] = new ParticleType(name, frames, _source, _frameWidth, _frameHeight));
 	}
 	
 	/**

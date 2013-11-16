@@ -68,6 +68,20 @@ typedef FriendlyParticleType = {
  */
 class ParticleType 
 {
+	// Rotation information.
+
+	/**
+	 * X origin of the frame, determines transformation point.
+	 * Defaults to top-left corner.
+	 */
+	public var originX:Float = 0;
+
+	/**
+	 * Y origin of the frame, determines transformation point.
+	 * Defaults to top-left corner.
+	 */
+	public var originY:Float = 0;
+	
 	/**
 	 * Constructor.
 	 * @param	name			Name of the particle type.
@@ -75,10 +89,8 @@ class ParticleType
 	 * @param	source			Source image BitmapData.
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
-	 * @param	originX			Origin x offset used for rotations (defaults to half frameWidth).
-	 * @param	originY			Origin y offset used for rotations (defaults to half frameHeight).
 	 */
-	public function new(name:String, frames:Array<Int>, source:BitmapData, frameWidth:Int, frameHeight:Int, ?originX:Float, ?originY:Float)
+	public function new(name:String, frames:Array<Int>, source:BitmapData, frameWidth:Int, frameHeight:Int)
 	{
 		_name = name;
 		_source = source;
@@ -86,8 +98,6 @@ class ParticleType
 		_frame = new Rectangle(0, 0, frameWidth, frameHeight);
 		_frames = frames;
 		_frameCount = frames.length;
-		this.originX = originX != null ? originX : frameWidth * .5;
-		this.originY = originY != null  ?originY : frameHeight * .5;
 	}
 	
 	/**
@@ -235,8 +245,6 @@ class ParticleType
 	/** @private */ private var _ease:EasingFunction;
 	
 	// Rotation information.
-	public var originX:Float;
-	public var originY:Float;
 	/** @private */ private var _isRotating:Bool = false;
 	/** @private */ private var _startAngle:Float = 0;
 	/** @private */ private var _startAngleRange:Float = 0;
