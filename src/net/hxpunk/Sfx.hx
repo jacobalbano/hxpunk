@@ -34,7 +34,7 @@ class Sfx
 	 * Creates a sound effect from an embedded source. Store a reference to
 	 * this object so that you can play the sound using play() or loop().
 	 * @param	source		The embedded sound class to use or a Sound object. An asset id/file, Sound object, or embedded Sound class.
-	 * @param	complete	Optional callback function for when the sound (all of its loops!) finishes playing.
+	 * @param	complete	Optional callback function for when the sound finishes playing.
 	 */
 	public function new(source:Dynamic, complete:VoidCallback = null, type:String = null) 
 	{
@@ -53,9 +53,8 @@ class Sfx
 	 * Plays the sound once.
 	 * @param	vol		Volume factor, a value from 0 to 1.
 	 * @param	pan		Panning factor, a value from -1 to 1.
-	 * @param	loops	Amount of times to repeat the sound.
 	 */
-	public function play(vol:Float = 1, pan:Float = 0, loops:Int = 0):Void
+	public function play(vol:Float = 1, pan:Float = 0):Void
 	{
 		if (_channel != null) stop();
 		_pan = HP.clamp(pan, -1, 1);
@@ -68,7 +67,7 @@ class Sfx
 		_filteredVol = Math.max(0, _vol * getVolume(_type) #if !flash * HP.volume #end);
 		_transform.pan = _filteredPan;
 		_transform.volume = _filteredVol;
-		_channel = _sound.play(0, loops, _transform);
+		_channel = _sound.play(0, 0, _transform);
 		if (_channel != null)
 		{
 			addPlaying();
@@ -85,7 +84,7 @@ class Sfx
 	 */
 	public function loop(vol:Float = 1, pan:Float = 0):Void
 	{
-		play(vol, pan, HP.MAX_INT);
+		play(vol, pan);
 		_looping = true;
 	}
 	
@@ -109,9 +108,7 @@ class Sfx
 	 */
 	public function resume():Void
 	{
-		if (_looping) _channel = _sound.play(_position, HP.MAX_INT, _transform);
-		else _channel = _sound.play(_position, 0, _transform);
-
+		_channel = _sound.play(_position, 0, _transform);
 		if (_channel != null)
 		{
 			addPlaying();
@@ -125,13 +122,12 @@ class Sfx
 		_position = 0;
 	}
 	
-	/** @private Event handler for sound completion (if the sound is looping it will be triggered when all loops have been played). */
+	/** @private Event handler for sound completion. */
 	private function onComplete(e:Event = null):Void
 	{
-		if (!_looping) {
-			stop();
-			_position = 0;
-		}
+		if (_looping) loop(_vol, _pan);
+		else stop();
+		_position = 0;
 		if (complete != null) complete();
 	}
 	
@@ -316,4 +312,3 @@ class Sfx
 	/** @private */ private static var _typePlaying:Map<String, Map<String, Sfx>>;
 	/** @private */ private static var _typeTransforms:Map<String, SoundTransform>;
 }
-
