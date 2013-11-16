@@ -824,7 +824,7 @@ class Draw
 		var len:Int = _callQueue.length;
 		for (i in 0...len) {
 			var func:Dynamic = _callQueue[i];
-			func();
+			if (Reflect.isFunction(func)) func();
 		}
 		HP.removeAll(_callQueue);
 	}

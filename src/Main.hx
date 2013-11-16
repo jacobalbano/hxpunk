@@ -34,6 +34,8 @@ import net.hxpunk.utils.Key;
 
 class Main extends Engine
 {
+	var BALL:String = "assets/ball.png";
+	
 	var BG_MUSIC_ID:String = "BGMUSIC";
 	var bgMusic:Sfx;
 	
@@ -270,7 +272,7 @@ class Main extends Engine
 		if (Input.check(Key.W)) HP.camera.y -= 2; 
 		if (Input.check(Key.S)) HP.camera.y += 2; 
 		
-		if (Input.check(Key.Z)) {
+		if (Input.check(Key.Z) || Input.mousePressed) {
 			new Sfx(SFX_WHIFF_ID).play();
 			emitter.emit("squares", 0, 0);
 			Draw.enqueueCall(function ():Void 
@@ -313,7 +315,3 @@ class Main extends Engine
 		trace("update");
 	}*/
 }
-
-@:bitmap("assets/ball.png")
-class BALL extends flash.display.BitmapData { }
-
