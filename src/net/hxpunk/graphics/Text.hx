@@ -329,12 +329,10 @@ class Text extends Image
 		var offsetRequired: Bool = false;
 		
 		var i:Int = 0;
-	
-	#if !mobile
+		
 		// reassign text to force a recalc of TextLineMetrics and so be sure they report correct values
 		_field.htmlText = _field.htmlText;
-	#end
-	
+		
 		var tlm:TextLineMetrics;
 		var remainder:Float;
 		var tlm_y:Float = 2;
