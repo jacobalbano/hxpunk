@@ -19,12 +19,15 @@ import openfl.Assets;
  */
 class Text extends Image
 {
-	private static var init:Bool = Text.initStaticVars();
-	
 	/**
 	 * The font to assign to new Text objects.
 	 */
 	public static var FONT:String;
+	
+	// Default font family.
+	/** @private */ public static var _FONT_DEFAULT:Font;
+
+	private static var init:Bool = initStaticVars();
 	
 	/**
 	 * The font size to assign to new Text objects.
@@ -90,6 +93,10 @@ class Text extends Image
 		_field = new TextField();
 		_styles = new Map<String, TextFormat>();
 		
+		if (Text.FONT == null || Text._FONT_DEFAULT == null) {
+			Text._FONT_DEFAULT = Assets.getFont(HP.defaultFontName);
+			Text.FONT = Text._FONT_DEFAULT.fontName;
+		}
 		_font = Text.FONT;
 		_size = Text.SIZE;
 		_align = Text.ALIGN;
@@ -147,11 +154,6 @@ class Text extends Image
 	
 	private static inline function initStaticVars():Bool 
 	{
-		// Font
-		_FONT_DEFAULT = HP.defaultFont;
-		FONT = _FONT_DEFAULT.fontName;
-		//FONT = "default";
-		
 		// Styles vars
 		_styleIndices = new Array<Int>();
 		_styleMatched = new Array<Bool>();
@@ -159,6 +161,12 @@ class Text extends Image
 		_styleFrom = new Array<Int>();
 		_styleTo = new Array<Int>();
 	
+		// Font
+		/*f (HP.defaultFont == null) HP.defaultFont = Assets.getFont(HP.defaultFontName);
+		var _f = new TextFormat(HP.defaultFont.fontName);*/
+		//FONT = HP.defaultFontName;
+		//_FONT_DEFAULT = Assets.getFont("assets/hxpunk/04B_03__.ttf", false);
+		//trace(_FONT_DEFAULT.fontName);
 		return true;
 	}
 	
@@ -329,15 +337,16 @@ class Text extends Image
 		var offsetRequired: Bool = false;
 		
 		var i:Int = 0;
-		
+	
+	#if flash
 		// reassign text to force a recalc of TextLineMetrics and so be sure they report correct values
 		_field.htmlText = _field.htmlText;
-		
+	#end
+	
 		var tlm:TextLineMetrics;
 		var remainder:Float;
 		var tlm_y:Float = 2;
 		for (i in 0..._field.numLines) {
-			tlm = _field.getLineMetrics(i);
 			tlm = _field.getLineMetrics(i);
 			remainder = tlm.x % 1;
 			if (remainder > 0.1 && remainder < 0.9) {
@@ -608,11 +617,4 @@ class Text extends Image
 	private static var _styleFormats:Array<TextFormat>;
 	private static var _styleFrom:Array<Int>;
 	private static var _styleTo:Array<Int>;
-	
-	// Default font family.
-	// Use this option when compiling with Flex SDK 3 or lower
-	// [Embed(source = '04B_03__.TTF', fontFamily = 'default')]
-	// Use this option when compiling with Flex SDK 4
-	//Embed[('04B_03__.TTF', embedAsCFF="false", fontFamily = 'default')]
-	/** @private */ private static var _FONT_DEFAULT:Font;
 }
