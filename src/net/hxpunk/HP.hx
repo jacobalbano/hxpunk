@@ -8,7 +8,7 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.Lib;
 import flash.media.Sound;
-import net.hxpunk.graphics.Spritemap.VoidCallback;
+import net.hxpunk.HP.VoidCallback;
 import net.hxpunk.graphics.Text;
 import net.hxpunk.tweens.misc.MultiVarTween;
 import net.hxpunk.utils.Ease.EasingFunction;
@@ -35,6 +35,8 @@ typedef RectangleLike = {
 	var width:Dynamic; 
 	var height:Dynamic; 
 }
+
+typedef VoidCallback = Void -> Void;
 
 
 /**
@@ -1310,18 +1312,18 @@ class HP
 	}
 	
 	// World information.
-	public static var _world:World;
-	public static var _goto:World;
+	private static var _world:World;
+	private static var _goto:World;
 	
 	// Console information.
-	public static var _console:Console;
+	private static var _console:Console;
 	
 	// Time information.
-	public static var _time:Float = 0;
-	public static var _updateTime:Float = 0;
-	public static var _renderTime:Float = 0;
-	public static var _logicTime:Float = 0;
-	public static var _systemTime:Float = 0;
+	private static var _time:Float = 0;
+	private static var _updateTime:Float = 0;
+	private static var _renderTime:Float = 0;
+	private static var _logicTime:Float = 0;
+	private static var _systemTime:Float = 0;
 	
 	// Bitmap storage.
 	private static var _bitmap:Map<String, BitmapData>;

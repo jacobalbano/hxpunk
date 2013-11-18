@@ -1,7 +1,7 @@
 package net.hxpunk.graphics;
 
 import flash.display.BitmapData;
-import net.hxpunk.graphics.Spritemap.VoidCallback;
+import net.hxpunk.HP.VoidCallback;
 import net.hxpunk.HP;
 
 

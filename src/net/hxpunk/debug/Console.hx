@@ -22,6 +22,7 @@ import openfl.Assets;
 /**
  * FlashPunk debug console; can use to log information or pause the game and view/move Entities and step the frame.
  */
+@:access(net.hxpunk.HP)		// access HP class private members
 class Console
 {
 	/**

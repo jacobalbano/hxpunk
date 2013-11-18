@@ -4,8 +4,6 @@ import flash.geom.Rectangle;
 import net.hxpunk.graphics.Anim;
 
 
-typedef VoidCallback = Void -> Void;
-
 /**
  * Performance-optimized animated Image. Can have multiple animations,
  * which draw frames from the provided source image to the screen.

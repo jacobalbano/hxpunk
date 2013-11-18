@@ -2,7 +2,7 @@ package net.hxpunk.tweens.misc;
 
 import flash.errors.Error;
 import net.hxpunk.Tween;
-import net.hxpunk.graphics.Spritemap.VoidCallback;
+import net.hxpunk.HP.VoidCallback;
 import net.hxpunk.HP;
 import net.hxpunk.Tween.TweenType;
 import net.hxpunk.utils.Ease.EasingFunction;

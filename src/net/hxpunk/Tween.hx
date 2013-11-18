@@ -1,5 +1,5 @@
 ﻿package net.hxpunk;
-import net.hxpunk.graphics.Spritemap.VoidCallback;
+import net.hxpunk.HP.VoidCallback;
 import net.hxpunk.utils.Ease.EasingFunction;
 
 enum TweenType {
@@ -28,7 +28,7 @@ class Tween
 	/**
 	 * Tween completion callback.
 	 */
-	public var complete:VoidCallback;
+	public var onComplete:VoidCallback;
 	
 	/**
 	 * Length of time to wait before starting this tween.
@@ -47,7 +47,7 @@ class Tween
 		if (type == null) type = TweenType.PERSIST;
 		_target = duration;
 		_type = type;
-		this.complete = complete;
+		this.onComplete = complete;
 		_ease = ease;
 	}
 	
@@ -120,7 +120,7 @@ class Tween
 				_parent.removeTween(this);
 		}
 		_finish = false;
-		if (complete != null) complete();
+		if (onComplete != null) onComplete();
 	}
 	
 	/**

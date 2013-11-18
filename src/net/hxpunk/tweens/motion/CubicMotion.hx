@@ -1,5 +1,5 @@
 ﻿package net.hxpunk.tweens.motion;
-import net.hxpunk.graphics.Spritemap.VoidCallback;
+import net.hxpunk.HP.VoidCallback;
 import net.hxpunk.Tween.TweenType;
 import net.hxpunk.utils.Ease.EasingFunction;
 

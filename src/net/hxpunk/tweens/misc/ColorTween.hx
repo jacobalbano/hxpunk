@@ -1,6 +1,6 @@
 ﻿package net.hxpunk.tweens.misc;
 
-import net.hxpunk.graphics.Spritemap.VoidCallback;
+import net.hxpunk.HP.VoidCallback;
 import net.hxpunk.Tween;
 import net.hxpunk.utils.Ease.EasingFunction;
 

@@ -5,7 +5,7 @@ import flash.events.Event;
 import flash.media.Sound;
 import flash.media.SoundChannel;
 import flash.media.SoundTransform;
-import net.hxpunk.graphics.Spritemap.VoidCallback;
+import net.hxpunk.HP.VoidCallback;
 
 
 /**
@@ -20,7 +20,7 @@ class Sfx
 	/**
 	 * Optional callback function for when the sound finishes playing.
 	 */
-	public var complete:VoidCallback;
+	public var onComplete:VoidCallback;
 	
 	private static inline function initStaticVars():Bool 
 	{
@@ -46,7 +46,7 @@ class Sfx
 		else if (Std.is(source, String)) 
 			_className = source;
 		else if (source == null) throw new Error("Sfx source must be of type Sound, String or Class.");
-		this.complete = complete;
+		this.onComplete = complete;
 	}
 	
 	/**
@@ -71,7 +71,7 @@ class Sfx
 		if (_channel != null)
 		{
 			addPlaying();
-			_channel.addEventListener(Event.SOUND_COMPLETE, onComplete);
+			_channel.addEventListener(Event.SOUND_COMPLETE, _onComplete);
 		}
 		_looping = false;
 		_position = 0;
@@ -97,7 +97,7 @@ class Sfx
 		if (_channel == null) return false;
 		removePlaying();
 		_position = _channel.position;
-		_channel.removeEventListener(Event.SOUND_COMPLETE, onComplete);
+		_channel.removeEventListener(Event.SOUND_COMPLETE, _onComplete);
 		_channel.stop();
 		_channel = null;
 		return true;
@@ -112,7 +112,7 @@ class Sfx
 		if (_channel != null)
 		{
 			addPlaying();
-			_channel.addEventListener(Event.SOUND_COMPLETE, onComplete);
+			_channel.addEventListener(Event.SOUND_COMPLETE, _onComplete);
 		}
 	#if !flash
 		// take global volume and pan into account for nonflash targets
@@ -123,12 +123,12 @@ class Sfx
 	}
 	
 	/** @private Event handler for sound completion. */
-	private function onComplete(e:Event = null):Void
+	private function _onComplete(e:Event = null):Void
 	{
 		if (_looping) loop(_vol, _pan);
 		else stop();
 		_position = 0;
-		if (complete != null) complete();
+		if (onComplete != null) onComplete();
 	}
 	
 	/** @private Add the sound to the global list. */
