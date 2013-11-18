@@ -183,9 +183,9 @@ class Data
 	}
 	
 	// Data information.
-	/** @private */ private static var _shared:SharedObject;
-	/** @private */ private static var _dataMap:Map<String, Dynamic>;
+	private static var _shared:SharedObject;
+	private static var _dataMap:Map<String, Dynamic>;
 	
-	/** @private */ private static var DEFAULT_FILE:String = "_file";
-	/** @private */ private static var SIZE:UInt = 10000;
+	private static var DEFAULT_FILE:String = "_file";
+	private static var SIZE:UInt = 10000;
 }

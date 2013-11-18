@@ -137,18 +137,18 @@ class Tween
 	private inline function get_scale() { return _t; }
 	
 	// Tween information.
-	/** @private */ private var _type:TweenType;
-	/** @private */ private var _ease:EasingFunction;
-	/** @private */ private var _t:Float = 0;
+	private var _type:TweenType;
+	private var _ease:EasingFunction;
+	private var _t:Float = 0;
 	
 	// Timing information.
-	/** @private */ private var _time:Float = 0;
-	/** @private */ private var _target:Float = 0;
+	private var _time:Float = 0;
+	private var _target:Float = 0;
 	
 	// List information.
-	/** @private */ public var _finish:Bool;
-	/** @private */ public var _parent:Tweener;
-	/** @private */ public var _prev:Tween;
-	/** @private */ public var _next:Tween;
+	public var _finish:Bool;
+	public var _parent:Tweener;
+	public var _prev:Tween;
+	public var _next:Tween;
 }
 

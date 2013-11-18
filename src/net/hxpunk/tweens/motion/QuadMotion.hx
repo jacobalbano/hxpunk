@@ -106,11 +106,11 @@ class QuadMotion extends Motion
 	}
 	
 	// Curve information.
-	/** @private */ private var _distance:Float = -1;
-	/** @private */ private var _fromX:Float = 0;
-	/** @private */ private var _fromY:Float = 0;
-	/** @private */ private var _toX:Float = 0;
-	/** @private */ private var _toY:Float = 0;
-	/** @private */ private var _controlX:Float = 0;
-	/** @private */ private var _controlY:Float = 0;
+	private var _distance:Float = -1;
+	private var _fromX:Float = 0;
+	private var _fromY:Float = 0;
+	private var _toX:Float = 0;
+	private var _toY:Float = 0;
+	private var _controlX:Float = 0;
+	private var _controlY:Float = 0;
 }

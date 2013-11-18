@@ -284,19 +284,19 @@ class Spritemap extends Image
 	}
 	
 	// Spritemap information.
-	/** @private */ private var _rect:Rectangle;
-	/** @private */ private var _clipRect:Rectangle;
-	/** @private */ private var _width:Int = 0;
-	/** @private */ private var _height:Int = 0;
-	/** @private */ private var _frameWidth:Int = 0;
-	/** @private */ private var _frameHeight:Int = 0;
-	/** @private */ private var _columns:Int = 0;
-	/** @private */ private var _rows:Int = 0;
-	/** @private */ private var _frameCount:Int = 0;
-	/** @private */ private var _anims:Map<String, Anim>;
-	/** @private */ private var _anim:Anim;
-	/** @private */ private var _index:Int = 0;
-	/** @private */ private var _frame:Int = 0;
-	/** @private */ private var _timer:Float = 0;
-	/** @private */ private var _friendlyAnim:FriendlyAnim;
+	private var _rect:Rectangle;
+	private var _clipRect:Rectangle;
+	private var _width:Int = 0;
+	private var _height:Int = 0;
+	private var _frameWidth:Int = 0;
+	private var _frameHeight:Int = 0;
+	private var _columns:Int = 0;
+	private var _rows:Int = 0;
+	private var _frameCount:Int = 0;
+	private var _anims:Map<String, Anim>;
+	private var _anim:Anim;
+	private var _index:Int = 0;
+	private var _frame:Int = 0;
+	private var _timer:Float = 0;
+	private var _friendlyAnim:FriendlyAnim;
 }

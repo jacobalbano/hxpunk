@@ -386,26 +386,26 @@ class Canvas extends Graphic
 	private inline function get_height():Int { return _height; }
 	
 	// Buffer information.
-	/** @private */ private var _buffers:Array<BitmapData>;
-	/** @private */ private var _width:Int = 0;
-	/** @private */ private var _height:Int = 0;
-	/** @private */ private var _maxWidth:Int = 2880;
-	/** @private */ private var _maxHeight:Int = 2880;
-	/** @private */ private var _bitmap:Bitmap;
+	private var _buffers:Array<BitmapData>;
+	private var _width:Int = 0;
+	private var _height:Int = 0;
+	private var _maxWidth:Int = 2880;
+	private var _maxHeight:Int = 2880;
+	private var _bitmap:Bitmap;
 	
 	// Color tinting information.
-	/** @private */ private var _color:Int = 0xFFFFFF;
-	/** @private */ private var _alpha:Float = 1;
-	/** @private */ private var _tint:ColorTransform;
-	/** @private */ private var _colorTransform:ColorTransform;
-	/** @private */ private var _matrix:Matrix;
+	private var _color:Int = 0xFFFFFF;
+	private var _alpha:Float = 1;
+	private var _tint:ColorTransform;
+	private var _colorTransform:ColorTransform;
+	private var _matrix:Matrix;
 	
 	// Canvas reference information.
-	/** @private */ private var _ref:BitmapData;
-	/** @private */ private var _refWidth:Int = 0;
-	/** @private */ private var _refHeight:Int = 0;
+	private var _ref:BitmapData;
+	private var _refWidth:Int = 0;
+	private var _refHeight:Int = 0;
 	
 	// Global objects.
-	/** @private */ private var _rect:Rectangle;
-	/** @private */ private var _graphics:Graphics;
+	private var _rect:Rectangle;
+	private var _graphics:Graphics;
 }

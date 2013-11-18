@@ -226,14 +226,14 @@ class Ease
 	
 	 
 	// Easing constants.
-	/** @private */ private static var PI:Float;
-	/** @private */ private static var PI2:Float;
-	/** @private */ private static inline var B1:Float = 1 / 2.75;
-	/** @private */ private static inline var B2:Float = 2 / 2.75;
-	/** @private */ private static inline var B3:Float = 1.5 / 2.75;
-	/** @private */ private static inline var B4:Float = 2.5 / 2.75;
-	/** @private */ private static inline var B5:Float = 2.25 / 2.75;
-	/** @private */ private static inline var B6:Float = 2.625 / 2.75;
+	private static var PI:Float;
+	private static var PI2:Float;
+	private static inline var B1:Float = 1 / 2.75;
+	private static inline var B2:Float = 2 / 2.75;
+	private static inline var B3:Float = 1.5 / 2.75;
+	private static inline var B4:Float = 2.5 / 2.75;
+	private static inline var B5:Float = 2.25 / 2.75;
+	private static inline var B6:Float = 2.625 / 2.75;
 
 	/**
 	 * Operation of in/out easers:

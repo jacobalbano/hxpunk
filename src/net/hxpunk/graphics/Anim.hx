@@ -2,7 +2,7 @@
 
 
 typedef FriendlyAnim = {
-	/** @private */ private var _parent:Spritemap;
+	private var _parent:Spritemap;
 }
 
 /**
@@ -66,10 +66,10 @@ class Anim
 	public var loop(get, null):Bool;
 	private function get_loop():Bool { return _loop; }
 	
-	/** @private */ private var _parent:Spritemap;
-	/** @private */ private var _name:String;
-	/** @private */ private var _frames:Array<Int>;
-	/** @private */ private var _frameRate:Float;
-	/** @private */ private var _frameCount:Int;
-	/** @private */ private var _loop:Bool;
+	private var _parent:Spritemap;
+	private var _name:String;
+	private var _frames:Array<Int>;
+	private var _frameRate:Float;
+	private var _frameCount:Int;
+	private var _loop:Bool;
 }

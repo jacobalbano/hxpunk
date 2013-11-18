@@ -121,8 +121,8 @@ class Hitbox extends Mask
 	}
 	
 	// Hitbox information.
-	/** @private */ private var _width:Int = 0;
-	/** @private */ private var _height:Int = 0;
-	/** @private */ private var _x:Int = 0;
-	/** @private */ private var _y:Int = 0;
+	private var _width:Int = 0;
+	private var _height:Int = 0;
+	private var _x:Int = 0;
+	private var _y:Int = 0;
 }

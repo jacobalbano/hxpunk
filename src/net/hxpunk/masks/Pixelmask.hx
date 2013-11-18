@@ -159,13 +159,13 @@ class Pixelmask extends Hitbox
 	
 	
 	// Pixelmask information.
-	/** @private */ private var _threshold:Int = 1;
-	/** @private */ private var _data:BitmapData;
-	/** @private */ private var _debug:BitmapData;
+	private var _threshold:Int = 1;
+	private var _data:BitmapData;
+	private var _debug:BitmapData;
 	
 	// Global objects.
-	/** @private */ private var _rect:Rectangle;
-	/** @private */ private var _point:Point;
-	/** @private */ private var _point2:Point;
+	private var _rect:Rectangle;
+	private var _point:Point;
+	private var _point2:Point;
 }
 

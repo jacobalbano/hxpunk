@@ -91,7 +91,7 @@ class Mask
 	}
 	
 	/**
-	 * Replacement for BitmapData.hitTest() that is not yet available in non-flash targets. TODO: Serious testing and optimizations (for Rect and Points above all).
+	 * Replacement for BitmapData.hitTest() that is not yet available in non-flash targets. TODO: Thorough testing and optimizations.
 	 * 
 	 * @param	firstObject				The first BitmapData object to check against.
 	 * @param	firstPoint				A position of the upper-left corner of the BitmapData image in an arbitrary coordinate space. The same coordinate space is used in defining the secondBitmapPoint parameter.
@@ -191,6 +191,6 @@ class Mask
 	
 	
 	// Mask information.
-	/** @private */ private var _class:String;
-	/** @private */ private var _check:Map<String, HitCallback>;
+	private var _class:String;
+	private var _check:Map<String, HitCallback>;
 }

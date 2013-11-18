@@ -144,15 +144,15 @@ class LinearPath extends Motion
 	private inline function get_pointCount():Int { return _points.length; }
 	
 	// Path information.
-	/** @private */ private var _points:Array<Point>;
-	/** @private */ private var _pointD:Array<Float>;
-	/** @private */ private var _pointT:Array<Float>;
-	/** @private */ private var _distance:Float = 0;
-	/** @private */ private var _speed:Float = 0;
-	/** @private */ private var _index:Int = 0;
+	private var _points:Array<Point>;
+	private var _pointD:Array<Float>;
+	private var _pointT:Array<Float>;
+	private var _distance:Float = 0;
+	private var _speed:Float = 0;
+	private var _index:Int = 0;
 	
 	// Line information.
-	/** @private */ private var _lastPoint:Point;
-	/** @private */ private var _prevPoint:Point;
-	/** @private */ private var _nextPoint:Point;
+	private var _lastPoint:Point;
+	private var _prevPoint:Point;
+	private var _nextPoint:Point;
 }

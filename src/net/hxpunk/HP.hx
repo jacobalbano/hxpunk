@@ -9,6 +9,7 @@ import flash.geom.Rectangle;
 import flash.Lib;
 import flash.media.Sound;
 import net.hxpunk.graphics.Spritemap.VoidCallback;
+import net.hxpunk.graphics.Text;
 import net.hxpunk.tweens.misc.MultiVarTween;
 import net.hxpunk.utils.Ease.EasingFunction;
 #if flash
@@ -202,7 +203,7 @@ class HP
 	 */
 	public static var world(get, set):World;
 	private static inline function get_world() { return _world; }
-	private static inline function set_world(value:World):World
+	private static function set_world(value:World):World
 	{
 		if (_goto != null) {
 			if (_goto == value) return value;
@@ -495,8 +496,9 @@ class HP
 
 		return diff;
 	}
+	
 	/**
-	 * Find the distance between two points.
+	 * Finds the distance between two points.
 	 * @param	x1		The first x-position.
 	 * @param	y1		The first y-position.
 	 * @param	x2		The second x-position.
@@ -509,7 +511,7 @@ class HP
 	}
 	
 	/**
-	 * Find the distance between two rectangles. Will return 0 if the rectangles overlap.
+	 * Finds the distance between two rectangles. Will return 0 if the rectangles overlap.
 	 * @param	x1		The x-position of the first rect.
 	 * @param	y1		The y-position of the first rect.
 	 * @param	w1		The width of the first rect.
@@ -543,7 +545,7 @@ class HP
 	}
 	
 	/**
-	 * Find the distance between a point and a rectangle. Returns 0 if the point is within the rectangle.
+	 * Finds the distance between a point and a rectangle. Returns 0 if the point is within the rectangle.
 	 * @param	px		The x-position of the point.
 	 * @param	py		The y-position of the point.
 	 * @param	rx		The x-position of the rect.
@@ -552,7 +554,7 @@ class HP
 	 * @param	rh		The height of the rect.
 	 * @return	The distance.
 	 */
-	public static function distanceRectPoint(px:Float, py:Float, rx:Float, ry:Float, rw:Float, rh:Float):Float
+	public static function distancePointRect(px:Float, py:Float, rx:Float, ry:Float, rw:Float, rh:Float):Float
 	{
 		if (px >= rx && px <= rx + rw)
 		{
@@ -574,6 +576,85 @@ class HP
 		return distance(px, py, rx, ry);
 	}
 	
+	/**
+	 * Finds the suqared distance between two points.
+	 * @param	x1		The first x-position.
+	 * @param	y1		The first y-position.
+	 * @param	x2		The second x-position.
+	 * @param	y2		The second y-position.
+	 * @return	The squared distance.
+	 */
+	public static inline function distanceSqr(x1:Float, y1:Float, x2:Float, y2:Float):Float
+	{
+		return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+	}
+	
+	/**
+	 * Finds the squared distance between two rectangles. Will return 0 if the rectangles overlap.
+	 * @param	x1		The x-position of the first rect.
+	 * @param	y1		The y-position of the first rect.
+	 * @param	w1		The width of the first rect.
+	 * @param	h1		The height of the first rect.
+	 * @param	x2		The x-position of the second rect.
+	 * @param	y2		The y-position of the second rect.
+	 * @param	w2		The width of the second rect.
+	 * @param	h2		The height of the second rect.
+	 * @return	The squared distance.
+	 */
+	public static function distanceRectsSqr(x1:Float, y1:Float, w1:Float, h1:Float, x2:Float, y2:Float, w2:Float, h2:Float):Float
+	{
+		if (x1 < x2 + w2 && x2 < x1 + w1)
+		{
+			if (y1 < y2 + h2 && y2 < y1 + h1) return 0;
+			if (y1 > y2) return (y1 - (y2 + h2)) * (y1 - (y2 + h2));
+			return (y2 - (y1 + h1)) * (y2 - (y1 + h1));
+		}
+		if (y1 < y2 + h2 && y2 < y1 + h1)
+		{
+			if (x1 > x2) return (x1 - (x2 + w2)) * (x1 - (x2 + w2));
+			return (x2 - (x1 + w1)) * (x2 - (x1 + w1));
+		}
+		if (x1 > x2)
+		{
+			if (y1 > y2) return distanceSqr(x1, y1, (x2 + w2), (y2 + h2));
+			return distanceSqr(x1, y1 + h1, x2 + w2, y2);
+		}
+		if (y1 > y2) return distanceSqr(x1 + w1, y1, x2, y2 + h2);
+		return distanceSqr(x1 + w1, y1 + h1, x2, y2);
+	}
+
+	/**
+	 * Finds the squared distance between a point and a rectangle. Returns 0 if the point is within the rectangle.
+	 * @param	px		The x-position of the point.
+	 * @param	py		The y-position of the point.
+	 * @param	rx		The x-position of the rect.
+	 * @param	ry		The y-position of the rect.
+	 * @param	rw		The width of the rect.
+	 * @param	rh		The height of the rect.
+	 * @return	The squared distance.
+	 */
+	public static function distancePointRectSqr(px:Float, py:Float, rx:Float, ry:Float, rw:Float, rh:Float):Float
+	{
+		if (px >= rx && px <= rx + rw)
+		{
+			if (py >= ry && py <= ry + rh) return 0;
+			if (py > ry) return (py - (ry + rh)) * (py - (ry + rh));
+			return (ry - py) * (ry - py);
+		}
+		if (py >= ry && py <= ry + rh)
+		{
+			if (px > rx) return (px - (rx + rw)) * (px - (rx + rw));
+			return (rx - px) * (rx - px);
+		}
+		if (px > rx)
+		{
+			if (py > ry) return distanceSqr(px, py, rx + rw, ry + rh);
+			return distanceSqr(px, py, rx + rw, ry);
+		}
+		if (py > ry) return distanceSqr(px, py, rx, ry + rh);
+		return distanceSqr(px, py, rx, ry);
+	}
+
 	/**
 	 * Clamps the value within the minimum and maximum values.
 	 * @param	value		The Float to evaluate.
@@ -1023,7 +1104,7 @@ class HP
 			ease:EasingFunction = null,
 			tweener:Tweener = HP.tweener,
 			delay:Float = 0;
-		if (Std.is(object, Tweener)) tweener = cast(object, Tweener);
+		if (Std.is(object, Tweener)) tweener = cast object;
 		if (options != null)
 		{
 			if (Reflect.hasField(options, "type")) type = Reflect.getProperty(options, "type");
@@ -1206,7 +1287,13 @@ class HP
 		if (i < right) quicksortBy(a, i, right, ascending, property);
 	}
 	
-	// TODO : update with Math.floor & Math.ceil
+	/**
+	 * Converts a float to its string representation with a fixed number of decimal places.
+	 * @param	x				The value to be converted.
+	 * @param	?decimalPlaces	Number of decimal places to show.
+	 * @param	?paddingZeroes	Wheter to right-pad the string with zeroes (if necessary).
+	 * @return the converted float.
+	 */
 	public static function toFixed(x:Float, ?decimalPlaces:Int = 20, ?paddingZeroes:Bool = true):String 
 	{
 		if (Math.isNaN(x) || decimalPlaces <= 0) return Std.string(Std.int(x));
@@ -1223,49 +1310,49 @@ class HP
 	}
 	
 	// World information.
-	/** @private */ public static var _world:World;
-	/** @private */ public static var _goto:World;
+	public static var _world:World;
+	public static var _goto:World;
 	
 	// Console information.
-	/** @private */ public static var _console:Console;
+	public static var _console:Console;
 	
 	// Time information.
-	/** @private */ public static var _time:Float = 0;
-	/** @private */ public static var _updateTime:Float = 0;
-	/** @private */ public static var _renderTime:Float = 0;
-	/** @private */ public static var _logicTime:Float = 0;
-	/** @private */ public static var _systemTime:Float = 0;
+	public static var _time:Float = 0;
+	public static var _updateTime:Float = 0;
+	public static var _renderTime:Float = 0;
+	public static var _logicTime:Float = 0;
+	public static var _systemTime:Float = 0;
 	
 	// Bitmap storage.
-	/** @private */ private static var _bitmap:Map<String, BitmapData>;
+	private static var _bitmap:Map<String, BitmapData>;
 	
 	// Sound storage.
-	/** @private */ private static var _sound:Map<String, Sound>;
+	private static var _sound:Map<String, Sound>;
 	
 	// Pseudo-random number generation (the seed is set in Engine's constructor).
-	/** @private */ private static var _seed:Int = 0;
-	/** @private */ private static var _randomSeed:Int = 0;
+	private static var _seed:Int = 0;
+	private static var _randomSeed:Int = 0;
 	
 	// Volume control.
-	/** @private */ private static var _volume:Float = 1;
-	/** @private */ private static var _pan:Float = 0;
-	/** @private */ private static var _soundTransform:SoundTransform;
+	private static var _volume:Float = 1;
+	private static var _pan:Float = 0;
+	private static var _soundTransform:SoundTransform;
 	
 	// Used for rad-to-deg and deg-to-rad conversion.
-	/** @private */ public static inline var DEG:Float = -57.295779513082320876798154814105; // -180 / Math.PI;
-	/** @private */ public static inline var RAD:Float = -0.01745329251994329576923690768489; // Math.PI / -180; 
+	public static inline var DEG:Float = -57.295779513082320876798154814105; // -180 / Math.PI;
+	public static inline var RAD:Float = -0.01745329251994329576923690768489; // Math.PI / -180; 
 	
 	// Global Flash objects.
-	/** @private */ public static var stage:Stage;
-	/** @private */ public static var engine:Engine;
+	public static var stage:Stage;
+	public static var engine:Engine;
 	
 	// Global objects used for rendering, collision, etc.
-	/** @private */ public static var point:Point;
-	/** @private */ public static var point2:Point;
-	/** @private */ public static var zero:Point;
-	/** @private */ public static var rect:Rectangle;
-	/** @private */ public static var matrix:Matrix;
-	/** @private */ public static var sprite:Sprite;
-	/** @private */ public static var entity:Entity;
+	public static var point:Point;
+	public static var point2:Point;
+	public static var zero:Point;
+	public static var rect:Rectangle;
+	public static var matrix:Matrix;
+	public static var sprite:Sprite;
+	public static var entity:Entity;
 }
 

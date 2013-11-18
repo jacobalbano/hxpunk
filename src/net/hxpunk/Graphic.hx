@@ -81,6 +81,6 @@ class Graphic
 	private inline function set_assign(value:Void -> Void) { return _assign = value; }
 	
 	// Graphic information.
-	/** @private */ public var _assign:Void -> Void;
-	/** @private */ private var _point:Point;
+	private var _assign:Void -> Void;
+	private var _point:Point;
 }

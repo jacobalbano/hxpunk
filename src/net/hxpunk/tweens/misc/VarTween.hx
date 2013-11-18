@@ -53,8 +53,8 @@ class VarTween extends Tween
 	}
 	
 	// Tween information.
-	/** @private */ private var _object:Dynamic;
-	/** @private */ private var _property:String;
-	/** @private */ private var _start:Float;
-	/** @private */ private var _range:Float;
+	private var _object:Dynamic;
+	private var _property:String;
+	private var _start:Float;
+	private var _range:Float;
 }

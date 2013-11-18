@@ -112,9 +112,9 @@ class TiledSpritemap extends Spritemap
 		updateBuffer();
 	}
 	
-	/** @private */ private var _imageWidth:Int = 0;
-	/** @private */ private var _imageHeight:Int = 0;
-	/** @private */ private var _offsetX:Float = 0;
-	/** @private */ private var _offsetY:Float = 0;
+	private var _imageWidth:Int = 0;
+	private var _imageHeight:Int = 0;
+	private var _offsetX:Float = 0;
+	private var _offsetY:Float = 0;
 }
 

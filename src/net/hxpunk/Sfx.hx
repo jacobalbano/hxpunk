@@ -296,19 +296,19 @@ class Sfx
 	}
 	
 	// Sound information.
-	/** @private */ private var _type:String;
-	/** @private */ private var _vol:Float = 1;
-	/** @private */ private var _pan:Float = 0;
-	/** @private */ private var _filteredVol:Float = 0;
-	/** @private */ private var _filteredPan:Float = 0;
-	/** @private */ private var _sound:Sound;
-	/** @private */ private var _channel:SoundChannel;
-	/** @private */ private var _transform:SoundTransform;
-	/** @private */ private var _position:Float = 0;
-	/** @private */ private var _looping:Bool = false;
-	/** @private */ private var _className:String;
+	private var _type:String;
+	private var _vol:Float = 1;
+	private var _pan:Float = 0;
+	private var _filteredVol:Float = 0;
+	private var _filteredPan:Float = 0;
+	private var _sound:Sound;
+	private var _channel:SoundChannel;
+	private var _transform:SoundTransform;
+	private var _position:Float = 0;
+	private var _looping:Bool = false;
+	private var _className:String;
 	
 	// Stored Sound objects.
-	/** @private */ private static var _typePlaying:Map<String, Map<String, Sfx>>;
-	/** @private */ private static var _typeTransforms:Map<String, SoundTransform>;
+	private static var _typePlaying:Map<String, Map<String, Sfx>>;
+	private static var _typeTransforms:Map<String, SoundTransform>;
 }

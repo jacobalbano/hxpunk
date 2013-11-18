@@ -81,9 +81,9 @@ class LinearMotion extends Motion
 	}
 	
 	// Line information.
-	/** @private */ private var _fromX:Float = 0;
-	/** @private */ private var _fromY:Float = 0;
-	/** @private */ private var _moveX:Float = 0;
-	/** @private */ private var _moveY:Float = 0;
-	/** @private */ private var _distance:Float = - 1;
+	private var _fromX:Float = 0;
+	private var _fromY:Float = 0;
+	private var _moveX:Float = 0;
+	private var _moveY:Float = 0;
+	private var _distance:Float = - 1;
 }

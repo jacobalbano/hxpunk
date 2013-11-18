@@ -83,6 +83,6 @@ class Stamp extends Graphic
 	}
 	
 	// Stamp information.
-	/** @private */ private var _source:BitmapData;
-	/** @private */ private var _sourceRect:Rectangle;
+	private var _source:BitmapData;
+	private var _sourceRect:Rectangle;
 }

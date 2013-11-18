@@ -56,12 +56,12 @@ class CubicMotion extends Motion
 	}
 	
 	// Curve information.
-	/** @private */ private var _fromX:Float = 0;
-	/** @private */ private var _fromY:Float = 0;
-	/** @private */ private var _toX:Float = 0;
-	/** @private */ private var _toY:Float = 0;
-	/** @private */ private var _aX:Float = 0;
-	/** @private */ private var _aY:Float = 0;
-	/** @private */ private var _bX:Float = 0;
-	/** @private */ private var _bY:Float = 0;
+	private var _fromX:Float = 0;
+	private var _fromY:Float = 0;
+	private var _toX:Float = 0;
+	private var _toY:Float = 0;
+	private var _aX:Float = 0;
+	private var _aY:Float = 0;
+	private var _bX:Float = 0;
+	private var _bY:Float = 0;
 }

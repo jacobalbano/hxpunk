@@ -25,7 +25,7 @@ class Text extends Image
 	public static var FONT:String;
 	
 	// Default font family.
-	/** @private */ public static var _FONT_DEFAULT:Font;
+	public static var _FONT_DEFAULT:Font;
 
 	private static var init:Bool = initStaticVars();
 	
@@ -161,12 +161,6 @@ class Text extends Image
 		_styleFrom = new Array<Int>();
 		_styleTo = new Array<Int>();
 	
-		// Font
-		/*f (HP.defaultFont == null) HP.defaultFont = Assets.getFont(HP.defaultFontName);
-		var _f = new TextFormat(HP.defaultFont.fontName);*/
-		//FONT = HP.defaultFontName;
-		//_FONT_DEFAULT = Assets.getFont("assets/hxpunk/04B_03__.ttf", false);
-		//trace(_FONT_DEFAULT.fontName);
 		return true;
 	}
 	
@@ -338,7 +332,7 @@ class Text extends Image
 		
 		var i:Int = 0;
 	
-	#if flash
+	#if !mobile
 		// reassign text to force a recalc of TextLineMetrics and so be sure they report correct values
 		_field.htmlText = _field.htmlText;
 	#end
@@ -592,23 +586,23 @@ class Text extends Image
 	}
 
 	// Text information.
-	/** @private */ private var _field:TextField;
-	/** @private */ private var _width:Int = 0;
-	/** @private */ private var _height:Int = 0;
-	/** @private */ private var _textWidth:Int = 0;
-	/** @private */ private var _textHeight:Int = 0;
-	/** @private */ private var _form:TextFormat;
-	/** @private */ private var _text:String;
-	/** @private */ private var _richText:Null<String> = null;
-	/** @private */ private var _font:String;
-	/** @private */ private var _size:Int = 0;
+	private var _field:TextField;
+	private var _width:Int = 0;
+	private var _height:Int = 0;
+	private var _textWidth:Int = 0;
+	private var _textHeight:Int = 0;
+	private var _form:TextFormat;
+	private var _text:String;
+	private var _richText:Null<String> = null;
+	private var _font:String;
+	private var _size:Int = 0;
 #if (flash || html5)
-	/** @private */ private var _align:TextFormatAlign;
+	private var _align:TextFormatAlign;
 #else
-	/** @private */ private var _align:String;
+	private var _align:String;
 #end
-	/** @private */ private var _leading:Float = 0;
-	/** @private */ private var _wordWrap:Bool;
+	private var _leading:Float = 0;
+	private var _wordWrap:Bool;
 	
 	// Style vars
 	private var _styles:Map<String, TextFormat>;

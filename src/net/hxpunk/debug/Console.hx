@@ -970,69 +970,69 @@ class Console
 	private inline function get_height() { return Std.int(HP.height * HP.screen.scaleY * HP.screen.scale); }
 	
 	// Console state information.
-	/** @private */ private var _enabled:Bool;
-	/** @private */ private var _paused:Bool;
-	/** @private */ private var _debug:Bool;
-	/** @private */ private var _scrolling:Bool;
-	/** @private */ private var _selecting:Bool;
-	/** @private */ private var _dragging:Bool;
-	/** @private */ private var _panning:Bool;
+	private var _enabled:Bool;
+	private var _paused:Bool;
+	private var _debug:Bool;
+	private var _scrolling:Bool;
+	private var _selecting:Bool;
+	private var _dragging:Bool;
+	private var _panning:Bool;
 	
 	// Console display objects.
-	/** @private */ private var _sprite:Sprite;
-	/** @private */ private var _format:TextFormat;
-	/** @private */ private var _back:Bitmap;
+	private var _sprite:Sprite;
+	private var _format:TextFormat;
+	private var _back:Bitmap;
 	
 	// FPS panel information.
-	/** @private */ private var _fpsRead:Sprite;
-	/** @private */ private var _fpsReadText:TextField;
-	/** @private */ private var _fpsInfo:Sprite;
-	/** @private */ private var _fpsInfoText0:TextField;
-	/** @private */ private var _fpsInfoText1:TextField;
-	/** @private */ private var _memReadText:TextField;
+	private var _fpsRead:Sprite;
+	private var _fpsReadText:TextField;
+	private var _fpsInfo:Sprite;
+	private var _fpsInfoText0:TextField;
+	private var _fpsInfoText1:TextField;
+	private var _memReadText:TextField;
 	
 	// Output panel information.
-	/** @private */ private var _logRead:Sprite;
-	/** @private */ private var _logReadText0:TextField;
-	/** @private */ private var _logReadText1:TextField;
-	/** @private */ private var _logHeight:Int = 0;
-	/** @private */ private var _logBar:Rectangle;
-	/** @private */ private var _logBarGlobal:Rectangle;
-	/** @private */ private var _logScroll:Float = 0;
+	private var _logRead:Sprite;
+	private var _logReadText0:TextField;
+	private var _logReadText1:TextField;
+	private var _logHeight:Int = 0;
+	private var _logBar:Rectangle;
+	private var _logBarGlobal:Rectangle;
+	private var _logScroll:Float = 0;
 	
 	// Entity count panel information.
-	/** @private */ private var _entRead:Sprite;
-	/** @private */ private var _entReadText:TextField;
+	private var _entRead:Sprite;
+	private var _entReadText:TextField;
 	
 	// Debug panel information.
-	/** @private */ private var _debRead:Sprite;
-	/** @private */ private var _debReadText0:TextField;
-	/** @private */ private var _debReadText1:TextField;
+	private var _debRead:Sprite;
+	private var _debReadText0:TextField;
+	private var _debReadText1:TextField;
 
 	// Button panel information
-	/** @private */ private var _butRead:Sprite;
-	/** @private */ private var _butDebug:Bitmap;
-	/** @private */ private var _butOutput:Bitmap;
-	/** @private */ private var _butPlay:Bitmap;
-	/** @private */ private var _butPause:Bitmap;
-	/** @private */ private var _butStep:Bitmap;
+	private var _butRead:Sprite;
+	private var _butDebug:Bitmap;
+	private var _butOutput:Bitmap;
+	private var _butPlay:Bitmap;
+	private var _butPause:Bitmap;
+	private var _butStep:Bitmap;
 	
 	// Entity selection information.
-	/** @private */ private var _entScreen:Sprite;
-	/** @private */ private var _entSelect:Sprite;
-	/** @private */ private var _entRect:Rectangle;
+	private var _entScreen:Sprite;
+	private var _entSelect:Sprite;
+	private var _entRect:Rectangle;
 	
 	// Log information.
-	/** @private */ private var _logLines:Int = 0;
-	/** @private */ private var LOG:Array<String>;
+	private var _logLines:Int = 0;
+	private var LOG:Array<String>;
 	
 	// Entity lists.
-	/** @private */ private var ENTITY_LIST:Array<Entity>;
-	/** @private */ private var SCREEN_LIST:Array<Entity>;
-	/** @private */ private var SELECT_LIST:Array<Entity>;
+	private var ENTITY_LIST:Array<Entity>;
+	private var SCREEN_LIST:Array<Entity>;
+	private var SELECT_LIST:Array<Entity>;
 	
 	// Watch information.
-	/** @private */ private var WATCH_LIST:Array<String>;
+	private var WATCH_LIST:Array<String>;
 	
 	// Embedded assets.
 	private var CONSOLE_LOGO:BitmapData;

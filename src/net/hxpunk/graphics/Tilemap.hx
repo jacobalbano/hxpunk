@@ -519,15 +519,15 @@ class Tilemap extends Canvas
 	private inline function get_rows():Int { return _rows; }
 	
 	// Tilemap information.
-	/** @private */ private var _map:BitmapData;
-	/** @private */ private var _temp:BitmapData;
-	/** @private */ private var _columns:Int = 0;
-	/** @private */ private var _rows:Int = 0;
+	private var _map:BitmapData;
+	private var _temp:BitmapData;
+	private var _columns:Int = 0;
+	private var _rows:Int = 0;
 	
 	// Tileset information.
-	/** @private */ private var _set:BitmapData;
-	/** @private */ private var _setColumns:Int = 0;
-	/** @private */ private var _setRows:Int = 0;
-	/** @private */ private var _setCount:Int = 0;
-	/** @private */ private var _tile:Rectangle;
+	private var _set:BitmapData;
+	private var _setColumns:Int = 0;
+	private var _setRows:Int = 0;
+	private var _setCount:Int = 0;
+	private var _tile:Rectangle;
 }

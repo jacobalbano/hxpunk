@@ -830,9 +830,9 @@ class Draw
 	}
 	
 	// Drawing information.
-	/** @private */ private static var _target:BitmapData;
-	/** @private */ private static var _camera:Point;
-	/** @private */ private static var _graphics:Graphics = HP.sprite.graphics;
-	/** @private */ private static var _rect:Rectangle = HP.rect;
-	/** @private */ private static var _callQueue:Array<Dynamic>;
+	private static var _target:BitmapData;
+	private static var _camera:Point;
+	private static var _graphics:Graphics = HP.sprite.graphics;
+	private static var _rect:Rectangle = HP.rect;
+	private static var _callQueue:Array<Dynamic>;
 }

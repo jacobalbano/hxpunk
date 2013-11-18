@@ -327,22 +327,22 @@ class Engine extends Sprite
 	}
 	
 	// Timing information.
-	/** @private */ private var _delta:Float = 0;
-	/** @private */ private var _time:Float = 0;
-	/** @private */ private var _last:Float = 0;
-	/** @private */ private var _timer:Timer;
-	/** @private */ private var	_rate:Float = 0;
-	/** @private */ private var	_skip:Float = 0;
-	/** @private */ private var _prev:Float = 0;
+	private var _delta:Float = 0;
+	private var _time:Float = 0;
+	private var _last:Float = 0;
+	private var _timer:Timer;
+	private var	_rate:Float = 0;
+	private var	_skip:Float = 0;
+	private var _prev:Float = 0;
 	
 	// Debug timing information.
-	/** @private */ private var _updateTime:Float = 0;
-	/** @private */ private var _renderTime:Float = 0;
-	/** @private */ private var _logicTime:Float = 0;
-	/** @private */ private var _systemTime:Float = 0;
+	private var _updateTime:Float = 0;
+	private var _renderTime:Float = 0;
+	private var _logicTime:Float = 0;
+	private var _systemTime:Float = 0;
 	
 	// FrameRate tracking.
-	/** @private */ private var _frameLast:Float = 0;
-	/** @private */ private var _frameListSum:Int = 0;
-	/** @private */ private var _frameList:Array<Int>;
+	private var _frameLast:Float = 0;
+	private var _frameListSum:Int = 0;
+	private var _frameList:Array<Int>;
 }

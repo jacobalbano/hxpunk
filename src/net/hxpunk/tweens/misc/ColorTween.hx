@@ -91,15 +91,15 @@ class ColorTween extends Tween
 	private inline function get_blue():Int { return _b; }
 	
 	// Color information.
-	/** @private */ private var _r:Int;
-	/** @private */ private var _g:Int;
-	/** @private */ private var _b:Int;
-	/** @private */ private var _startA:Float;
-	/** @private */ private var _startR:Float;
-	/** @private */ private var _startG:Float;
-	/** @private */ private var _startB:Float;
-	/** @private */ private var _rangeA:Float;
-	/** @private */ private var _rangeR:Float;
-	/** @private */ private var _rangeG:Float;
-	/** @private */ private var _rangeB:Float;
+	private var _r:Int;
+	private var _g:Int;
+	private var _b:Int;
+	private var _startA:Float;
+	private var _startR:Float;
+	private var _startG:Float;
+	private var _startB:Float;
+	private var _rangeA:Float;
+	private var _rangeR:Float;
+	private var _rangeG:Float;
+	private var _rangeB:Float;
 }

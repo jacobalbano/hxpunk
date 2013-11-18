@@ -3,8 +3,30 @@ package net.hxpunk;
 import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Rectangle;
+import net.hxpunk.Entity.FriendlyEntity;
 import net.hxpunk.graphics.Graphiclist;
 import net.hxpunk.graphics.Image;
+
+
+typedef FriendlyEntity = {
+	
+	// Entity information.
+	private var _class:String;
+	private var _world:World;
+	private var _type:String;
+	private var _name:String;
+	private var _layer:Int;
+	private var _updatePrev:FriendlyEntity;
+	private var _updateNext:FriendlyEntity;
+	private var _renderPrev:FriendlyEntity;
+	private var _renderNext:FriendlyEntity;
+	private var _typePrev:FriendlyEntity;
+	private var _typeNext:FriendlyEntity;
+	private var _recycleNext:FriendlyEntity;
+	
+	// Collision information.
+	private var HITBOX:Mask;	
+}
 
 /**
  * Main game Entity class updated by World.
@@ -135,17 +157,19 @@ class Entity extends Tweener
 	{
 		if (_world == null) return null;
 		
-		var e:Entity = _world._typeFirst[type];
-		if (e == null) return null;
+		var e:Entity,
+			fe:FriendlyEntity = _world._typeFirst[type];
+		if (fe == null) return null;
 		
 		_x = this.x; _y = this.y;
 		this.x = x; this.y = y;
 		
 		if (_mask == null)
 		{
-			while (e != null)
+			while (fe != null)
 			{
-				/** TODO !== ? != */
+				e = cast fe;
+				
 				if (e.collidable && e != this
 				&& x - originX + width > e.x - e.originX
 				&& y - originY + height > e.y - e.originY
@@ -158,15 +182,16 @@ class Entity extends Tweener
 						return e;
 					}
 				}
-				e = e._typeNext;
+				fe = fe._typeNext;
 			}
 			this.x = _x; this.y = _y;
 			return null;
 		}
 		
-		while (e != null)
+		while (fe != null)
 		{
-			/** TODO !== ? != */
+			e = cast fe;
+			
 			if (e.collidable && e != this
 			&& x - originX + width > e.x - e.originX
 			&& y - originY + height > e.y - e.originY
@@ -179,7 +204,7 @@ class Entity extends Tweener
 					return e;
 				}
 			}
-			e = e._typeNext;
+			fe = fe._typeNext;
 		}
 		this.x = _x; this.y = _y;
 		return null;
@@ -321,8 +346,9 @@ class Entity extends Tweener
 	{
 		if (_world == null) return;
 		
-		var e:Entity = _world._typeFirst[type];
-		if (e == null) return;
+		var e:Entity,
+			fe:FriendlyEntity = _world._typeFirst[type];
+		if (fe == null) return;
 		
 		_x = this.x; _y = this.y;
 		this.x = x; this.y = y;
@@ -330,9 +356,10 @@ class Entity extends Tweener
 		
 		if (_mask == null)
 		{
-			while (e != null)
+			while (fe != null)
 			{
-				/** TODO !== ? != */
+				e = cast fe;
+				
 				if (e.collidable && e != this
 				&& x - originX + width > e.x - e.originX
 				&& y - originY + height > e.y - e.originY
@@ -341,15 +368,16 @@ class Entity extends Tweener
 				{
 					if (e._mask == null || e._mask.collide(HITBOX)) array[n ++] = e;
 				}
-				e = e._typeNext;
+				fe = fe._typeNext;
 			}
 			this.x = _x; this.y = _y;
 			return;
 		}
 		
-		while (e != null)
+		while (fe != null)
 		{
-			/** TODO !== ? != */
+			e = cast fe;
+			
 			if (e.collidable && e != this
 			&& x - originX + width > e.x - e.originX
 			&& y - originY + height > e.y - e.originY
@@ -358,7 +386,7 @@ class Entity extends Tweener
 			{
 				if (_mask.collide(e._mask != null ? e._mask : e.HITBOX)) array[n ++] = e;
 			}
-			e = e._typeNext;
+			fe = fe._typeNext;
 		}
 		this.x = _x; this.y = _y;
 		return;
@@ -509,7 +537,7 @@ class Entity extends Tweener
 	{
 		if (_graphic != value) {
 			_graphic = value;
-			if (value != null && value._assign != null) value._assign();
+			if (value != null && value.assign != null && Reflect.isFunction(value.assign)) value.assign();
 		}
 		return value;
 	}
@@ -611,7 +639,7 @@ class Entity extends Tweener
 	{
 		var res:Float;
 		if (!useHitbox) res = Math.sqrt((x - px) * (x - px) + (y - py) * (y - py));
-		else res = HP.distanceRectPoint(px, py, x - originX, y - originY, width, height);
+		else res = HP.distancePointRect(px, py, x - originX, y - originY, width, height);
 		return res;
 	}
 	
@@ -794,30 +822,30 @@ class Entity extends Tweener
 	public function getClassName():String { return _class; }
 	
 	// Entity information.
-	/** @private */ public var _class:String;
-	/** @private */ public var _world:World;
-	/** @private */ public var _type:String;
-	/** @private */ public var _name:String;
-	/** @private */ public var _layer:Int = 0;
-	/** @private */ public var _updatePrev:Entity;
-	/** @private */ public var _updateNext:Entity;
-	/** @private */ public var _renderPrev:Entity;
-	/** @private */ public var _renderNext:Entity;
-	/** @private */ public var _typePrev:Entity;
-	/** @private */ public var _typeNext:Entity;
-	/** @private */ public var _recycleNext:Entity;
+	private var _class:String;
+	private var _world:World;
+	private var _type:String;
+	private var _name:String;
+	private var _layer:Int = 0;
+	private var _updatePrev:FriendlyEntity;
+	private var _updateNext:FriendlyEntity;
+	private var _renderPrev:FriendlyEntity;
+	private var _renderNext:FriendlyEntity;
+	private var _typePrev:FriendlyEntity;
+	private var _typeNext:FriendlyEntity;
+	private var _recycleNext:FriendlyEntity;
 	
 	// Collision information.
-	/** @private */ public var HITBOX:Mask;
-	/** @private */ private var _mask:Mask;
-	/** @private */ private var _x:Float = 0;
-	/** @private */ private var _y:Float = 0;
-	/** @private */ private var _moveX:Float = 0;
-	/** @private */ private var _moveY:Float = 0;
+	private var HITBOX:Mask;
+	private var _mask:Mask;
+	private var _x:Float = 0;
+	private var _y:Float = 0;
+	private var _moveX:Float = 0;
+	private var _moveY:Float = 0;
 	
 	// Rendering information.
-	/** @private */ public var _graphic:Graphic;
-	/** @private */ private var _point:Point;
-	/** @private */ private var _camera:Point;
+	public var _graphic:Graphic;
+	private var _point:Point;
+	private var _camera:Point;
 }
 

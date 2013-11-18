@@ -66,7 +66,7 @@ class Input
 			_press.push(0);
 			_release.push(0);
 		}
-		_control = new Map < String, Array<Int> > ();
+		_control = new Map <String, Array<Int>> ();
 	
 		return true;
 	}
@@ -140,7 +140,7 @@ class Input
 	{
 		if (Std.is(input, String))
 		{
-			var strInput:String = cast(input, String);
+			var strInput:String = cast input;
 			if (_control[strInput] == null || _control[strInput].length == 0) return false;
 			var v:Array<Int> = _control[strInput],
 				i:Int = v.length;
@@ -355,18 +355,18 @@ class Input
 	}
 	
 	// Max amount of characters stored by the keystring.
-	/** @private */ private static inline var KEYSTRING_MAX:Int = 100;
+	private static inline var KEYSTRING_MAX:Int = 100;
 	
 	// Input information.
-	/** @private */ private static var _enabled:Bool = false;
-	/** @private */ private static var _key:Array<Bool>;
-	/** @private */ private static var _keyNum:Int = 0;
-	/** @private */ private static var _press:Array<Int>;
-	/** @private */ private static var _release:Array<Int>;
-	/** @private */ private static var _pressNum:Int = 0;
-	/** @private */ private static var _releaseNum:Int = 0;
-	/** @private */ private static var _control:Map<String, Array<Int>>;
-	/** @private */ private static var _mouseWheelDelta:Int = 0;
-	/** @private */ private static var _mouseVisible:Bool = true;
+	private static var _enabled:Bool = false;
+	private static var _key:Array<Bool>;
+	private static var _keyNum:Int = 0;
+	private static var _press:Array<Int>;
+	private static var _release:Array<Int>;
+	private static var _pressNum:Int = 0;
+	private static var _releaseNum:Int = 0;
+	private static var _control:Map<String, Array<Int>>;
+	private static var _mouseWheelDelta:Int = 0;
+	private static var _mouseVisible:Bool = true;
 }
 

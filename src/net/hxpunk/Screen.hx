@@ -262,20 +262,20 @@ class Screen
 	}
 	
 	// Screen information.
-	/** @private */ public var sprite:Sprite;
-	/** @private */ private var _bitmap:Array<Bitmap>;
-	/** @private */ private var _current:Int = 0;
-	/** @private */ private var _matrix:Matrix;
-	/** @private */ private var _x:Int = 0;
-	/** @private */ private var _y:Int = 0;
-	/** @private */ private var _width:Int = 0;
-	/** @private */ private var _height:Int = 0;
-	/** @private */ private var _originX:Int = 0;
-	/** @private */ private var _originY:Int = 0;
-	/** @private */ private var _scaleX:Float = 1;
-	/** @private */ private var _scaleY:Float = 1;
-	/** @private */ private var _scale:Float = 1;
-	/** @private */ private var _angle:Float = 0;
-	/** @private */ private var _color:Int = 0xFF202020;
+	public var sprite:Sprite;
+	private var _bitmap:Array<Bitmap>;
+	private var _current:Int = 0;
+	private var _matrix:Matrix;
+	private var _x:Int = 0;
+	private var _y:Int = 0;
+	private var _width:Int = 0;
+	private var _height:Int = 0;
+	private var _originX:Int = 0;
+	private var _originY:Int = 0;
+	private var _scaleX:Float = 1;
+	private var _scaleY:Float = 1;
+	private var _scale:Float = 1;
+	private var _angle:Float = 0;
+	private var _color:Int = 0xFF202020;
 }
 

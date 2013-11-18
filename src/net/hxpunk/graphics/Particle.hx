@@ -12,24 +12,24 @@ class Particle
 	}
 	
 	// Particle information.
-	/** @private */ public var _type:ParticleType = null;
-	/** @private */ public var _time:Float = 0;
-	/** @private */ public var _duration:Float = 0;
+	public var _type:ParticleType = null;
+	public var _time:Float = 0;
+	public var _duration:Float = 0;
 	
 	// Motion information.
-	/** @private */ public var _x:Float = 0;
-	/** @private */ public var _y:Float = 0;
-	/** @private */ public var _moveX:Float = 0;
-	/** @private */ public var _moveY:Float = 0;
+	public var _x:Float = 0;
+	public var _y:Float = 0;
+	public var _moveX:Float = 0;
+	public var _moveY:Float = 0;
 	
 	// Rotation information.
-	/** @private */ public var _rotation:Float = 0;
-	/** @private */ public var _totalRotation:Float = 0;
+	public var _rotation:Float = 0;
+	public var _totalRotation:Float = 0;
 
 	// Gravity information.
-	/** @private */ public var _gravity:Float = 0;
+	public var _gravity:Float = 0;
 	
 	// List information.
-	/** @private */ public var _prev:Particle = null;
-	/** @private */ public var _next:Particle = null;
+	public var _prev:Particle = null;
+	public var _next:Particle = null;
 }

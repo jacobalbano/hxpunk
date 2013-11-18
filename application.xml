@@ -3,7 +3,7 @@
 	<!-- NMML reference: https://gist.github.com/1763850 -->
 	
 	<!-- metadata, make sure 'package' is at least 3 segments (ie. com.mycompany.myproject) -->
-	<meta title="hxpunk" package="hxpunk" version="0.1" company="azrafe7" />
+	<meta title="hxpunk" package="net.hxpunk.test" version="0.1" company="azrafe7" />
 	
 	<!-- output -->
 	<app main="Main" file="hxpunk" path="bin" />

@@ -494,30 +494,30 @@ class Image extends Graphic
 	private inline function get_locked() { return _locked; }
 	
 	// Locking
-	/** @private */ private var _locked:Bool = false;
-	/** @private */ private var _needsClear:Bool = false;
-	/** @private */ private var _needsUpdate:Bool = false;
+	private var _locked:Bool = false;
+	private var _needsClear:Bool = false;
+	private var _needsUpdate:Bool = false;
 	
 	// Source and buffer information.
-	/** @private */ private var _source:BitmapData;
-	/** @private */ private var _sourceRect:Rectangle;
-	/** @private */ private var _buffer:BitmapData;
-	/** @private */ private var _bufferRect:Rectangle;
-	/** @private */ private var _bitmap:Bitmap;
+	private var _source:BitmapData;
+	private var _sourceRect:Rectangle;
+	private var _buffer:BitmapData;
+	private var _bufferRect:Rectangle;
+	private var _bitmap:Bitmap;
 	
 	// Color and alpha information.
-	/** @private */ private var _alpha:Float = 1;
-	/** @private */ private var _color:Int = 0x00FFFFFF;
-	/** @private */ private var _tintFactor:Float = 1.0;
-	/** @private */ private var _tintMode:Float = TINTING_MULTIPLY;
-	/** @private */ private var _tint:ColorTransform;
-	/** @private */ private var _colorTransform:ColorTransform;
-	/** @private */ private var _matrix:Matrix;
-	/** @private */ private var _drawMask:BitmapData;
+	private var _alpha:Float = 1;
+	private var _color:Int = 0x00FFFFFF;
+	private var _tintFactor:Float = 1.0;
+	private var _tintMode:Float = TINTING_MULTIPLY;
+	private var _tint:ColorTransform;
+	private var _colorTransform:ColorTransform;
+	private var _matrix:Matrix;
+	private var _drawMask:BitmapData;
 	
 	// Flipped image information.
-	/** @private */ private var _class:String;
-	/** @private */ private var _flipped:Bool;
-	/** @private */ private var _flip:BitmapData;
-	/** @private */ private static var _flips:Map<String, BitmapData> = new Map<String, BitmapData>();
+	private var _class:String;
+	private var _flipped:Bool;
+	private var _flip:BitmapData;
+	private static var _flips:Map<String, BitmapData> = new Map<String, BitmapData>();
 }

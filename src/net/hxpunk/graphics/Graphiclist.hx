@@ -147,8 +147,8 @@ class Graphiclist extends Graphic
 	}
 	
 	// List information.
-	/** @private */ private var _graphics:Array<Graphic>;
-	/** @private */ private var _temp:Array<Graphic>;
-	/** @private */ private var _count:Int = 0;
-	/** @private */ private var _camera:Point;
+	private var _graphics:Array<Graphic>;
+	private var _temp:Array<Graphic>;
+	private var _count:Int = 0;
+	private var _camera:Point;
 }

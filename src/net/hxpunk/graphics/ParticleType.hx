@@ -11,54 +11,54 @@ import net.hxpunk.HP;
 typedef FriendlyParticleType = {
 	
 	// Particle information.
-	/** @private */ private var _name:String;
-	/** @private */ private var _source:BitmapData;
-	/** @private */ private var _width:Int;
-	/** @private */ private var _frame:Rectangle;
-	/** @private */ private var _frames:Array<Int>;
-	/** @private */ private var _frameCount:Int;
+	private var _name:String;
+	private var _source:BitmapData;
+	private var _width:Int;
+	private var _frame:Rectangle;
+	private var _frames:Array<Int>;
+	private var _frameCount:Int;
 	
 	// Motion information.
-	/** @private */ private var _angle:Float;
-	/** @private */ private var _angleRange:Float;
-	/** @private */ private var _distance:Float;
-	/** @private */ private var _distanceRange:Float;
-	/** @private */ private var _duration:Float;
-	/** @private */ private var _durationRange:Float;
-	/** @private */ private var _ease:EasingFunction;
+	private var _angle:Float;
+	private var _angleRange:Float;
+	private var _distance:Float;
+	private var _distanceRange:Float;
+	private var _duration:Float;
+	private var _durationRange:Float;
+	private var _ease:EasingFunction;
 	
 	// Rotation information.
 	public var originX:Float;
 	public var originY:Float;
-	/** @private */ private var _isRotating:Bool;
-	/** @private */ private var _startAngle:Float;
-	/** @private */ private var _startAngleRange:Float;
-	/** @private */ private var _spanAngle:Float;
-	/** @private */ private var _spanAngleRange:Float;
-	/** @private */ private var _smooth:Bool;
-	/** @private */ private var _rotationEase:EasingFunction;
+	private var _isRotating:Bool;
+	private var _startAngle:Float;
+	private var _startAngleRange:Float;
+	private var _spanAngle:Float;
+	private var _spanAngleRange:Float;
+	private var _smooth:Bool;
+	private var _rotationEase:EasingFunction;
 
 	// Gravity information.
-	/** @private */ private var _gravity:Float;
-	/** @private */ private var _gravityRange:Float;
+	private var _gravity:Float;
+	private var _gravityRange:Float;
 	
 	// Alpha information.
-	/** @private */ private var _alpha:Float;
-	/** @private */ private var _alphaRange:Float;
-	/** @private */ private var _alphaEase:EasingFunction;
+	private var _alpha:Float;
+	private var _alphaRange:Float;
+	private var _alphaEase:EasingFunction;
 	
 	// Color information.
-	/** @private */ private var _red:Float;
-	/** @private */ private var _redRange:Float;
-	/** @private */ private var _green:Float;
-	/** @private */ private var _greenRange:Float;
-	/** @private */ private var _blue:Float;
-	/** @private */ private var _blueRange:Float;
-	/** @private */ private var _colorEase:EasingFunction;
+	private var _red:Float;
+	private var _redRange:Float;
+	private var _green:Float;
+	private var _greenRange:Float;
+	private var _blue:Float;
+	private var _blueRange:Float;
+	private var _colorEase:EasingFunction;
 	
 	// Buffer information.
-	/** @private */ private var _buffer:BitmapData;
-	/** @private */ private var _bufferRect:Rectangle;
+	private var _buffer:BitmapData;
+	private var _bufferRect:Rectangle;
 }
 
 
@@ -228,50 +228,50 @@ class ParticleType
 	}
 	
 	// Particle information.
-	/** @private */ private var _name:String;
-	/** @private */ private var _source:BitmapData;
-	/** @private */ private var _width:Int;
-	/** @private */ private var _frame:Rectangle;
-	/** @private */ private var _frames:Array<Int>;
-	/** @private */ private var _frameCount:Int;
+	private var _name:String;
+	private var _source:BitmapData;
+	private var _width:Int;
+	private var _frame:Rectangle;
+	private var _frames:Array<Int>;
+	private var _frameCount:Int;
 	
 	// Motion information.
-	/** @private */ private var _angle:Float = 0;
-	/** @private */ private var _angleRange:Float = 0;
-	/** @private */ private var _distance:Float = 0;
-	/** @private */ private var _distanceRange:Float = 0;
-	/** @private */ private var _duration:Float = 0;
-	/** @private */ private var _durationRange:Float = 0;
-	/** @private */ private var _ease:EasingFunction;
+	private var _angle:Float = 0;
+	private var _angleRange:Float = 0;
+	private var _distance:Float = 0;
+	private var _distanceRange:Float = 0;
+	private var _duration:Float = 0;
+	private var _durationRange:Float = 0;
+	private var _ease:EasingFunction;
 	
 	// Rotation information.
-	/** @private */ private var _isRotating:Bool = false;
-	/** @private */ private var _startAngle:Float = 0;
-	/** @private */ private var _startAngleRange:Float = 0;
-	/** @private */ private var _spanAngle:Float = 0;
-	/** @private */ private var _spanAngleRange:Float = 0;
-	/** @private */ private var _smooth:Bool = false;
-	/** @private */ private var _rotationEase:EasingFunction;
+	private var _isRotating:Bool = false;
+	private var _startAngle:Float = 0;
+	private var _startAngleRange:Float = 0;
+	private var _spanAngle:Float = 0;
+	private var _spanAngleRange:Float = 0;
+	private var _smooth:Bool = false;
+	private var _rotationEase:EasingFunction;
 
 	// Gravity information.
-	/** @private */ private var _gravity:Float = 0;
-	/** @private */ private var _gravityRange:Float = 0;
+	private var _gravity:Float = 0;
+	private var _gravityRange:Float = 0;
 	
 	// Alpha information.
-	/** @private */ private var _alpha:Float = 1;
-	/** @private */ private var _alphaRange:Float = 0;
-	/** @private */ private var _alphaEase:EasingFunction;
+	private var _alpha:Float = 1;
+	private var _alphaRange:Float = 0;
+	private var _alphaEase:EasingFunction;
 	
 	// Color information.
-	/** @private */ private var _red:Float = 1;
-	/** @private */ private var _redRange:Float = 0;
-	/** @private */ private var _green:Float = 1;
-	/** @private */ private var _greenRange:Float = 0;
-	/** @private */ private var _blue:Float = 1;
-	/** @private */ private var _blueRange:Float = 0;
-	/** @private */ private var _colorEase:EasingFunction;
+	private var _red:Float = 1;
+	private var _redRange:Float = 0;
+	private var _green:Float = 1;
+	private var _greenRange:Float = 0;
+	private var _blue:Float = 1;
+	private var _blueRange:Float = 0;
+	private var _colorEase:EasingFunction;
 	
 	// Buffer information.
-	/** @private */ private var _buffer:BitmapData;
-	/** @private */ private var _bufferRect:Rectangle;
+	private var _buffer:BitmapData;
+	private var _bufferRect:Rectangle;
 }

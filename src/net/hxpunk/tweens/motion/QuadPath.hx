@@ -185,19 +185,19 @@ class QuadPath extends Motion
 	}
 	
 	// Path information.
-	/** @private */ private var _points:Array<Point>;
-	/** @private */ private var _distance:Float = 0;
-	/** @private */ private var _speed:Float = 0;
-	/** @private */ private var _index:Int = 0;
+	private var _points:Array<Point>;
+	private var _distance:Float = 0;
+	private var _speed:Float = 0;
+	private var _index:Int = 0;
 	
 	// Curve information.
-	/** @private */ private var _updateCurve:Bool = true;
-	/** @private */ private var _curve:Array<Point>;
-	/** @private */ private var _curveT:Array<Float>;
-	/** @private */ private var _curveD:Array<Float>;
+	private var _updateCurve:Bool = true;
+	private var _curve:Array<Point>;
+	private var _curveT:Array<Float>;
+	private var _curveD:Array<Float>;
 	
 	// Curve points.
-	/** @private */ private var _a:Point;
-	/** @private */ private var _b:Point;
-	/** @private */ private var _c:Point;
+	private var _a:Point;
+	private var _b:Point;
+	private var _c:Point;
 }

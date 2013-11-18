@@ -395,10 +395,10 @@ class Grid extends Hitbox
 	}
 	
 	// Grid information.
-	/** @private */ private var _data:BitmapData;
-	/** @private */ private var _columns:Int = 0;
-	/** @private */ private var _rows:Int = 0;
-	/** @private */ private var _tile:Rectangle;
-	/** @private */ private var _rect:Rectangle;
-	/** @private */ private var _point:Point;
+	private var _data:BitmapData;
+	private var _columns:Int = 0;
+	private var _rows:Int = 0;
+	private var _tile:Rectangle;
+	private var _rect:Rectangle;
+	private var _point:Point;
 }

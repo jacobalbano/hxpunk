@@ -163,20 +163,20 @@ class PreRotation extends Image
 	}
 
 	// Rotation information.
-	/** @private */ private var _width:Int = 0;
-	/** @private */ private var _frame:Rectangle;
-	/** @private */ private var _frameCount:Int = 0;
-	/** @private */ private var _last:Int = -1;
-	/** @private */ private var _current:Int = -1;
-    /** @private */ private var _sourceWidth:Float;
-    /** @private */ private var _sourceHeight:Float;
-    /** @private */ private var _prevOriginX:Float;
-    /** @private */ private var _prevOriginY:Float;
-    /** @private */ private var _frameOrigins:Array<Point>;
+	private var _width:Int = 0;
+	private var _frame:Rectangle;
+	private var _frameCount:Int = 0;
+	private var _last:Int = -1;
+	private var _current:Int = -1;
+    private var _sourceWidth:Float;
+    private var _sourceHeight:Float;
+    private var _prevOriginX:Float;
+    private var _prevOriginY:Float;
+    private var _frameOrigins:Array<Point>;
 	
 	// Global information.
-	/** @private */ private static var _rotated:Map<String, BitmapData>;
-	/** @private */ private static var _size:Map<String, Int>;
-	/** @private */ private static inline var _MAX_WIDTH:Int = 4000;
+	private static var _rotated:Map<String, BitmapData>;
+	private static var _size:Map<String, Int>;
+	private static inline var _MAX_WIDTH:Int = 4000;
 
 }

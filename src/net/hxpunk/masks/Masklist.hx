@@ -149,7 +149,7 @@ class Masklist extends Hitbox
 		var t:Int = 0, l:Int = 0, r:Int = 0, b:Int = 0, h:Hitbox, i:Int = _count;
 		while (i -- > 0)
 		{
-			if ((h = cast(_masks[i], Hitbox)) != null)
+			if ((h = cast _masks[i]) != null)
 			{
 				if (h._x < l) l = h._x;
 				if (h._y < t) t = h._y;
@@ -179,7 +179,7 @@ class Masklist extends Hitbox
 	private inline function get_count() { return _count; }
 	
 	// List information.
-	/** @private */ private var _masks:Array<Mask>;
-	/** @private */ private var _temp:Array<Mask>;
-	/** @private */ private var _count:Int = 0;
+	private var _masks:Array<Mask>;
+	private var _temp:Array<Mask>;
+	private var _count:Int = 0;
 }

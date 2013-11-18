@@ -50,6 +50,6 @@ class NumTween extends Tween
 	}
 	
 	// Tween information.
-	/** @private */ private var _start:Float;
-	/** @private */ private var _range:Float;
+	private var _start:Float;
+	private var _range:Float;
 }

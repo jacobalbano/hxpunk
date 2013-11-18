@@ -1,6 +1,7 @@
 ﻿package net.hxpunk;
 
 import flash.geom.Point;
+import net.hxpunk.Entity.FriendlyEntity;
 import net.hxpunk.utils.Draw;
 
 /**
@@ -48,13 +49,13 @@ class World extends Tweener
 		_recycle = new Array<Entity>();
 		
 		// Render information.
-		_renderFirst = new Array<Entity>();
-		_renderLast = new Array<Entity>();
+		_renderFirst = new Array<FriendlyEntity>();
+		_renderLast = new Array<FriendlyEntity>();
 		_layerList = new Array<Int>();
 		_layerCount = new Array<Int>();
 		_classCount = new Map<String, Int>();
 		
-		_typeFirst = new Map<String, Entity>();
+		_typeFirst = new Map<String, FriendlyEntity>();
 		_typeCount = new Map<String, Int>();
 		
 		_entityNames = new Map<String, Entity>();
@@ -84,16 +85,18 @@ class World extends Tweener
 	override public function update():Void 
 	{
 		// update the entities
-		var e:Entity = _updateFirst;
-		while (e != null)
+		var e:Entity,
+			fe:FriendlyEntity = _updateFirst;
+		while (fe != null)
 		{
+			e = cast fe;
 			if (e.active)
 			{
 				if (e._tween != null) e.updateTweens();
 				e.update();
 			}
 			if (e._graphic != null && e._graphic.active) e._graphic.update();
-			e = e._updateNext;
+			fe = fe._updateNext;
 		}
 	}
 	
@@ -113,14 +116,16 @@ class World extends Tweener
 		
 		// render the entities in order of depth
 		var e:Entity,
+			fe:FriendlyEntity,
 			i:Int = _layerList.length;
 		while (i -- > 0)
 		{
-			e = _renderLast[_layerList[i]];
-			while (e != null)
+			fe = _renderLast[_layerList[i]];
+			while (fe != null)
 			{
+				e = cast fe;
 				if (e.visible) e.render();
-				e = e._renderPrev;
+				fe = fe._renderPrev;
 			}
 		}
 		Draw.renderCallQueue();
@@ -191,11 +196,13 @@ class World extends Tweener
 	 */
 	public function removeAll():Void
 	{
-		var e:Entity = _updateFirst;
-		while (e != null)
+		var e:Entity,
+			fe:FriendlyEntity = _updateFirst;
+		while (fe != null)
 		{
+			e = cast fe;
 			_remove[_remove.length] = e;
-			e = e._updateNext;
+			fe = fe._updateNext;
 		}
 	}
 	
@@ -283,12 +290,14 @@ class World extends Tweener
 	 */
 	public function create(classType:Class<Entity>, addToWorld:Bool = true):Entity
 	{
-		var className:String = Type.getClassName(classType);
-		var e:Entity = _recycled[className];
+		var className:String = Type.getClassName(classType),
+			e:Entity = _recycled[className],
+			fe:FriendlyEntity;
 		if (e != null)
 		{
-			_recycled[className] = e._recycleNext;
-			e._recycleNext = null;
+			fe = e;
+			_recycled[className] = cast fe._recycleNext;
+			fe._recycleNext = null;
 		}
 		else e = Type.createInstance(classType, []);
 		if (addToWorld) return add(e);
@@ -315,10 +324,12 @@ class World extends Tweener
 	{
 		var e:Entity = _recycled[className],
 			n:Entity;
+		var fe:FriendlyEntity;
 		while (e != null)
 		{
-			n = e._recycleNext;
-			e._recycleNext = null;
+			fe = e;
+			n = cast fe._recycleNext;
+			fe._recycleNext = null;
 			e = n;
 		}
 		_recycled.remove(className);
@@ -339,16 +350,17 @@ class World extends Tweener
 	 */
 	public function bringToFront(e:Entity):Bool
 	{
-		if (e._world != this || e._renderPrev == null) return false;
+		var fe:FriendlyEntity = e;
+		if (fe._world != this || fe._renderPrev == null) return false;
 		// pull from list
-		e._renderPrev._renderNext = e._renderNext;
-		if (e._renderNext != null) e._renderNext._renderPrev = e._renderPrev;
-		else _renderLast[e._layer] = e._renderPrev;
+		fe._renderPrev._renderNext = fe._renderNext;
+		if (fe._renderNext != null) fe._renderNext._renderPrev = fe._renderPrev;
+		else _renderLast[fe._layer] = fe._renderPrev;
 		// place at the start
-		e._renderNext = _renderFirst[e._layer];
-		e._renderNext._renderPrev = e;
-		_renderFirst[e._layer] = e;
-		e._renderPrev = null;
+		fe._renderNext = _renderFirst[fe._layer];
+		fe._renderNext._renderPrev = e;
+		_renderFirst[fe._layer] = e;
+		fe._renderPrev = null;
 		return true;
 	}
 	
@@ -359,16 +371,17 @@ class World extends Tweener
 	 */
 	public function sendToBack(e:Entity):Bool
 	{
-		if (e._world != this || e._renderNext == null) return false;
+		var fe:FriendlyEntity = e;
+		if (fe._world != this || fe._renderNext == null) return false;
 		// pull from list
-		e._renderNext._renderPrev = e._renderPrev;
-		if (e._renderPrev != null) e._renderPrev._renderNext = e._renderNext;
-		else _renderFirst[e._layer] = e._renderNext;
+		fe._renderNext._renderPrev = fe._renderPrev;
+		if (fe._renderPrev != null) fe._renderPrev._renderNext = fe._renderNext;
+		else _renderFirst[fe._layer] = fe._renderNext;
 		// place at the end
-		e._renderPrev = _renderLast[e._layer];
-		e._renderPrev._renderNext = e;
-		_renderLast[e._layer] = e;
-		e._renderNext = null;
+		fe._renderPrev = _renderLast[fe._layer];
+		fe._renderPrev._renderNext = fe;
+		_renderLast[fe._layer] = fe;
+		fe._renderNext = null;
 		return true;
 	}
 	
@@ -379,17 +392,18 @@ class World extends Tweener
 	 */
 	public function bringForward(e:Entity):Bool
 	{
-		if (e._world != this || e._renderPrev == null) return false;
+		var fe:FriendlyEntity = e;
+		if (fe._world != this || fe._renderPrev == null) return false;
 		// pull from list
-		e._renderPrev._renderNext = e._renderNext;
-		if (e._renderNext != null) e._renderNext._renderPrev = e._renderPrev;
-		else _renderLast[e._layer] = e._renderPrev;
+		fe._renderPrev._renderNext = fe._renderNext;
+		if (fe._renderNext != null) fe._renderNext._renderPrev = fe._renderPrev;
+		else _renderLast[fe._layer] = fe._renderPrev;
 		// shift towards the front
-		e._renderNext = e._renderPrev;
-		e._renderPrev = e._renderPrev._renderPrev;
-		e._renderNext._renderPrev = e;
-		if (e._renderPrev != null) e._renderPrev._renderNext = e;
-		else _renderFirst[e._layer] = e;
+		fe._renderNext = fe._renderPrev;
+		fe._renderPrev = fe._renderPrev._renderPrev;
+		fe._renderNext._renderPrev = fe;
+		if (fe._renderPrev != null) fe._renderPrev._renderNext = fe;
+		else _renderFirst[fe._layer] = fe;
 		return true;
 	}
 	
@@ -400,17 +414,18 @@ class World extends Tweener
 	 */
 	public function sendBackward(e:Entity):Bool
 	{
-		if (e._world != this || e._renderNext == null) return false;
+		var fe:FriendlyEntity = e;
+		if (fe._world != this || fe._renderNext == null) return false;
 		// pull from list
-		e._renderNext._renderPrev = e._renderPrev;
-		if (e._renderPrev != null) e._renderPrev._renderNext = e._renderNext;
-		else _renderFirst[e._layer] = e._renderNext;
+		fe._renderNext._renderPrev = fe._renderPrev;
+		if (fe._renderPrev != null) fe._renderPrev._renderNext = fe._renderNext;
+		else _renderFirst[fe._layer] = fe._renderNext;
 		// shift towards the back
-		e._renderPrev = e._renderNext;
-		e._renderNext = e._renderNext._renderNext;
-		e._renderPrev._renderNext = e;
-		if (e._renderNext != null) e._renderNext._renderPrev = e;
-		else _renderLast[e._layer] = e;
+		fe._renderPrev = fe._renderNext;
+		fe._renderNext = fe._renderNext._renderNext;
+		fe._renderPrev._renderNext = fe;
+		if (fe._renderNext != null) fe._renderNext._renderPrev = fe;
+		else _renderLast[fe._layer] = fe;
 		return true;
 	}
 	
@@ -421,7 +436,8 @@ class World extends Tweener
 	 */
 	public function isAtFront(e:Entity):Bool
 	{
-		return e._renderPrev == null;
+		var fe:FriendlyEntity = e;
+		return fe._renderPrev == null;
 	}
 	
 	/**
@@ -431,7 +447,8 @@ class World extends Tweener
 	 */
 	public function isAtBack(e:Entity):Bool
 	{
-		return e._renderNext == null;
+		var fe:FriendlyEntity = e;
+		return fe._renderNext == null;
 	}
 	
 	/**
@@ -445,11 +462,13 @@ class World extends Tweener
 	 */
 	public function collideRect(type:String, rX:Float, rY:Float, rWidth:Float, rHeight:Float):Entity
 	{
-		var e:Entity = _typeFirst[type];
-		while (e != null)
+		var e:Entity,
+			fe:FriendlyEntity = _typeFirst[type];
+		while (fe != null)
 		{
+			e = cast fe;
 			if (e.collidable && e.collideRect(e.x, e.y, rX, rY, rWidth, rHeight)) return e;
-			e = e._typeNext;
+			fe = fe._typeNext;
 		}
 		return null;
 	}
@@ -463,11 +482,13 @@ class World extends Tweener
 	 */
 	public function collidePoint(type:String, pX:Float, pY:Float):Entity
 	{
-		var e:Entity = _typeFirst[type];
-		while (e != null)
+		var e:Entity,
+			fe:FriendlyEntity = _typeFirst[type];
+		while (fe != null)
 		{
+			e = cast fe;
 			if (e.collidable && e.collidePoint(e.x, e.y, pX, pY)) return e;
-			e = e._typeNext;
+			fe = fe._typeNext;
 		}
 		return null;
 	}
@@ -618,12 +639,14 @@ class World extends Tweener
 	 */
 	public function collideRectInto(type:String, rX:Float, rY:Float, rWidth:Float, rHeight:Float, into:Array<Entity>):Void
 	{
-		var e:Entity = _typeFirst[type],
+		var e:Entity,
+			fe:FriendlyEntity = _typeFirst[type],
 			n:Int = into.length;
-		while (e != null)
+		while (fe != null)
 		{
+			e = cast fe;
 			if (e.collidable && e.collideRect(e.x, e.y, rX, rY, rWidth, rHeight)) into[n ++] = e;
-			e = e._typeNext;
+			fe = fe._typeNext;
 		}
 	}
 	
@@ -638,12 +661,14 @@ class World extends Tweener
 	 */
 	public function collidePointInto(type:String, pX:Float, pY:Float, into:Array<Entity>):Void
 	{
-		var e:Entity = _typeFirst[type],
+		var e:Entity,
+			fe:FriendlyEntity = _typeFirst[type],
 			n:Int = into.length;
-		while (e != null)
+		while (fe != null)
 		{
+			e = cast fe;
 			if (e.collidable && e.collidePoint(e.x, e.y, pX, pY)) into[n ++] = e;
-			e = e._typeNext;
+			fe = fe._typeNext;
 		}
 	}
 	
@@ -659,20 +684,22 @@ class World extends Tweener
 	 */
 	public function nearestToRect(type:String, x:Float, y:Float, width:Float, height:Float, ignore:Entity = null):Entity
 	{
-		var n:Entity = _typeFirst[type],
+		var n:Entity,
+			fn:FriendlyEntity = _typeFirst[type],
 			nearDist:Float = Math.POSITIVE_INFINITY,
 			near:Entity = null, dist:Float = 0;
-		while (n != null)
+		while (fn != null)
 		{
+			n = cast fn;
 			if (n != ignore) {
-				dist = squareRects(x, y, width, height, n.x - n.originX, n.y - n.originY, n.width, n.height);
+				dist = HP.distanceRectsSqr(x, y, width, height, n.x - n.originX, n.y - n.originY, n.width, n.height);
 				if (dist < nearDist)
 				{
 					nearDist = dist;
 					near = n;
 				}
 			}
-			n = n._typeNext;
+			fn = fn._typeNext;
 		}
 		return near;
 	}
@@ -687,13 +714,15 @@ class World extends Tweener
 	public function nearestToEntity(type:String, e:Entity, useHitboxes:Bool = false):Entity
 	{
 		if (useHitboxes) return nearestToRect(type, e.x - e.originX, e.y - e.originY, e.width, e.height);
-		var n:Entity = _typeFirst[type],
+		var n:Entity,
+			fn:FriendlyEntity = _typeFirst[type],
 			nearDist:Float = Math.POSITIVE_INFINITY,
 			near:Entity = null, dist:Float,
 			x:Float = e.x - e.originX,
 			y:Float = e.y - e.originY;
-		while (n != null)
+		while (fn != null)
 		{
+			n = cast fn;
 			if (n != e)
 			{
 				dist = (x - n.x) * (x - n.x) + (y - n.y) * (y - n.y);
@@ -703,7 +732,7 @@ class World extends Tweener
 					near = n;
 				}
 			}
-			n = n._typeNext;
+			fn = fn._typeNext;
 		}
 		return near;
 	}
@@ -718,32 +747,35 @@ class World extends Tweener
 	 */
 	public function nearestToPoint(type:String, x:Float, y:Float, useHitboxes:Bool = false):Entity
 	{
-		var n:Entity = _typeFirst[type],
+		var n:Entity,
+			fn:FriendlyEntity = _typeFirst[type],
 			nearDist:Float = Math.POSITIVE_INFINITY,
 			near:Entity = null, dist:Float = 0;
 		if (useHitboxes)
 		{
-			while (n != null)
+			while (fn != null)
 			{
-				dist = squarePointRect(x, y, n.x - n.originX, n.y - n.originY, n.width, n.height);
+				n = cast fn;
+				dist = HP.distancePointRectSqr(x, y, n.x - n.originX, n.y - n.originY, n.width, n.height);
 				if (dist < nearDist)
 				{
 					nearDist = dist;
 					near = n;
 				}
-				n = n._typeNext;
+				fn = fn._typeNext;
 			}
 			return near;
 		}
-		while (n != null)
+		while (fn != null)
 		{
+			n = cast fn;
 			dist = (x - n.x) * (x - n.x) + (y - n.y) * (y - n.y);
 			if (dist < nearDist)
 			{
 				nearDist = dist;
 				near = n;
 			}
-			n = n._typeNext;
+			fn = fn._typeNext;
 		}
 		return near;
 	}
@@ -788,7 +820,7 @@ class World extends Tweener
 	 * The first Entity in the World.
 	 */
 	public var first(get, null):Entity;
-	private inline function get_first() { return _updateFirst; }
+	private inline function get_first() { return cast _updateFirst; }
 	
 	/**
 	 * How many Entity layers the World has.
@@ -815,11 +847,13 @@ class World extends Tweener
 	public function classFirst(c:Class<Entity>):Entity
 	{
 		if (_updateFirst == null) return null;
-		var e:Entity = _updateFirst;
-		while (e != null)
+		var e:Entity,
+			fe:FriendlyEntity = _updateFirst;
+		while (fe != null)
 		{
+			e = cast fe;
 			if (Std.is(e, c)) return e;
-			e = e._updateNext;
+			fe = fe._updateNext;
 		}
 		return null;
 	}
@@ -850,27 +884,27 @@ class World extends Tweener
 	 * The Entity that will be rendered first by the World.
 	 */
 	public var farthest(get, null):Entity;
-	private inline function get_farthest()
+	private function get_farthest()
 	{
 		if (_updateFirst == null) return null;
-		return cast _renderLast[cast(_layerList[_layerList.length - 1], Int)];
+		return cast _renderLast[_layerList[_layerList.length - 1]];
 	}
 	
 	/**
 	 * The Entity that will be rendered last by the world.
 	 */
 	public var nearest(get, null):Entity;
-	private inline function get_nearest()
+	private function get_nearest()
 	{
 		if (_updateFirst == null) return null;
-		return cast _renderFirst[cast(_layerList[0], Int)];
+		return cast _renderFirst[_layerList[0]];
 	}
 	
 	/**
 	 * The layer that will be rendered first by the World.
 	 */
 	public var layerFarthest(get, null):Int;
-	private inline function get_layerFarthest()
+	private function get_layerFarthest()
 	{
 		if (_updateFirst == null) return 0;
 		return cast _layerList[_layerList.length - 1];
@@ -880,7 +914,7 @@ class World extends Tweener
 	 * The layer that will be rendered last by the World.
 	 */
 	public var layerNearest(get, null):Int;
-	private inline function get_layerNearest()
+	private function get_layerNearest()
 	{
 		if (_updateFirst == null) return 0;
 		return cast _layerList[0];
@@ -905,12 +939,12 @@ class World extends Tweener
 	 */
 	public function getType(type:String, into:Array<Entity>):Void
 	{
-		var e:Entity = _typeFirst[type],
+		var fe:FriendlyEntity = _typeFirst[type],
 			n:Int = into.length;
-		while (e != null)
+		while (fe != null)
 		{
-			into[n ++] = e;
-			e = e._typeNext;
+			into[n ++] = cast fe;
+			fe = fe._typeNext;
 		}
 	}
 	
@@ -922,12 +956,14 @@ class World extends Tweener
 	 */
 	public function getClass(c:Class<Entity>, into:Array<Entity>):Void
 	{
-		var e:Entity = _updateFirst,
+		var e:Entity,
+			fe:FriendlyEntity = _updateFirst,
 			n:Int = into.length;
-		while (e != null)
+		while (fe != null)
 		{
+			e = cast fe;
 			if (Std.is(e, c)) into[n ++] = e;
-			e = e._updateNext;
+			fe = fe._updateNext;
 		}
 	}
 	
@@ -939,12 +975,12 @@ class World extends Tweener
 	 */
 	public function getLayer(layer:Int, into:Array<Entity>):Void
 	{
-		var e:Entity = _renderLast[layer],
+		var fe:FriendlyEntity = _renderLast[layer],
 			n:Int = into.length;
-		while (e != null)
+		while (fe != null)
 		{
-			into[n ++] = e;
-			e = e._renderPrev;
+			into[n ++] = cast fe;
+			fe = fe._renderPrev;
 		}
 	}
 	
@@ -955,12 +991,13 @@ class World extends Tweener
 	 */
 	public function getAll(into:Array<Entity>):Void
 	{
-		var e:Entity = _updateFirst,
+		var e:Entity,
+			fe:FriendlyEntity = _updateFirst,
 			n:Int = into.length;
-		while (e != null)
+		while (fe != null)
 		{
-			into[n ++] = e;
-			e = e._updateNext;
+			into[n ++] = cast fe;
+			fe = fe._updateNext;
 		}
 	}
 	
@@ -976,35 +1013,36 @@ class World extends Tweener
 	
 	/**
 	 * Updates the add/remove lists at the end of the frame.
-	 * @param    shouldAdd    If false, entities will not be added
-							  to the world, only removed.
+	 * @param    shouldAdd    If false, entities will not be added to the world, only removed.
 	 */
 	public function updateLists(shouldAdd:Bool = true):Void
 	{
-		var e:Entity;
+		var e:Entity,
+			fe:FriendlyEntity;
 		
 		// remove entities
 		if (_remove.length > 0)
 		{
 			for (e in _remove)
 			{
-				if (e._world == null)
+				fe = e;
+				if (fe._world == null)
 				{
 					if(HP.indexOf(_add, e) >= 0)
 						_add.splice(HP.indexOf(_add, e), 1);
 					
 					continue;
 				}
-				if (e._world != this)
+				if (fe._world != this)
 					continue;
 				
 				e.removed();
-				e._world = null;
+				fe._world = null;
 				
 				removeUpdate(e);
 				removeRender(e);
-				if (e._type != null) removeType(e);
-				if (e._name != null) unregisterName(e);
+				if (fe._type != null) removeType(e);
+				if (fe._name != null) unregisterName(e);
 				if (e.autoClear && e._tween != null) e.clearTweens();
 			}
 			HP.removeAll(_remove);
@@ -1015,15 +1053,16 @@ class World extends Tweener
 		{
 			for (e in _add)
 			{
-				if (e._world != null)
+				fe = e;
+				if (fe._world != null)
 					continue;
 				
 				addUpdate(e);
 				addRender(e);
-				if (e._type != null) addType(e);
-				if (e._name != null) registerName(e);
+				if (fe._type != null) addType(e);
+				if (fe._name != null) registerName(e);
 				
-				e._world = this;
+				fe._world = this;
 				e.added();
 			}
 			HP.removeAll(_add);
@@ -1034,11 +1073,12 @@ class World extends Tweener
 		{
 			for (e in _recycle)
 			{
-				if (e._world != null || e._recycleNext != null)
+				fe = e;
+				if (fe._world != null || fe._recycleNext != null)
 					continue;
 				
-				e._recycleNext = _recycled[e._class];
-				_recycled[e._class] = e;
+				fe._recycleNext = _recycled[fe._class];
+				_recycled[fe._class] = e;
 			}
 			HP.removeAll(_recycle);
 		}
@@ -1047,175 +1087,132 @@ class World extends Tweener
 	/** @private Adds Entity to the update list. */
 	private function addUpdate(e:Entity):Void
 	{
+		var fe:FriendlyEntity = e;
 		// add to update list
 		if (_updateFirst != null)
 		{
 			_updateFirst._updatePrev = e;
-			e._updateNext = _updateFirst;
+			fe._updateNext = _updateFirst;
 		}
-		else e._updateNext = null;
-		e._updatePrev = null;
+		else fe._updateNext = null;
+		fe._updatePrev = null;
 		_updateFirst = e;
 		_count ++;
-		if (!_classCount.exists(e._class)) _classCount.set(e._class, 0);
-		_classCount.set(e._class, _classCount[e._class] + 1);
+		if (!_classCount.exists(fe._class)) _classCount.set(fe._class, 0);
+		_classCount.set(fe._class, _classCount[fe._class] + 1);
 	}
 	
 	/** @private Removes Entity from the update list. */
 	private function removeUpdate(e:Entity):Void
 	{
+		var fe:FriendlyEntity = e;
 		// remove from the update list
-		if (_updateFirst == e) _updateFirst = e._updateNext;
-		if (e._updateNext != null) e._updateNext._updatePrev = e._updatePrev;
-		if (e._updatePrev != null) e._updatePrev._updateNext = e._updateNext;
-		e._updateNext = e._updatePrev = null;
+		if (_updateFirst == fe) _updateFirst = fe._updateNext;
+		if (fe._updateNext != null) fe._updateNext._updatePrev = fe._updatePrev;
+		if (fe._updatePrev != null) fe._updatePrev._updateNext = fe._updateNext;
+		fe._updateNext = fe._updatePrev = null;
 		
 		_count --;
-		_classCount.set(e._class, _classCount[e._class] - 1);
+		_classCount.set(fe._class, _classCount[fe._class] - 1);
 	}
 	
 	/** @private Adds Entity to the render list. */
 	public function addRender(e:Entity):Void
 	{
-		var f:Entity = _renderFirst[e._layer];
+		var fe:FriendlyEntity = e,
+			f:FriendlyEntity = _renderFirst[fe._layer];
 		if (f != null)
 		{
 			// Append entity to existing layer.
-			e._renderNext = f;
-			f._renderPrev = e;
-			_layerCount[e._layer] ++;
+			fe._renderNext = f;
+			f._renderPrev = fe;
+			_layerCount[fe._layer] ++;
 		}
 		else
 		{
 			// Create new layer with entity.
-			_renderLast[e._layer] = e;
-			_layerList[_layerList.length] = e._layer;
+			_renderLast[fe._layer] = fe;
+			_layerList[_layerList.length] = fe._layer;
 			_layerSort = true;
-			e._renderNext = null;
-			_layerCount[e._layer] = 1;
+			fe._renderNext = null;
+			_layerCount[fe._layer] = 1;
 		}
-		_renderFirst[e._layer] = e;
-		e._renderPrev = null;
+		_renderFirst[fe._layer] = e;
+		fe._renderPrev = null;
 	}
 	
 	/** @private Removes Entity from the render list. */
 	public function removeRender(e:Entity):Void
 	{
-		if (e._renderNext != null) e._renderNext._renderPrev = e._renderPrev;
-		else _renderLast[e._layer] = e._renderPrev;
-		if (e._renderPrev != null) e._renderPrev._renderNext = e._renderNext;
+		var fe:FriendlyEntity = e;
+		if (fe._renderNext != null) fe._renderNext._renderPrev = fe._renderPrev;
+		else _renderLast[fe._layer] = fe._renderPrev;
+		if (fe._renderPrev != null) fe._renderPrev._renderNext = fe._renderNext;
 		else
 		{
 			// Remove this entity from the layer.
-			_renderFirst[e._layer] = e._renderNext;
-			if (e._renderNext != null)
+			_renderFirst[fe._layer] = fe._renderNext;
+			if (fe._renderNext != null)
 			{
 				// Remove the layer from the layer list if this was the last entity.
 				if (_layerList.length > 1)
 				{
-					_layerList[HP.indexOf(_layerList, e._layer)] = _layerList[_layerList.length - 1];
+					_layerList[HP.indexOf(_layerList, fe._layer)] = _layerList[_layerList.length - 1];
 					_layerSort = true;
 				}
 				_layerList.pop();
 			}
 		}
-		_layerCount[e._layer] --;
-		e._renderNext = e._renderPrev = null;
+		_layerCount[fe._layer] --;
+		fe._renderNext = fe._renderPrev = null;
 	}
 	
 	/** @private Adds Entity to the type list. */
 	public function addType(e:Entity):Void
 	{
+		var fe:FriendlyEntity = e;
 		// add to type list
-		if (_typeFirst.exists(e._type))
+		if (_typeFirst.exists(fe._type))
 		{
-			_typeFirst[e._type]._typePrev = e;
-			e._typeNext = _typeFirst[e._type];
-			_typeCount.set(e._type, _typeCount[e._type] + 1);
+			_typeFirst[fe._type]._typePrev = e;
+			fe._typeNext = _typeFirst[fe._type];
+			_typeCount.set(fe._type, _typeCount[fe._type] + 1);
 		}
 		else
 		{
-			e._typeNext = null;
-			_typeCount.set(e._type, 1);
+			fe._typeNext = null;
+			_typeCount.set(fe._type, 1);
 		}
-		e._typePrev = null;
-		_typeFirst[e._type] = e;
+		fe._typePrev = null;
+		_typeFirst.set(fe._type, e);
 	}
 	
 	/** @private Removes Entity from the type list. */
 	public function removeType(e:Entity):Void
 	{
+		var fe:FriendlyEntity = e;
 		// remove from the type list
-		if (_typeFirst[e._type] == e) _typeFirst[e._type] = e._typeNext;
-		if (e._typeNext != null) e._typeNext._typePrev = e._typePrev;
-		if (e._typePrev != null) e._typePrev._typeNext = e._typeNext;
-		e._typeNext = e._typePrev = null;
-		_typeCount.set(e._type, _typeCount[e._type] - 1);
+		if (_typeFirst[fe._type] == e) _typeFirst[fe._type] = fe._typeNext;
+		if (fe._typeNext != null) fe._typeNext._typePrev = fe._typePrev;
+		if (fe._typePrev != null) fe._typePrev._typeNext = fe._typeNext;
+		fe._typeNext = fe._typePrev = null;
+		_typeCount.set(fe._type, _typeCount[fe._type] - 1);
 	}
 	
 	/** @private Register's the Entity's instance name. */
 	public function registerName(e:Entity):Void
 	{
-		_entityNames[e._name] = e;
+		var fe:FriendlyEntity = e;
+		_entityNames[fe._name] = e;
 	}
 	
 	/** @private Unregister's the Entity's instance name. */
 	public function unregisterName(e:Entity):Void
 	{
-		if (_entityNames[e._name] == e) _entityNames.remove(e._name);
+		var fe:FriendlyEntity = e;
+		if (_entityNames[fe._name] == e) _entityNames.remove(fe._name);
 	}
 	
-	/** @private Calculates the squared distance between two rectangles. */
-	private static function squareRects(x1:Float, y1:Float, w1:Float, h1:Float, x2:Float, y2:Float, w2:Float, h2:Float):Float
-	{
-		if (x1 < x2 + w2 && x2 < x1 + w1)
-		{
-			if (y1 < y2 + h2 && y2 < y1 + h1) return 0;
-			if (y1 > y2) return (y1 - (y2 + h2)) * (y1 - (y2 + h2));
-			return (y2 - (y1 + h1)) * (y2 - (y1 + h1));
-		}
-		if (y1 < y2 + h2 && y2 < y1 + h1)
-		{
-			if (x1 > x2) return (x1 - (x2 + w2)) * (x1 - (x2 + w2));
-			return (x2 - (x1 + w1)) * (x2 - (x1 + w1));
-		}
-		if (x1 > x2)
-		{
-			if (y1 > y2) return squarePoints(x1, y1, (x2 + w2), (y2 + h2));
-			return squarePoints(x1, y1 + h1, x2 + w2, y2);
-		}
-		if (y1 > y2) return squarePoints(x1 + w1, y1, x2, y2 + h2);
-		return squarePoints(x1 + w1, y1 + h1, x2, y2);
-	}
-	
-	/** @private Calculates the squared distance between two points. */
-	private static function squarePoints(x1:Float, y1:Float, x2:Float, y2:Float):Float
-	{
-		return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-	}
-	
-	/** @private Calculates the squared distance between a rectangle and a point. */
-	private static function squarePointRect(px:Float, py:Float, rx:Float, ry:Float, rw:Float, rh:Float):Float
-	{
-		if (px >= rx && px <= rx + rw)
-		{
-			if (py >= ry && py <= ry + rh) return 0;
-			if (py > ry) return (py - (ry + rh)) * (py - (ry + rh));
-			return (ry - py) * (ry - py);
-		}
-		if (py >= ry && py <= ry + rh)
-		{
-			if (px > rx) return (px - (rx + rw)) * (px - (rx + rw));
-			return (rx - px) * (rx - px);
-		}
-		if (px > rx)
-		{
-			if (py > ry) return squarePoints(px, py, rx + rw, ry + rh);
-			return squarePoints(px, py, rx + rw, ry);
-		}
-		if (py > ry) return squarePoints(px, py, rx, ry + rh);
-		return squarePoints(px, py, rx, ry);
-	}
 	
 	// Adding and removal.
 	/** @private */	private var _add:Array<Entity>;
@@ -1223,17 +1220,17 @@ class World extends Tweener
 	/** @private */	private var _recycle:Array<Entity>;
 	
 	// Update information.
-	/** @private */	private var _updateFirst:Entity;
+	/** @private */	private var _updateFirst:FriendlyEntity;
 	/** @private */	private var _count:Int = 0;
 	
 	// Render information.
-	/** @private */	private var _renderFirst:Array<Entity>;
-	/** @private */	private var _renderLast:Array<Entity>;
+	/** @private */	private var _renderFirst:Array<FriendlyEntity>;
+	/** @private */	private var _renderLast:Array<FriendlyEntity>;
 	/** @private */	private var _layerList:Array<Int>;
 	/** @private */	private var _layerCount:Array<Int>;
 	/** @private */	private var _layerSort:Bool;
 	/** @private */	private var _classCount:Map<String, Int>;
-	/** @private */	public var _typeFirst:Map<String, Entity>;
+	/** @private */	public var _typeFirst:Map<String, FriendlyEntity>;
 	/** @private */	private var _typeCount:Map<String, Int>;
 	/** @private */	private static var _recycled:Map<String, Entity>;
 	/** @private */	public var _entityNames:Map<String, Entity>;
