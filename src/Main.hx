@@ -5,6 +5,8 @@ import flash.events.KeyboardEvent;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.system.System;
+import flash.text.AntiAliasType;
+import flash.text.TextFormatAlign;
 import net.hxpunk.debug.Console;
 import net.hxpunk.Engine;
 import net.hxpunk.Entity;
@@ -25,6 +27,11 @@ import net.hxpunk.utils.Draw;
 import net.hxpunk.utils.Ease;
 import net.hxpunk.utils.Input;
 import net.hxpunk.utils.Key;
+import openfl.Assets;
+import openfl.display.FPS;
+import net.hxpunk.graphics.BitmapFont;
+import net.hxpunk.graphics.BitmapText;
+
 
 
 /**
@@ -34,6 +41,10 @@ import net.hxpunk.utils.Key;
 
 class Main extends Engine
 {
+	//Some constants used.
+	private static inline var EDGE_MARGIN_X:Int = 8;
+	private static inline var EDGE_MARGIN_Y:Int = 12;
+
 	var BALL:String = "assets/ball.png";
 	
 	var BG_MUSIC_ID:String = "BGMUSIC";
@@ -56,6 +67,12 @@ class Main extends Engine
 	var gridEntity2:Entity;
 	var emitter:Emitter;
 	var emitterEntity:Entity;
+	
+	
+	var tf:BitmapText;
+	var font2:BitmapFont;
+	var bd:BitmapData;
+	
 	
     public function new() {
         super(320, 240, 60, false);
@@ -93,14 +110,16 @@ class Main extends Engine
 		
 		for (i in 0...35) HP.log(i, [1, 2, 3]);
 		
-		HP.world.addGraphic(text = new Text("Ecciao!", 5, 30, {color:0}));
+		var newFont = Assets.getFont("assets/Fischer_mod.ttf").fontName;
+		HP.world.addGraphic(new Text("Ecciao!", 5, 20, {}));
+		trace(Assets.getFont("assets/Fischer_mod.ttf").fontName);
 		
-		/*var g:Graphiclist = new Graphiclist();
-		g.add(e.graphic);
-		g.add(e.graphic);
-		HP.world.addGraphic(g, 0, 200);
-		*/
-		
+		HP.world.addGraphic(text = new Text("Ecciao!", 5, 30, { color:0}));
+		/*text.setTextProperty("antiAliasType", AntiAliasType.ADVANCED);
+		text.setTextProperty("sharpness", 200);
+		text.setTextProperty("thickness", 0);*/
+
+		//var f = Assets.getFont("assets/Fischer_mod.ttf");
 		text.scale = 2;
 		text.setStyle("bah", { color: 0x343434 } );
 		text.richText = "font color=<bah>'#343434'</bah></font>";
@@ -145,12 +164,6 @@ class Main extends Engine
 		
 		HP.log("WASD - camera | ARROWS - ball | SHIFT + ARROWS - grid");
 		
-		bgMusic = new Sfx(BG_MUSIC_ID, null, "bg_music");
-		
-		bgMusic.loop(.025, 0);
-		
-		whiffSfx = new Sfx(SFX_WHIFF_ID);
-		
 		Data.prefix = "personal";
 		Data.load("savegame");
 		Data.writeString("whats", "up");
@@ -183,7 +196,76 @@ class Main extends Engine
 		//p.setGravity(85, 2);
 		emitterEntity.graphic = emitter;
 		HP.world.add(emitterEntity);
-    }
+
+		
+		// Initializing
+		text = new Text("", 0, 0, { color:0xFFFF00, size:8 } );
+		text.setStyle("red", { color: 0xFF0000 } );
+		text.setStyle("bigger", { size:16 } );
+		//text.setTextProperty("font", "fischer");
+		text.width = HP.screen.width - EDGE_MARGIN_X * 2;
+		text.wordWrap = true;
+		text.smooth = false;
+		text.align = TextFormatAlign.CENTER;
+		text.richText = 
+		   "It is a <red>long</red> established fact that a reader will be distracted by It is "+
+		   "It is a long established fact that a reader will be distracted by It is "+
+		   "It is a long established <bigger>fact</bigger> that a reader will be distracted by It is " +
+		   "Discover here what has befallen the fallen.";
+
+		HP.world.addGraphic(text);
+		text.x = EDGE_MARGIN_X;
+		text.y = Std.int(HP.screen.height * 1 / 4 + EDGE_MARGIN_Y);
+		/*
+		bgMusic = new Sfx(BG_MUSIC_ID, null, "bg_music");
+		
+		bgMusic.loop(.025, 0);
+		
+		whiffSfx = new Sfx(SFX_WHIFF_ID);
+		*/
+		stage.addChild(new FPS(5, 30, 0xFFFFFF));
+
+		
+		var textBytes = Assets.getText("assets/04b.fnt");
+		var XMLData = Xml.parse(textBytes);
+		font2 = new BitmapFont().loadFromXML(Assets.getBitmapData("assets/04b.png"), XMLData);
+		
+		tf = new BitmapText("hola\ncompagneros", 0, 0);
+		tf.align = TextFormatAlign.CENTER;
+		tf.centerOrigin();
+		
+		trace(font2.getSerializedData());
+		trace(font2.numGlyphs, font2.supportedGlyphs);
+		
+		
+		trace(font2.getSerializedData());
+		//bd = BitmapFont.createDefaultFont();
+		
+		//tf.color = 0x0000ff;
+		//tf.background = true;
+		
+	//	addChild(tf); // I don't add this component to display list as you can see
+		/*tf.text = "Hello World!\nand this is\nmultiline!!!";
+		
+		tf.color = 0x0000ff;
+		tf.background = true;
+		tf.fixedWidth = false;
+		tf.multiLine = true;
+		tf.backgroundColor = 0x00ff00;
+		tf.shadow = true;
+		tf.setWidth(250);
+		tf.align = TextFormatAlign.CENTER;
+		tf.lineSpacing = 5;
+		tf.fontScale = 2.5;
+		tf.padding = 5;
+		tf.scaleX = tf.scaleY = 2.5;
+	//	tf.setAlpha(0.5);
+		
+	*/
+		HP.world.addGraphic(tf, 0, HP.halfWidth, HP.halfHeight);
+		
+		//HP.world.addGraphic(new Image(bd), 0, 30, 30);
+	}
 	
 	override public function update():Void 
 	{
@@ -246,7 +328,8 @@ class Main extends Engine
 			preRotation.color = 0xFFFFFF;
 		}
 		
-		var hitbox:Mask = e.HITBOX;
+		var fe:FriendlyEntity = e;
+		var hitbox:Mask = fe.HITBOX;
 		
 		_point.x = pixelMask.parent.x + pixelMask.x;
 		_point.y = pixelMask.parent.y + pixelMask.y;
@@ -291,7 +374,7 @@ class Main extends Engine
 		if (Input.check(Key.L)) HP.pan += .05;
 		if (Input.check(Key.J)) HP.pan -= .05;
 		
-		text.text = "v:" + HP.toFixed(HP.volume, 1) + " p:" + HP.toFixed(HP.pan, 1) + "  part:" + emitter.particleCount;
+		//text.richText = "<bah>v:" + HP.toFixed(HP.volume, 1) + " </bah>p:" + HP.toFixed(HP.pan, 1) + "  part:" + emitter.particleCount;
 	}
 	
 	override public function render():Void 

@@ -13,19 +13,16 @@ import openfl.Assets;
 
 /**
  * Used for drawing text using embedded fonts.
- * 
- * Note that users of Flex 3 must edit this class to get FlashPunk games to compile.
- * The details of this can be found at the bottom of the file net/flashpunk/graphics/Text.as
  */
 class Text extends Image
 {
 	/**
-	 * The font to assign to new Text objects.
+	 * The fontname to assign to new Text objects.
 	 */
 	public static var FONT:String;
 	
 	// Default font family.
-	public static var _FONT_DEFAULT:Font;
+	private static var _FONT_DEFAULT:Font;
 
 	private static var init:Bool = initStaticVars();
 	
