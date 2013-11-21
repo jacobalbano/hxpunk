@@ -7,6 +7,9 @@ import flash.geom.Rectangle;
 import flash.system.System;
 import flash.text.AntiAliasType;
 import flash.text.TextFormatAlign;
+import haxe.io.Bytes;
+import haxe.io.BytesData;
+import haxe.Utf8;
 import net.hxpunk.debug.Console;
 import net.hxpunk.Engine;
 import net.hxpunk.Entity;
@@ -226,19 +229,68 @@ class Main extends Engine
 		stage.addChild(new FPS(5, 30, 0xFFFFFF));
 
 		
+		var str:Bytes = Bytes.ofString("0000122223334444ÇÇüÚ·²²²üü╝qqäXx¶¶");
+		var b:String = "";
+		for (i in 0...str.length) {
+			b += String.fromCharCode(str.get(i)) + "";
+		}
+		trace("0000122223334444ÇÇüÚ·²²²üü╝qqäXx¶¶");
+		trace(b);
+		trace(str.toString());
+		
+		trace("╝".charCodeAt(0));
+		trace(StringTools.fastCodeAt("╝", 0));
+		trace(Utf8.charCodeAt("╝", 0));
+		trace(Bytes.ofString("╝").toHex());
+		trace(String.fromCharCode(Utf8.charCodeAt("╝", 0)));
+		trace(String.fromCharCode(9565));
+		trace(Bytes.ofString("╝").toString());
+
+		var enc;
+		var dec;
+		/*trace(enc = BitmapFont.rleEncodeStr(str));
+		trace(dec = BitmapFont.rleDecodeStr(str));
+		trace(dec == str);*/
+	
+	/*
+	#if !web
+		Sys.exit(0);
+	#else
+		System.exit(0);
+	#end
+	*/
 		var textBytes = Assets.getText("assets/04b.fnt");
 		var XMLData = Xml.parse(textBytes);
 		font2 = new BitmapFont().loadFromXML(Assets.getBitmapData("assets/04b.png"), XMLData);
+		//var font3 = new BitmapFont().loadFromPixelizer(Assets.getBitmapData("assets/round_font.png"), " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_abcdefghijklmnopqrstuvwxyz[|]~\\");
 		
-		tf = new BitmapText("hola\ncompagneros", 0, 0);
+		var ss = String.fromCharCode(188);
+		//trace("utf188", Utf8.charCodeAt(ss, 0));
+		trace(font2.serialize());
+	
+		/*
+	#if !web
+		Sys.exit(0);
+	#else
+		System.exit(0);
+	#end
+	*/	
+		tf = new BitmapText("hola\ncom pagneros~\n", 0, 0);
+		tf.text += BitmapFont.fetch("default").supportedGlyphs.substr(0, 30) + "\n";
+		tf.text += BitmapFont.fetch("default").supportedGlyphs.substr(30, 30) + "\n";
+		tf.text += BitmapFont.fetch("default").supportedGlyphs.substr(60) + "\n";
 		tf.align = TextFormatAlign.CENTER;
 		tf.centerOrigin();
+		tf.outlineColor = 0x0;
+		tf.outline = true;
+		//tf.smooth = true;
+		tf.scale = 2;
 		
-		trace(font2.getSerializedData());
-		trace(font2.numGlyphs, font2.supportedGlyphs);
+		trace(String.fromCharCode(127).charCodeAt(0));
+		//trace(font2.numGlyphs, font2.supportedGlyphs);
 		
 		
-		trace(font2.getSerializedData());
+		//trace(font2.getSerializedData());
 		//bd = BitmapFont.createDefaultFont();
 		
 		//tf.color = 0x0000ff;
@@ -265,6 +317,27 @@ class Main extends Engine
 		HP.world.addGraphic(tf, 0, HP.halfWidth, HP.halfHeight);
 		
 		//HP.world.addGraphic(new Image(bd), 0, 30, 30);
+		
+		/*
+		var chars:Array<String> = new Array<String>();
+		for (i in 0...256) {
+			var u:UInt = i & 0xFF;
+			chars.push(Std.string(u));
+			var ch:String = String.fromCharCode(u);
+			trace(StringTools.lpad(Std.string(u), "0", 3) + "\t" + byte2bits(u) + "\t" + ch);
+		}*/
+	}
+	
+	public function byte2bits(u:Int):String 
+	{ 
+		var res:String = "";
+		var i:Int = 8;
+		while (i > 0) {
+			res = (u & 1 == 1 ? "1" : "0") + res;
+			u = u >> 1;
+			i--;
+		}
+		return res;
 	}
 	
 	override public function update():Void 
