@@ -7,6 +7,7 @@ import flash.display.Sprite;
 import flash.errors.Error;
 import flash.geom.Matrix;
 import flash.text.TextFormatAlign;
+import haxe.ds.IntMap;
 import net.hxpunk.graphics.BitmapFont;
 
 /**
@@ -578,15 +579,15 @@ class BitmapText extends Image
 	{
 		return _multiLine;
 	}
-	private function set_multiLine(pMultiLine:Bool):Bool 
+	private function set_multiLine(value:Bool):Bool 
 	{
-		if (_multiLine != pMultiLine)
+		if (_multiLine != value)
 		{
-			_multiLine = pMultiLine;
+			_multiLine = value;
 			_pendingTextChange = true;
 			updateTextBuffer();
 		}
-		return pMultiLine;
+		return value;
 	}
 	
 	/**
@@ -782,16 +783,19 @@ class BitmapText extends Image
 	}
 	
 	/** Dispose of the prepared glyphs BitmapDatas. */
-	private function clearPreparedGlyphs(glyphs:Array<BitmapData>):Void
+	private function clearPreparedGlyphs(glyphs:IntMap<BitmapData>):Void
 	{
 		if (glyphs != null)
 		{
-			for (bmd in glyphs)
+			var bmd:BitmapData;
+			for (i in glyphs.keys())
 			{
+				bmd = glyphs.get(i);
 				if (bmd != null)
 				{
 					bmd.dispose();
 				}
+				glyphs.remove(i);
 			}
 			glyphs = null;
 		}
@@ -830,7 +834,7 @@ class BitmapText extends Image
 	private var _pendingTextChange:Bool = false;
 	private var _multiLine:Bool = true;
 
-	private var _preparedTextGlyphs:Array<BitmapData>;
-	private var _preparedShadowGlyphs:Array<BitmapData>;
-	private var _preparedOutlineGlyphs:Array<BitmapData>;
+	private var _preparedTextGlyphs:IntMap<BitmapData>;
+	private var _preparedShadowGlyphs:IntMap<BitmapData>;
+	private var _preparedOutlineGlyphs:IntMap<BitmapData>;
 }
