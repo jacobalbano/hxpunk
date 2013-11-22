@@ -245,6 +245,12 @@ class Main extends Engine
 		trace(String.fromCharCode(Utf8.charCodeAt("╝", 0)));
 		trace(String.fromCharCode(9565));
 		trace(Bytes.ofString("╝").toString());
+		var bdata:BytesData = Bytes.ofString("╝").getData();
+		var uEnc:String = StringTools.urlEncode("╝");
+		trace(StringTools.urlDecode(uEnc));
+		trace(Bytes.ofData(bdata));
+		//for (i in 0...BytesData.bdata.length) trace(bdata[i]);
+		
 
 		var enc;
 		var dec;
@@ -261,7 +267,7 @@ class Main extends Engine
 	*/
 		var textBytes = Assets.getText("assets/04b.fnt");
 		var XMLData = Xml.parse(textBytes);
-		font2 = new BitmapFont().loadFromXML(Assets.getBitmapData("assets/04b.png"), XMLData);
+		font2 = new BitmapFont().fromXML(Assets.getBitmapData("assets/04b.png"), XMLData);
 		//var font3 = new BitmapFont().loadFromPixelizer(Assets.getBitmapData("assets/round_font.png"), " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_abcdefghijklmnopqrstuvwxyz[|]~\\");
 		
 		var ss = String.fromCharCode(188);
@@ -282,14 +288,25 @@ class Main extends Engine
 		tf.align = TextFormatAlign.CENTER;
 		tf.centerOrigin();
 		tf.outlineColor = 0x0;
+		tf.shadowColor = 0xff0000;
+		tf.shadow = true;
 		tf.outline = true;
-		//tf.smooth = true;
-		tf.scale = 2;
+		tf.smooth = true;
+		tf.fontScale = 1;
+		//tf.angle = 30;
+		tf.flipped = true;
 		
 		trace(String.fromCharCode(127).charCodeAt(0));
 		//trace(font2.numGlyphs, font2.supportedGlyphs);
 		
-		
+		var pixelizerFont = new BitmapFont().fromPixelizer(
+			HP.getBitmapData("assets/round_font-pixelizer.png"), 
+			" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~⌂", 
+			0xFF202020);
+		var pixelizerText:BitmapText = new BitmapText("pixelizedr all wthe waeey!", 0, 0, pixelizerFont);
+		HP.world.addGraphic(pixelizerText, 0, 100, 170);
+		pixelizerText.scale = 2;
+
 		//trace(font2.getSerializedData());
 		//bd = BitmapFont.createDefaultFont();
 		

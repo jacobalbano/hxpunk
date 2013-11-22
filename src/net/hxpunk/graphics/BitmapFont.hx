@@ -50,11 +50,12 @@ class BitmapFont
 	
 	/**
 	 * Loads font data from Pixelizer's format.
-	 * @param	source		Font source image. An asset id/file, BitmapData object, or embedded BitmapData class.
-	 * @param	letters		All letters (in sequential order) contained in this font.
+	 * @param	source			Font source image. An asset id/file, BitmapData object, or embedded BitmapData class.
+	 * @param	letters			All letters (in sequential order) contained in this font.
+	 * @param	glyphBGColor	An additional background color to remove - often 0xFF202020 is used for glyphs background.
 	 * @return this BitmapFont
 	 */
-	public function fromPixelizer(source:Dynamic, letters:String):BitmapFont
+	public function fromPixelizer(source:Dynamic, letters:String, ?glyphBGColor:Int = 0xFF202020):BitmapFont
 	{
 		reset();
 		
@@ -64,7 +65,7 @@ class BitmapFont
 		_glyphString = letters;
 		
 		var tileRects:Array<Rectangle> = [];
-		var result:BitmapData = preparePixelizerBMD(bitmapData, tileRects);
+		var result:BitmapData = preparePixelizerBMD(bitmapData, tileRects, glyphBGColor);
 		var currRect:Rectangle;
 		
 		for (letterID in 0...(tileRects.length))
@@ -73,12 +74,17 @@ class BitmapFont
 			
 			// create glyph
 			var bd:BitmapData = new BitmapData(Math.floor(currRect.width), Math.floor(currRect.height), true, 0x0);
-			bd.copyPixels(bitmapData, currRect, HP.zero, null, null, true);
+			bd.copyPixels(result, currRect, HP.zero, null, null, true);
 			
 			// store glyph
 			setGlyph(_glyphString.charCodeAt(letterID), bd);
 		}
 		
+		if (result != null) {
+			result.dispose();
+			result = null;
+		}
+			
 		return this;
 	}
 	
@@ -279,9 +285,13 @@ class BitmapFont
 	
 	/**
 	 * Adjusts the font BitmapData making background transparent and stores glyphs positions in the rects array.
+	 * 
+	 * @param	bitmapData		The BitmapData containing the font glyphs.
+	 * @param	rects			A Vector that will be populate with Rectangles representing glyphs positions and dimensions.
+	 * @param	glyphBGColor	An additional background color to remove - often 0xFF202020 is used for glyphs background.
 	 * @return The modified BitmapData.
 	 */
-	private function preparePixelizerBMD(bitmapData:BitmapData, rects:Array<Rectangle>):BitmapData
+	private function preparePixelizerBMD(bitmapData:BitmapData, rects:Array<Rectangle>, ?glyphBGColor:Int):BitmapData
 	{
 		var bgColor:Int = bitmapData.getPixel(0, 0);
 		var cy:Int = 0;
@@ -336,26 +346,16 @@ class BitmapFont
 			cy += (rowHeight + 1);
 		}
 		
-		var resultBitmapData:BitmapData = bitmapData.clone();
+		var resultBitmapData:BitmapData = new BitmapData(bitmapData.width, bitmapData.height, true, 0);
 		
-		var pixelColor:UInt;
-		var bgColor32:UInt = bitmapData.getPixel(0, 0);
+		// remove background color
 		
-		cy = 0;
-		while (cy < bitmapData.height)
-		{
-			cx = 0;
-			while (cx < bitmapData.width)
-			{
-				pixelColor = bitmapData.getPixel32(cx, cy);
-				if (pixelColor == bgColor32)
-				{
-					resultBitmapData.setPixel32(cx, cy, 0x00000000);
-				}
-				cx++;
-			}
-			cy++;
-		}
+		var bgColor32:Int = bitmapData.getPixel32(0, 0);
+		
+		resultBitmapData.threshold(bitmapData, bitmapData.rect, HP.zero, "==", bgColor32, 0x00000000, 0xFFFFFFFF, true);
+		
+		if (glyphBGColor != null)
+			resultBitmapData.threshold(resultBitmapData, resultBitmapData.rect, HP.zero, "==", glyphBGColor, 0x00000000, 0xFFFFFFFF, true);
 		
 		return resultBitmapData;
 	}
