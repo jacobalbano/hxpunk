@@ -5,6 +5,7 @@ import flash.errors.Error;
 import flash.geom.ColorTransform;
 import flash.geom.Point;
 import flash.geom.Rectangle;
+import flash.utils.ByteArray;
 import haxe.ds.IntMap.IntMap;
 import haxe.io.Bytes;
 import haxe.Serializer;
@@ -177,6 +178,51 @@ class BitmapFont
 	}
 	
 	/**
+	 * Serializes the font as a bit font by encoding it into a big string (only extended-ASCII glyphs between in the range [32..254] are valid, no alpha is encoded, pixels are either on (if alpha == 1) or off (otherwise)).
+	 * 
+	 * Format:
+	 * 	   [numGlyphs][maxWidth][height] then for each glyph [utf8 char][width][height][series of false or true for each pixel of the glyph]...
+	 * 
+	 *     the resulting ByteArray is compressed, converted to string and escaped.
+	 * 
+	 * @return	Serialized font string.
+	 */
+	public function serialize():String 
+	{
+		var charCode:Int;
+		var glyph:BitmapData;
+		var nGlyphs:Int = _glyphString.length;
+		var output:String = "";
+		var byteArray:ByteArray = new ByteArray();
+		
+		byteArray.writeUnsignedInt(nGlyphs);
+		byteArray.writeUnsignedInt(maxWidth);
+		byteArray.writeUnsignedInt(height);
+
+		for (i in 0...nGlyphs) 
+		{
+			charCode = Utf8.charCodeAt(_glyphString, i);
+			glyph = _glyphs.get(charCode);
+			
+			byteArray.writeUTF(_glyphString.charAt(i));
+			byteArray.writeUnsignedInt(glyph.width);
+			byteArray.writeUnsignedInt(glyph.height);
+			
+			for (py in 0...(glyph.height)) 
+			{
+				for (px in 0...(glyph.width)) 
+				{
+					var pixel:Int = glyph.getPixel32(px, py) & 0xFF000000;
+					byteArray.writeBoolean(pixel == 0xFF000000);
+				}
+			}
+		}
+		
+		output = ByteArray2String(byteArray);
+		return output;
+	}
+
+	/**
 	 * Deserializes and loads a font encoded with serialize().
 	 * 
 	 * @return	The deserialized BitmapFont.
@@ -185,36 +231,35 @@ class BitmapFont
 	{
 		reset();
 		
-		var deserialized:String = Unserializer.run(encodedFont).toString();
+		var byteArray:ByteArray = String2ByteArray(encodedFont);
+		byteArray.position = 0;
+		
 		var letters:String = "";
 		var letterPos:Int = 0;
-		var i:Int = 0;
 		
-		var n:Int = deserialized.charCodeAt(i) - 32;	// number of glyphs
-		var w:Int = deserialized.charCodeAt(++i) - 32;	// max width of single glyph
-		var h:Int = deserialized.charCodeAt(++i) - 32;	// max height of single glyph
+		var n:Int = byteArray.readUnsignedInt();	// number of glyphs
+		var w:Int = byteArray.readUnsignedInt();	// max width of single glyph
+		var h:Int = byteArray.readUnsignedInt();	// max height of single glyph
 		
 		var size:Int = Std.int(Math.ceil(Math.sqrt(n * (w + 1) * (h + 1))) + Math.max(w, h));
 		var rows:Int = Std.int(size / (h + 1));
 		var cols:Int = Std.int(size / (w + 1));
 		var bd:BitmapData = new BitmapData(size, size, true, 0xFFFF0000);
-		var len:Int = deserialized.length;
+		var len:Int = byteArray.length;
 		
-		while (i < len)
+		while (byteArray.position < len)
 		{
-			letters += deserialized.charAt(++i);
+			letters += byteArray.readUTF();
 			
-			if (i >= len) break;
+			if (byteArray.position >= len) break;
 			
-			var gw:Int = deserialized.charCodeAt(++i) - 32;
-			var gh:Int = deserialized.charCodeAt(++i) - 32;
+			var gw:Int = byteArray.readUnsignedInt();
+			var gh:Int = byteArray.readUnsignedInt();
 			for (py in 0...gh) 
 			{
 				for (px in 0...gw) 
 				{
-					i++;
-					
-					var pixelOn:Bool = deserialized.charAt(i) == "1"; 
+					var pixelOn:Bool = byteArray.readBoolean();
 					bd.setPixel32(1 + (letterPos % cols) * (w + 1) + px, 1 + Std.int(letterPos / cols) * (h + 1) + py, pixelOn ? 0xFFFFFFFF : 0x0);
 				}
 			}
@@ -229,46 +274,70 @@ class BitmapFont
 		return font;
 	}
 
-	/**
-	 * Serializes the font as a bit font by encoding it into a big string (only extended-ASCII glyphs between in the range [32..254] are valid, no alpha is encoded, pixels are either on (if alpha == 1) or off (otherwise)).
+	/** 
+	 * Encodes a ByteArray into a String. 
 	 * 
-	 * Format:
-	 * 	   [fromCharCode(numGlyphs + 32)][fromCharCode(maxWidth + 32)][fromCharCode(height + 32)] then for each glyph [char][fromCharCode(width + 32)][fromCharCode(height + 32)][series of 0 or 1 for each pixel of the glyph]...
-	 * 
-	 *     the resulting string is then converted to Bytes and serialized via haxe.Serializer.
-	 * 
-	 * @return	Serialized font string.
+	 * @param byteArray		The ByteArray to be encoded.
+	 * @param mustCompress	Whether the ByteArray must be compressed before being encoded.
+	 * @return The encoded string.
 	 */
-	public function serialize():String 
-	{
-		var charCode:Int;
-		var glyph:BitmapData;
-		var nGlyphs:Int = _glyphString.length;
+	public static function ByteArray2String(byteArray:ByteArray, mustCompress:Bool = true):String {
+		var origPos:Int = byteArray.position;
+		var result:Array<Int> = new Array<Int>();
 		var outputBuf:StringBuf = new StringBuf();
-		
-		outputBuf.addChar(nGlyphs + 32);
-		outputBuf.addChar(maxWidth + 32);
-		outputBuf.addChar(height + 32);
 
-		for (i in 0...nGlyphs) 
-		{
-			charCode = _glyphString.charCodeAt(i);
-			glyph = _glyphs.get(charCode);
-			
-			outputBuf.add(_glyphString.substr(i, 1));
-			outputBuf.addChar(glyph.width + 32);
-			outputBuf.addChar(glyph.height + 32);
-			
-			for (py in 0...(glyph.height)) 
-			{
-				for (px in 0...(glyph.width)) 
-				{
-					outputBuf.add(((glyph.getPixel32(px, py) & 0xFF000000) == 0xFF000000) ? "1" : "0");
-				}
+		if (mustCompress) {
+			byteArray.position = 0;
+			byteArray.compress();
+		}
+		byteArray.position = 0;
+		while (byteArray.position < byteArray.length - 1)
+			result.push(byteArray.readUnsignedShort());
+
+		if (byteArray.position != byteArray.length)
+			result.push(byteArray.readUnsignedByte() << 8);
+
+		byteArray.position = origPos;
+		for (i in result) {
+			outputBuf.add(StringTools.hex(i, 4));
+		}
+		return outputBuf.toString();
+	}
+	
+	/** 
+	 * Decodes a ByteArray from a String. 
+	 * 
+	 * @param str				The string to be decoded.
+	 * @param mustUncompress	Whether the ByteArray must be uncompressed after being decoded.
+	 * @return The decoded ByteArray.
+	 */
+	public static function String2ByteArray(str:String, mustUncompress:Bool = true):ByteArray {
+		var result:ByteArray = new ByteArray();
+
+		var s = "";
+		var len:Int = str.length;
+		var i:Int = 0;
+		var n:Int = 0;
+		while (i < len) {
+			s = str.substr(i, 4);
+			n = 0;
+			for (c in 0...s.length) {
+				var val:Int = s.charCodeAt(c);
+				val -= (val >= 65 ? 65 - 10 : 48);
+				n <<= 4;
+				n |= val;
 			}
+			
+			result.writeShort(n);
+			i += 4;
 		}
 		
-		return Serializer.run(Bytes.ofString(outputBuf.toString()));
+		if (mustUncompress) {
+			result.position = 0;
+			result.uncompress();
+		}
+		result.position = 0;
+		return result;
 	}
 
 	/**
@@ -590,7 +659,7 @@ class BitmapFont
 	}
 
 	/** Serialized default font data. (04B_03__.ttf @ 8px) */
-	private static inline var _DEFAULT_FONT_DATA:String = "s3754:fyYoICQhMDAwMCEiJjAwMTAxMDEwMDAxMCIkJDAwMDAxMDEwMTAxMDAwMDAjJiYwMDAwMDAwMTAxMDAxMTExMTAwMTAxMDAxMTExMTAwMTAxMDAkJScwMDAwMDAwMTAwMDExMTAxMTAwMDAwMTEwMTExMDAwMDEwMCUmJjAwMDAwMDEwMDEwMDAwMDEwMDAwMTAwMDAxMDAwMDAxMDAxMCYmJjAwMDAwMDAxMTAwMDEwMDAwMDAxMTAxMDEwMDEwMDAxMTAxMCciJDAwMTAxMDAwKCMmMDAwMDEwMTAwMTAwMTAwMDEwKSMmMDAwMTAwMDEwMDEwMDEwMTAwKiQlMDAwMDEwMTAwMTAwMTAxMDAwMDArJCYwMDAwMDAwMDAxMDAxMTEwMDEwMDAwMDAsIycwMDAwMDAwMDAwMDAwMDAwMTAxMDAtJCUwMDAwMDAwMDAwMDAxMTEwMDAwMC4iJjAwMDAwMDAwMDAxMC8mJjAwMDAwMDAwMDAxMDAwMDEwMDAwMTAwMDAxMDAwMDEwMDAwMDAlJjAwMDAwMDExMDAxMDAxMDEwMDEwMTAwMTAwMTEwMDEjJjAwMDExMDAxMDAxMDAxMDAxMDIlJjAwMDAwMTExMDAwMDAxMDAxMTAwMTAwMDAxMTExMDMlJjAwMDAwMTExMDAwMDAxMDAxMTAwMDAwMTAxMTEwMDQlJjAwMDAwMDAxMDAwMTEwMDEwMTAwMTExMTAwMDEwMDUlJjAwMDAwMTExMTAxMDAwMDExMTAwMDAwMTAxMTEwMDYlJjAwMDAwMDExMDAxMDAwMDExMTAwMTAwMTAwMTEwMDclJjAwMDAwMTExMTAwMDAxMDAwMTAwMDEwMDAwMTAwMDglJjAwMDAwMDExMDAxMDAxMDAxMTAwMTAwMTAwMTEwMDklJjAwMDAwMDExMDAxMDAxMDAxMTEwMDAwMTAwMTEwMDoiJjAwMDAxMDAwMTAwMDsiJjAwMDAxMDAwMTAxMDwkJjAwMDAwMDEwMDEwMDEwMDAwMTAwMDAxMD0kJjAwMDAwMDAwMTExMDAwMDAxMTEwMDAwMD4kJjAwMDAxMDAwMDEwMDAwMTAwMTAwMTAwMD8lJjAwMDAwMTExMDAwMDAxMDAxMTAwMDAwMDAwMTAwMEAmJjAwMDAwMDAxMTEwMDEwMDAxMDEwMTExMDEwMTAxMDAxMTEwMEElJjAwMDAwMDExMDAxMDAxMDEwMDEwMTExMTAxMDAxMEIlJjAwMDAwMTExMDAxMDAxMDExMTAwMTAwMTAxMTEwMEMkJjAwMDAwMTEwMTAwMDEwMDAxMDAwMDExMEQlJjAwMDAwMTExMDAxMDAxMDEwMDEwMTAwMTAxMTEwMEUkJjAwMDAxMTEwMTAwMDExMTAxMDAwMTExMEYkJjAwMDAxMTEwMTAwMDExMTAxMDAwMTAwMEclJjAwMDAwMDExMTAxMDAwMDEwMTEwMTAwMTAwMTExMEglJjAwMDAwMTAwMTAxMDAxMDExMTEwMTAwMTAxMDAxMEkkJjAwMDAxMTEwMDEwMDAxMDAwMTAwMTExMEolJjAwMDAwMDAxMTAwMDAxMDAwMDEwMTAwMTAwMTEwMEslJjAwMDAwMTAwMTAxMDEwMDExMDAwMTAxMDAxMDAxMEwkJjAwMDAxMDAwMTAwMDEwMDAxMDAwMTExME0mJjAwMDAwMDEwMDAxMDExMDExMDEwMTAxMDEwMDAxMDEwMDAxME4lJjAwMDAwMTAwMTAxMTAxMDEwMTEwMTAwMTAxMDAxME8lJjAwMDAwMDExMDAxMDAxMDEwMDEwMTAwMTAwMTEwMFAlJjAwMDAwMTExMDAxMDAxMDEwMDEwMTExMDAxMDAwMFElJzAwMDAwMDExMDAxMDAxMDEwMDEwMTAwMTAwMTEwMDAwMDEwUiUmMDAwMDAxMTEwMDEwMDEwMTAwMTAxMTEwMDEwMDEwUyUmMDAwMDAwMTExMDEwMDAwMDExMDAwMDAxMDExMTAwVCQmMDAwMDExMTAwMTAwMDEwMDAxMDAwMTAwVSUmMDAwMDAxMDAxMDEwMDEwMTAwMTAxMDAxMDAxMTAwViUmMDAwMDAxMDAxMDEwMDEwMTAxMDAxMDEwMDAxMDAwVyYmMDAwMDAwMTAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDEwMTAwWCUmMDAwMDAxMDAxMDEwMDEwMDExMDAxMDAxMDEwMDEwWSUmMDAwMDAxMDAxMDEwMDEwMDExMTAwMDAxMDAxMTAwWiQmMDAwMDExMTAwMDEwMDEwMDEwMDAxMTEwWyMmMDAwMTEwMTAwMTAwMTAwMTEwXCYmMDAwMDAwMTAwMDAwMDEwMDAwMDAxMDAwMDAwMTAwMDAwMDEwXSMmMDAwMTEwMDEwMDEwMDEwMTEwXiQkMDAwMDAxMDAxMDEwMDAwMF8lJjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAxMTExMGAjJDAwMDEwMDAxMDAwMGElJjAwMDAwMDAwMDAwMTExMDEwMDEwMTAwMTAwMTExMGIlJjAwMDAwMTAwMDAxMTEwMDEwMDEwMTAwMTAxMTEwMGMkJjAwMDAwMDAwMDExMDEwMDAxMDAwMDExMGQlJjAwMDAwMDAwMTAwMTExMDEwMDEwMTAwMTAwMTExMGUlJjAwMDAwMDAwMDAwMTEwMDEwMTEwMTEwMDAwMTEwMGYkJjAwMDAwMDEwMDEwMDExMTAwMTAwMDEwMGclKDAwMDAwMDAwMDAwMTExMDEwMDEwMTAwMTAwMTExMDAwMDEwMDExMDBoJSYwMDAwMDEwMDAwMTExMDAxMDAxMDEwMDEwMTAwMTBpIiYwMDEwMDAxMDEwMTBqIygwMDAwMTAwMDAwMTAwMTAwMTAwMTAxMDBrJSYwMDAwMDEwMDAwMTAwMTAxMDEwMDExMTAwMTAwMTBsIiYwMDEwMTAxMDEwMTBtJiYwMDAwMDAwMDAwMDAxMTExMDAxMDEwMTAxMDEwMTAxMDEwMTBuJSYwMDAwMDAwMDAwMTExMDAxMDAxMDEwMDEwMTAwMTBvJSYwMDAwMDAwMDAwMDExMDAxMDAxMDEwMDEwMDExMDBwJSgwMDAwMDAwMDAwMTExMDAxMDAxMDEwMDEwMTExMDAxMDAwMDEwMDAwcSUoMDAwMDAwMDAwMDAxMTEwMTAwMTAxMDAxMDAxMTEwMDAwMTAwMDAxMHIkJjAwMDAwMDAwMTAxMDExMDAxMDAwMTAwMHMlJjAwMDAwMDAwMDAwMTExMDExMDAwMDAxMTAxMTEwMHQkJjAwMDAwMTAwMTExMDAxMDAwMTAwMDAxMHUlJjAwMDAwMDAwMDAxMDAxMDEwMDEwMTAwMTAwMTExMHYlJjAwMDAwMDAwMDAxMDAxMDEwMDEwMTAxMDAwMTAwMHcmJjAwMDAwMDAwMDAwMDEwMTAxMDEwMTAxMDAxMDEwMDAxMDEwMHgkJjAwMDAwMDAwMTAxMDAxMDAwMTAwMTAxMHklKDAwMDAwMDAwMDAxMDAxMDEwMDEwMTAwMTAwMTExMDAwMDEwMDExMDB6JSYwMDAwMDAwMDAwMTExMTAwMDEwMDAxMDAwMTExMTB7JCYwMDAwMDExMDAxMDAxMDAwMDEwMDAxMTB8IiYwMDEwMTAxMDEwMTB9JCYwMDAwMTEwMDAxMDAwMDEwMDEwMDExMDB%JSQwMDAwMDAxMDEwMTAxMDAwMDAwMA";
+	private static inline var _DEFAULT_FONT_DATA:String = "78DA955685821C310885766E6F3FA3EEEEEEEEEEEDD55DEFEAF6ED9D24840021B3D7D999EC64429007010060060046FD33065CD4FF75FD83102E5CDC0F0BD22AC65F5CC12544D545225E0A93A5C46B04F4216E0897F30EB8AC1FA6FA679AC92305202980719617966BE6C87AEA81167085D505992272CE0C30BDAD2463BBAC1DE0AA7E58983964FA8CC26AB188456A7A5F43F04CE99D59FA5A5ACEAA0141C3FA01AE23F6D3602E92B05E4AE035CC123614D749111B0D26357A0247C04D24605410644766A3A2369B251858C088F716C525EB884C99A2A21FB70E1126D393B86D5AAFECC61262F9DB76CB1159A0E6B8C3B5B438852DDD59732C012021DCD5C00E2CC7DD6D4294F6E31EE9D3226D6FFD396CD9A763AC042F0FB8DF8621C3C271744092E8DDF9F5E004AFF19E43D581C4A23022671272C9E1C1E0235786FB48AD00B26B5138F9A8B217D1B82D901E6BF19292C3CA71054CE625FE014F0C92C48F27AD8D393EA19817799DD27A393810F5692B541A99E667ECE9917E959179D613CAABE2849FB351A29E28F47C95BCC9481425A4D4980B8E68A2D3F65E9C6F8ABA34E8D9927BF1B22E4A4D8EE9EDCA7CD886FB6AC3D55572BB36E4C1F45C6F458335FA46931005DAFD70D3754FF5CB7B6E35F81AB4006FB7097572BB53592DEB6D647B5717199D50EFD5060CFCE1FD46C18AEF0F6483A32BF78C393BF545B5EC2109E8648A017CE4ECB74738EE7F6C81F3830BF049DD4BA0496A4FAD506C087DE66A574E2A7751CFDDE2A262F505F11A4FB054C4C0CBC936A7C92BD99896787E4D988FAB5E9003F78D230254E1A1FBADED7D13C5BBBA8162973BA7E57D0DA86FD18726F2E6447FAC616DE63282E0D3FF78224D67ABCE209F0DA69A6B45B2E9DDF1B3AEBA264EE2872F0E4C553E0BC3D761C2C2F49BEB272793A5F1BB676F69EBC3F0C301DED351F8EAA7EB7D531B03F52FDB98A85E2DCE7FFBF1F847A74DD39FC5F95FD2A2D320A4EB1F2AF02506";
 
 	// BitmapFont information
 	private var _glyphs:IntMap<BitmapData>;

@@ -176,10 +176,12 @@ class BitmapText extends Image
 			_source.lock();
 			
 			// render text
-			var row:Int = 0;
-			
-			for (t in rows) 
+			for (i in 0...rows.length) 
 			{
+				// if shadowOffsetY is negative, draw in reverse order (last row first), so that shadow text is drawn below
+				var row:Int = (shadow && _shadowOffsetY < 0 ? rows.length - 1 - i : i);
+				var t:String = rows[row];
+				
 				// default offset (align LEFT)
 				var ox:Int = (shadow && _shadowOffsetX < 0 ? -_shadowOffsetX : 0) + (outline ? 1 : 0);
 				var oy:Int = (shadow && _shadowOffsetY < 0 ? -_shadowOffsetY : 0) + (outline ? 1 : 0);
@@ -232,7 +234,7 @@ class BitmapText extends Image
 					}
 				}
 				_font.render(_source, t, _preparedTextGlyphs, ox + _padding, oy + row * (fontHeight + _lineSpacing) + _padding, _letterSpacing);
-				row++;
+				//row++;
 			}
 			
 			_source.unlock();
