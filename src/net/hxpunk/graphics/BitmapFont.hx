@@ -1,4 +1,5 @@
 package net.hxpunk.graphics;
+
 import flash.display.BitmapData;
 import flash.errors.Error;
 import flash.geom.ColorTransform;
@@ -10,7 +11,6 @@ import haxe.Serializer;
 import haxe.Unserializer;
 import haxe.Utf8;
 import net.hxpunk.HP;
-import net.hxpunk.utils.Draw;
 
 
 /**
@@ -36,7 +36,7 @@ class BitmapFont
 	 *     var font = new BitmapFont().fromSerialized(FONT_DATA);
 	 * 
 	 * @param	source		Font source image. An asset id/file, BitmapData object, or embedded BitmapData class.
-	 * @param	XMLData		Font data in XML format.
+	 * @param	XMLData		Font data. An XML object or embedded XML class (in AngelCode's format).
 	 */
 	public function new(?source:Dynamic = null, ?XMLData:Xml = null) 
 	{
@@ -91,7 +91,7 @@ class BitmapFont
 	/**
 	 * Loads font data from XML (AngelCode's) format.
 	 * @param	source		Font source image. An asset id/file, BitmapData object, or embedded BitmapData class.
-	 * @param	XMLData		Font data in XML format.
+	 * @param	XMLData		Font data. An XML object or embedded XML class (in AngelCode's format).
 	 * @return	this BitmapFont.
 	 */
 	public function fromXML(source:Dynamic, XMLData:Xml):BitmapFont
@@ -464,14 +464,14 @@ class BitmapFont
 	
 	/**
 	 * Renders a string of text onto bitmap data using the font.
-	 * @param	bitmapData	Where to render the text.
-	 * @param   fontData	Set of font glyphs BitmapData.
-	 * @param	text		Test to render.
-	 * @param	color		Color of text to render.
-	 * @param	offsetX		X position of text output.
-	 * @param	offsetY		Y position of text output.
+	 * @param	bitmapData		Where to render the text.
+	 * @param	text			Test to render.
+	 * @param   fontData		Set of font glyphs BitmapData.
+	 * @param	offsetX			X position of text output.
+	 * @param	offsetY			Y position of text output.
+	 * @param	letterSpacing	Space between characters.
 	 */
-	public function render(bitmapData:BitmapData, fontData:IntMap<BitmapData>, text:String, color:UInt, offsetX:Float, offsetY:Float, letterSpacing:Int):Void 
+	public function render(bitmapData:BitmapData, text:String, fontData:IntMap<BitmapData>, offsetX:Float = 0, offsetY:Float = 0, letterSpacing:Int = 0):Void 
 	{
 		HP.point.x = offsetX;
 		HP.point.y = offsetY;
@@ -543,12 +543,20 @@ class BitmapFont
 	
 	/**
 	 * Returns number of glyphs available in this font.
-	 * @return Number of glyphs available in this font.
 	 */
 	public var numGlyphs(get, null):Int;
 	private inline function get_numGlyphs():Int 
 	{
 		return _glyphString.length;
+	}
+	
+	/**
+	 * Returns the set of glyphs' BitmapData (it's not a copy).
+	 */
+	public var glyphs(get, null):IntMap<BitmapData>;
+	private inline function get_glyphs():IntMap<BitmapData>
+	{
+		return _glyphs;
 	}
 	
 	/**

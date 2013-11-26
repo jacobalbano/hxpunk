@@ -1,14 +1,12 @@
 package net.hxpunk.graphics;
 
-import flash.display.Bitmap;
 import flash.display.BitmapData;
-import flash.display.Graphics;
-import flash.display.Sprite;
 import flash.errors.Error;
 import flash.geom.Matrix;
 import flash.text.TextFormatAlign;
 import haxe.ds.IntMap;
 import net.hxpunk.graphics.BitmapFont;
+import net.hxpunk.HP;
 
 /**
  * Used for drawing text using a BitmapFont.
@@ -48,6 +46,15 @@ class BitmapText extends Image
 		this.x = x;
 		this.y = y;
 
+		_fieldWidth = 2;
+		_fieldHeight = _font.height;
+		
+		super(new BitmapData(_fieldWidth, _fieldHeight, true, 0));
+		
+		lock();
+
+		updateGlyphs(true, _shadowColor != null, _outlineColor != null);
+		
 		if (options != null)
 		{
 			for (property in Reflect.fields(options)) {
@@ -59,13 +66,9 @@ class BitmapText extends Image
 			}
 		}
 
-		updateGlyphs(true, _shadow, _outline);
-		
-		_fieldWidth = 2;
-		_fieldHeight = _font.height;
-		super(new BitmapData(_fieldWidth, _fieldHeight, true, 0));
-		
 		_pendingTextChange = true;
+		unlock();
+		
 		updateTextBuffer();
 	}
 	
@@ -111,38 +114,151 @@ class BitmapText extends Image
 	{
 		return _text;
 	}
-	private function set_text(text:String):String 
+	private function set_text(value:String):String 
 	{
-		if (text != _text)
+		if (_text != value)
 		{
-			_text = text;
+			_text = value;
 			_pendingTextChange = true;
 			updateTextBuffer();
 		}
-		return _text;
+		return value;
 	}
 	
 	/** Updates the text buffer, which is the source for the image buffer. */
 	public function updateTextBuffer(forceUpdate:Bool = false):Void 
 	{
-		if (_font == null || (!_pendingTextChange && !forceUpdate))
+		if (_font == null || locked || (!_pendingTextChange && !forceUpdate))
 		{
 			return;
 		}
 		
 		var preparedText:String = (_autoUpperCase) ? _text.toUpperCase() : _text;
-		var calcFieldWidth:Int = _fieldWidth;
-		var rows:Array<String> = [];
+		var rows:Array<String> = new Array<String>();
 
 		var fontHeight:Int = Math.floor(_font.height * _fontScale);
 		
-		// cut text into pices
+		// split text into lines and calc min text field width (based on multiLine, fixedWidth, wordWrap, etc.)
+		var calcFieldWidth = splitIntoLines(preparedText, rows);
+		
+		var background:Bool = _backgroundColor != null;
+		var shadow:Bool = _shadowColor != null;
+		var outline:Bool = _outlineColor != null;
+		
+		var finalWidth:Int = Std.int(calcFieldWidth + _padding * 2 + (shadow ? Math.abs(_shadowOffsetX) : 0) + (outline ? 2 : 0));
+		var finalHeight:Int = Std.int(Math.floor(_padding * 2 + Math.max(1, (rows.length * fontHeight + (shadow ? Math.abs(_shadowOffsetY) : 0) + (outline ? 2 : 0))) + ((rows.length >= 1) ? _lineSpacing * (rows.length - 1) : 0)));
+		
+		if (_source != null) 
+		{
+			if (finalWidth > _sourceRect.width || finalHeight > _sourceRect.height) 
+			{
+				_source.dispose();
+				_source = null;
+			}
+		}
+		
+		if (_source == null) 
+		{
+			_source = new BitmapData(finalWidth, finalHeight, true, (background ? _backgroundColor | 0xFF000000 : 0));
+			_sourceRect = source.rect;
+			createBuffer();
+		} 
+		else 
+		{
+			_source.fillRect(_sourceRect, (background ? _backgroundColor | 0xFF000000 : 0));
+		}
+		
+		_fieldWidth = Std.int(_sourceRect.width);
+		_fieldHeight = Std.int(_sourceRect.height);
+		
+		if (_fontScale > 0)
+		{
+			_source.lock();
+			
+			// render text
+			var row:Int = 0;
+			
+			for (t in rows) 
+			{
+				// default offset (align LEFT)
+				var ox:Int = (shadow && _shadowOffsetX < 0 ? -_shadowOffsetX : 0) + (outline ? 1 : 0);
+				var oy:Int = (shadow && _shadowOffsetY < 0 ? -_shadowOffsetY : 0) + (outline ? 1 : 0);
+		
+				if (_align == TextFormatAlign.CENTER) 
+				{
+					if (_fixedWidth)
+					{
+						ox += Math.floor((_fieldWidth - _font.getTextWidth(t, _letterSpacing, _fontScale)) / 2);
+					}
+					else
+					{
+						ox += Math.floor((finalWidth - _font.getTextWidth(t, _letterSpacing, _fontScale)) / 2);
+					}
+					if (shadow) ox -= Std.int(Math.abs(_shadowOffsetX / 2));
+				}
+				if (align == TextFormatAlign.RIGHT) 
+				{
+					if (_fixedWidth)
+					{
+						ox += _fieldWidth - Math.floor(_font.getTextWidth(t, _letterSpacing, _fontScale));
+					}
+					else
+					{
+						ox += finalWidth - Math.floor(_font.getTextWidth(t, _letterSpacing, _fontScale)) - 2 * padding;
+					}
+					if (shadow) ox -= Std.int(Math.abs(_shadowOffsetX));
+				}
+				if (shadow) 
+				{
+					var addOffX:Int = (outline ? HP.sign(shadowOffsetX) : 0);
+					var addOffY:Int = (outline ? HP.sign(shadowOffsetY) : 0);
+					
+					_font.render(_source, t, _preparedShadowGlyphs, _shadowOffsetX + addOffX + ox + _padding, _shadowOffsetY + addOffY + oy + row * (fontHeight + _lineSpacing) + _padding, _letterSpacing);
+				}
+				if (outline) 
+				{
+					var py:Int = -1;
+					var px:Int = -1;
+					while (py <= 1) 
+					{
+						while (px <= 1)
+						{
+							// Note: seems unnecessary to also draw when (px == py == 0), but it gives better results
+							_font.render(_source, t, _preparedOutlineGlyphs, px + ox + _padding, py + oy + row * (fontHeight + _lineSpacing) + _padding, _letterSpacing);
+							px++;
+						}
+						py++;
+						px = -1;
+					}
+				}
+				_font.render(_source, t, _preparedTextGlyphs, ox + _padding, oy + row * (fontHeight + _lineSpacing) + _padding, _letterSpacing);
+				row++;
+			}
+			
+			_source.unlock();
+		}
+		
+		super.updateBuffer();
+		_pendingTextChange = false;
+	}
+	
+	/**
+	 * Analyzes text and splits it into separate lines (appended to intoLines), giving back the calculated minimum 
+	 * width of the text field (without accounting for outline and shadow).
+	 * @param	text		The text string to analyze.
+	 * @param	intoRows	A Vector of strings with each item representing a single line.
+	 * @return	The calculated width for the text field.
+	 */
+	private function splitIntoLines(text:String, intoLines:Array<String>):Int 
+	{
+		var calcFieldWidth:Int = 0;
 		var lineComplete:Bool;
 		
 		// get words
-		var lines:Array<String> = preparedText.split("\n");
+		var lines:Array<String> = text.split("\n");
 		var i:Int = -1;
 		var j:Int = -1;
+		
 		if (!_multiLine)
 		{
 			lines = [lines[0]];
@@ -151,12 +267,13 @@ class BitmapText extends Image
 		var wordLength:Int;
 		var word:String;
 		var tempStr:String;
+		
 		while (++i < lines.length) 
 		{
 			if (_fixedWidth)
 			{
 				lineComplete = false;
-				var words:Array<String> = [];
+				var words:Array<String> = new Array<String>();
 				if (!wordWrap)
 				{
 					words = lines[i].split("\t").join(_tabSpaces).split(" ");
@@ -170,6 +287,7 @@ class BitmapText extends Image
 				{
 					var wordPos:Int = 0;
 					var txt:String = "";
+					
 					while (!lineComplete) 
 					{
 						word = words[wordPos];
@@ -190,7 +308,7 @@ class BitmapText extends Image
 								}
 								else
 								{
-									rows.push(txt.substr(0, txt.length - 1));
+									intoLines.push(txt.substr(0, txt.length - 1));
 								}
 								
 								txt = "";
@@ -243,7 +361,7 @@ class BitmapText extends Image
 										currentRow = txt + word.charAt(j);
 										if (_font.getTextWidth(currentRow, _letterSpacing, _fontScale) > _fieldWidth) 
 										{
-											rows.push(txt.substr(0, txt.length - 1));
+											intoLines.push(txt.substr(0, txt.length - 1));
 											txt = "";
 											word = "";
 											wordPos = words.length;
@@ -275,7 +393,7 @@ class BitmapText extends Image
 							if (!changed) 
 							{
 								calcFieldWidth = Math.floor(Math.max(calcFieldWidth, _font.getTextWidth(txt, _letterSpacing, _fontScale)));
-								rows.push(txt);
+								intoLines.push(txt);
 							}
 							lineComplete = true;
 						}
@@ -283,116 +401,53 @@ class BitmapText extends Image
 				}
 				else
 				{
-					rows.push("");
+					intoLines.push("");
 				}
 			}
 			else
 			{
 				var lineWithoutTabs:String = lines[i].split("\t").join(_tabSpaces);
 				calcFieldWidth = Math.floor(Math.max(calcFieldWidth, _font.getTextWidth(lineWithoutTabs, _letterSpacing, _fontScale)));
-				rows.push(lineWithoutTabs);
+				intoLines.push(lineWithoutTabs);
 			}
 		}
 		
-		var finalWidth:Int = calcFieldWidth + _padding * 2 + (_outline ? 2 : 0);
-		var finalHeight:Int = Math.floor(_padding * 2 + Math.max(1, (rows.length * fontHeight + (_shadow ? 1 : 0)) + (_outline ? 2 : 0))) + ((rows.length >= 1) ? _lineSpacing * (rows.length - 1) : 0);
-		
-		if (_source != null) 
-		{
-			if (finalWidth != _sourceRect.width || finalHeight != _sourceRect.height) 
-			{
-				_source.dispose();
-				_source = null;
-			}
-		}
-		
-		if (_source == null) 
-		{
-			_source = new BitmapData(finalWidth, finalHeight, !_background, _backgroundColor);
-			_sourceRect = source.rect;
-			createBuffer();
-		} 
-		else 
-		{
-			_source.fillRect(_sourceRect, _backgroundColor);
-		}
-		
-		_fieldWidth = Std.int(_sourceRect.width);
-		_fieldHeight = Std.int(_sourceRect.height);
-		
-		if (_fontScale > 0)
-		{
-			_source.lock();
-			
-			// render text
-			var row:Int = 0;
-			
-			for (t in rows) 
-			{
-				var ox:Int = 0; // LEFT
-				var oy:Int = 0;
-				if (_align == TextFormatAlign.CENTER) 
-				{
-					if (_fixedWidth)
-					{
-						ox = Math.floor((_fieldWidth - _font.getTextWidth(t, _letterSpacing, _fontScale)) / 2);
-					}
-					else
-					{
-						ox = Math.floor((finalWidth - _font.getTextWidth(t, _letterSpacing, _fontScale)) / 2);
-					}
-				}
-				if (align == TextFormatAlign.RIGHT) 
-				{
-					if (_fixedWidth)
-					{
-						ox = _fieldWidth - Math.floor(_font.getTextWidth(t, _letterSpacing, _fontScale));
-					}
-					else
-					{
-						ox = finalWidth - Math.floor(_font.getTextWidth(t, _letterSpacing, _fontScale)) - 2 * padding;
-					}
-				}
-				if (_outline) 
-				{
-					for (py in 0...(2 + 1)) 
-					{
-						for (px in 0...(2 + 1)) 
-						{
-							_font.render(_source, _preparedOutlineGlyphs, t, _outlineColor, px + ox + _padding, py + row * (fontHeight + _lineSpacing) + _padding, _letterSpacing);
-						}
-					}
-					ox += 1;
-					oy += 1;
-				}
-				if (_shadow) 
-				{
-					_font.render(_source, _preparedShadowGlyphs, t, _shadowColor, 1 + ox + _padding, 1 + oy + row * (fontHeight + _lineSpacing) + _padding, _letterSpacing);
-				}
-				_font.render(_source, _preparedTextGlyphs, t, _textColor, ox + _padding, oy + row * (fontHeight + _lineSpacing) + _padding, _letterSpacing);
-				row++;
-			}
-			
-			_source.unlock();
-		}
-		
-		super.updateBuffer();
-		_pendingTextChange = false;
+		return calcFieldWidth;
 	}
 	
 	/**
-	 * Specifies whether the text field should have a filled background.
+	 * The color of the text field background (set to null to disable the background).
 	 */
-	public var background(get, set):Bool;
-	private inline function get_background():Bool
+	public var backgroundColor(get, set):Null<Int>;
+	private inline function get_backgroundColor():Null<Int>
 	{
-		return _background;
+		return _backgroundColor;
 	}
-	private function set_background(value:Bool):Bool 
+	private function set_backgroundColor(value:Null<Int>):Null<Int>
 	{
-		if (_background != value)
+		if (_backgroundColor != value)
 		{
-			_background = value;
+			_backgroundColor = value;
+			_pendingTextChange = true;
+			updateTextBuffer();
+		}
+		return value;
+	}
+		
+	/**
+	 * The color of the text field shadow (set to null to disable the shadow).
+	 */
+	public var shadowColor(get, set):Null<Int>;
+	private inline function get_shadowColor():Null<Int>
+	{
+		return _shadowColor;
+	}
+	private function set_shadowColor(value:Null<Int>):Null<Int> 
+	{
+		if (_shadowColor != value)
+		{
+			_shadowColor = value;
+			updateGlyphs(false, true, false);
 			_pendingTextChange = true;
 			updateTextBuffer();
 		}
@@ -400,20 +455,20 @@ class BitmapText extends Image
 	}
 	
 	/**
-	 * Specifies the color of the text field background.
+	 * The X offset of the text field shadow.
 	 */
-	public var backgroundColor(get, set):Int;
-	private inline function get_backgroundColor():Int
+	public var shadowOffsetX(get, set):Int;
+	private function get_shadowOffsetX():Int
 	{
-		return _backgroundColor;
+		return _shadowOffsetX;
 	}
-	private function set_backgroundColor(value:Int):Int
+	private function set_shadowOffsetX(value:Int):Int		
 	{
-		if (_backgroundColor != value)
+		if (_shadowOffsetX != value)
 		{
-			_backgroundColor = value;
-			if (_background)
-			{
+			_shadowOffsetX = value;
+			
+			if (_shadowColor != null) {
 				_pendingTextChange = true;
 				updateTextBuffer();
 			}
@@ -422,48 +477,27 @@ class BitmapText extends Image
 	}
 	
 	/**
-	 * Specifies whether the text should have a shadow.
+	 * The Y offset of the text field shadow.
 	 */
-	public var shadow(get, set):Bool;
-	private inline function get_shadow():Bool
+	public var shadowOffsetY(get, set):Int;
+	private function get_shadowOffsetY():Int
 	{
-		return _shadow;
+		return _shadowOffsetY;
 	}
-	private function set_shadow(value:Bool):Bool
+	private function set_shadowOffsetY(value:Int):Int		
 	{
-		if (_shadow != value)
+		if (_shadowOffsetY != value)
 		{
-			_shadow = value;
-			_outline = false;
-			updateGlyphs(false, _shadow, false);
-			_pendingTextChange = true;
-			updateTextBuffer();
+			_shadowOffsetY = value;
+			
+			if (_shadowColor != null) {
+				_pendingTextChange = true;
+				updateTextBuffer();
+			}
 		}
-		
 		return value;
 	}
-	
-	/**
-	 * Specifies the color of the text field shadow.
-	 */
-	public var shadowColor(get, set):Int;
-	private inline function get_shadowColor():Int
-	{
-		return _shadowColor;
-	}
-	private function set_shadowColor(value:Int):Int 
-	{
-		if (_shadowColor != value)
-		{
-			_shadowColor = value;
-			updateGlyphs(false, _shadow, false);
-			_pendingTextChange = true;
-			updateTextBuffer();
-		}
-		
-		return value;
-	}
-	
+
 	/**
 	 * Sets the padding of the text field. This is the distance between the text and the border of the background (if any).
 	 */
@@ -486,36 +520,16 @@ class BitmapText extends Image
 	/**
 	 * Sets the color of the text.
 	 */
-	public var textColor(get, set):Int;
-	private inline function get_textColor():Int
+	public var textColor(get, set):Null<Int>;
+	private inline function get_textColor():Null<Int>
 	{
 		return _textColor;
 	}
-	private function set_textColor(value:Int):Int 
+	private function set_textColor(value:Null<Int>):Null<Int> 
 	{
 		if (_textColor != value)
 		{
 			_textColor = value;
-			updateGlyphs(true, false, false);
-			_pendingTextChange = true;
-			updateTextBuffer();
-		}
-		return value;
-	}
-	
-	/**
-	 * Specifies whether the text field should use text color.
-	 */
-	public var useTextColor(get, set):Bool;
-	private inline function get_useTextColor():Bool 
-	{
-		return _useTextColor;
-	}
-	private function set_useTextColor(value:Bool):Bool 
-	{
-		if (_useTextColor != value)
-		{
-			_useTextColor = value;
 			updateGlyphs(true, false, false);
 			_pendingTextChange = true;
 			updateTextBuffer();
@@ -538,7 +552,7 @@ class BitmapText extends Image
 			
 			_source.dispose();
 			_source = null;
-			_source = new BitmapData(_fieldWidth, _fieldHeight, !_background, _backgroundColor);
+			_source = new BitmapData(_fieldWidth, _fieldHeight, true, (_backgroundColor != null ? _backgroundColor | 0xFF000000 : 0));
 			_sourceRect = source.rect;
 			createBuffer();
 
@@ -591,40 +605,19 @@ class BitmapText extends Image
 	}
 	
 	/**
-	 * Specifies whether the text should have an outline.
+	 * The color to use for the text outline (set to null to disable the outline).
 	 */
-	public var outline(get_outline, set_outline):Bool;
-	private inline function get_outline():Bool
-	{
-		return _outline;
-	}
-	private function set_outline(value:Bool):Bool 
-	{
-		if (_outline != value)
-		{
-			_outline = value;
-			_shadow = false;
-			updateGlyphs(false, false, true);
-			_pendingTextChange = true;
-			updateTextBuffer();
-		}
-		return value;
-	}
-	
-	/**
-	 * Specifies the color to use for the text outline.
-	 */
-	public var outlineColor(get_outlineColor, set_outlineColor):Int;
-	private inline function get_outlineColor():Int
+	public var outlineColor(get_outlineColor, set_outlineColor):Null<Int>;
+	private inline function get_outlineColor():Null<Int>
 	{
 		return _outlineColor;
 	}
-	private function set_outlineColor(value:Int):Int 
+	private function set_outlineColor(value:Null<Int>):Null<Int> 
 	{
 		if (_outlineColor != value)
 		{
 			_outlineColor = value;
-			updateGlyphs(false, false, _outline);
+			updateGlyphs(false, false, true);
 			_pendingTextChange = true;
 			updateTextBuffer();
 		}
@@ -644,7 +637,7 @@ class BitmapText extends Image
 		if (_font != font)
 		{
 			_font = font;
-			updateGlyphs(true, _shadow, _outline);
+			updateGlyphs(true, _shadowColor != null, _outlineColor != null);
 			_pendingTextChange = true;
 			updateTextBuffer();
 		}
@@ -663,7 +656,7 @@ class BitmapText extends Image
 	{
 		if (_lineSpacing != value)
 		{
-			_lineSpacing = Math.floor(Math.abs(value));
+			_lineSpacing = Math.floor(value);
 			_pendingTextChange = true;
 			updateTextBuffer();
 		}
@@ -684,7 +677,7 @@ class BitmapText extends Image
 		if (tmp != _fontScale)
 		{
 			_fontScale = tmp;
-			updateGlyphs(true, _shadow, _outline);
+			updateGlyphs(true, _shadowColor != null, _outlineColor != null);
 			_pendingTextChange = true;
 			updateTextBuffer();
 		}
@@ -760,25 +753,52 @@ class BitmapText extends Image
 		return _fixedWidth;
 	}
 	
+	/**
+	 * Sets properties specified by the props object.
+	 * 
+	 * Ex.:
+	 *     bitmapText.setProperties({shadowColor:0xFF0000, outlineColor:0x0, lineSpacing:5});
+	 * 
+	 * @param	props	An Object containing key/value pairs of properties to set.
+	 */
+	public function setProperties(props:Dynamic):Void 
+	{
+		if (props != null)
+		{
+			lock();
+			for (property in Reflect.fields(props)) {
+				try {	// if (Reflect.hasField(this, property)) seems to not work in this case
+					Reflect.setProperty(this, property, Reflect.getProperty(props, property));
+				} catch (e:Error) {
+					throw new Error('"' + property + '" is not a property of BitmapText.');
+				}
+			}
+			unlock();
+			
+			_pendingTextChange = true;
+			updateTextBuffer();
+		}
+	}
+	
 	/** Update array of glyphs. */
 	private function updateGlyphs(?textGlyphs:Bool = false, ?shadowGlyphs:Bool = false, ?outlineGlyphs:Bool = false):Void
 	{
 		if (textGlyphs)
 		{
 			clearPreparedGlyphs(_preparedTextGlyphs);
-			_preparedTextGlyphs = _font.getPreparedGlyphs(_fontScale, _textColor, _useTextColor);
+			_preparedTextGlyphs = _font.getPreparedGlyphs(_fontScale, (_textColor != null ? _textColor : 0), _textColor != null);
 		}
 		
 		if (shadowGlyphs)
 		{
 			clearPreparedGlyphs(_preparedShadowGlyphs);
-			_preparedShadowGlyphs = _font.getPreparedGlyphs(_fontScale, _shadowColor);
+			_preparedShadowGlyphs = _font.getPreparedGlyphs(_fontScale, (_shadowColor != null ? _shadowColor : 0), _shadowColor != null);
 		}
 		
 		if (outlineGlyphs)
 		{
 			clearPreparedGlyphs(_preparedOutlineGlyphs);
-			_preparedOutlineGlyphs = _font.getPreparedGlyphs(_fontScale, _outlineColor);
+			_preparedOutlineGlyphs = _font.getPreparedGlyphs(_fontScale, (_outlineColor != null ? _outlineColor : 0), _outlineColor != null);
 		}
 	}
 	
@@ -806,14 +826,12 @@ class BitmapText extends Image
 	private var _text:String = "";
 	private var _fieldWidth:Int = 0;
 	private var _fieldHeight:Int = 0;
-	private var _textColor:Int = 0xFFFFFF;
-	private var _useTextColor:Bool = false;
-	private var _outline:Bool = false;
-	private var _outlineColor:Int = 0x0;
-	private var _shadow:Bool = false;
-	private var _shadowColor:Int = 0x0;
-	private var _background:Bool = false;
-	private var _backgroundColor:Int = 0x0;
+	private var _textColor:Null<Int> = null;
+	private var _outlineColor:Null<Int> = null;
+	private var _shadowColor:Null<Int> = null;
+	private var _shadowOffsetX:Int = 1;
+	private var _shadowOffsetY:Int = 1;
+	private var _backgroundColor:Null<Int> = null;
 #if (flash || html5)
 	private var _align:TextFormatAlign;
 #else
