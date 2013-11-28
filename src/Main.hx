@@ -2,11 +2,14 @@ package ;
 
 import flash.display.BitmapData;
 import flash.events.KeyboardEvent;
+import flash.filters.GlowFilter;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.system.System;
 import flash.text.AntiAliasType;
+import flash.text.TextField;
 import flash.text.TextFormatAlign;
+import flash.utils.ByteArray;
 import haxe.io.Bytes;
 import haxe.io.BytesData;
 import haxe.Utf8;
@@ -112,10 +115,6 @@ class Main extends Engine
 		//img.blend = BlendMode.SUBTRACT;
 		
 		for (i in 0...35) HP.log(i, [1, 2, 3]);
-		
-		var newFont = Assets.getFont("assets/Fischer_mod.ttf").fontName;
-		HP.world.addGraphic(new Text("Ecciao!", 5, 20, {}));
-		trace(Assets.getFont("assets/Fischer_mod.ttf").fontName);
 		
 		HP.world.addGraphic(text = new Text("Ecciao!", 5, 30, { color:0}));
 		/*text.setTextProperty("antiAliasType", AntiAliasType.ADVANCED);
@@ -274,27 +273,82 @@ class Main extends Engine
 		//trace("utf188", Utf8.charCodeAt(ss, 0));
 		trace(font2.serialize());
 	
-		/*
-	#if !web
-		Sys.exit(0);
-	#else
-		System.exit(0);
-	#end
-	*/	
+		var ba:ByteArray = new ByteArray();
+		
+		ba.writeShort(37);
+		ba.writeShort(237);
+		ba.writeUTF("è");
+		ba.writeBoolean(false);
+
+		//bytes:Bytes = new Bytes(
+		
+		ba.position = 0;
+		//trace(ba);
+		trace(ByteArray2String(ba));
+		trace(ba.readShort());
+		trace(ba.readShort());
+		trace(ba.readUTF());
+		trace(ba.readBoolean());
+		//trace(String2ByteArray(ByteArray2String(ba)));
+		
+		ba = new ByteArray();
+		ba.writeShort(0xe2);
+		ba.writeShort(0x95);
+		ba.writeShort(0x9a);
+		
+		
+		var textField:TextField = new TextField();
+		textField.x = 100;
+		textField.y = 110;
+		textField.textColor = 0xFFFFFF;
+		textField.defaultTextFormat.size = 32;
+		textField.text = "ciao " + Bytes.ofString("╚").toString();
+		trace(Bytes.ofString("╚").toString());
+		addChild(textField);
+
+		//trace(UnicodeTools.uCodeAt("╚", 0));
+		trace(uCodeToString(9565));
+		
+		//trace(Bytes.ofData(n));
+		trace(Utf8.charCodeAt("╚", 0));
+		trace(String.fromCharCode(9565));
+		trace(StringTools.urlDecode("%E2%95%9A"));
+
+		var fromCharCode = function fromCharCode( code:Int ):String {
+			var u = new haxe.Utf8( 1 );
+			u.addChar( code );
+			return u.toString();
+		}
+		
+		#if neko
+			var u = new Utf8();
+			u.addChar(9565);
+			trace(u.toString());
+			trace(Utf8.charCodeAt(u.toString(), 0));
+		#end
+		
+	    trace(String.fromCharCode(haxe.Utf8.charCodeAt("╝", 0)));
+		trace(String.fromCharCode(9565));
+
+		trace(fromCharCode(haxe.Utf8.charCodeAt("╝", 0)));
+		trace(fromCharCode(9565));
+		
+		textField.text += fromCharCode(9565);
+		
 		tf = new BitmapText("hola\ncom pagneros~\n", 0, 0);
-		tf.text += BitmapFont.fetch("default").supportedGlyphs.substr(0, 30) + "\n";
+		/*tf.text += BitmapFont.fetch("default").supportedGlyphs.substr(0, 30) + "\n";
 		tf.text += BitmapFont.fetch("default").supportedGlyphs.substr(30, 30) + "\n";
 		tf.text += BitmapFont.fetch("default").supportedGlyphs.substr(60) + "\n";
-		tf.align = TextFormatAlign.CENTER;
+		*/tf.align = TextFormatAlign.RIGHT;
 		tf.centerOrigin();
 		tf.outlineColor = 0x0;
-		tf.shadowColor = 0xff0000;
-		tf.shadow = true;
-		tf.outline = true;
-		tf.smooth = true;
-		tf.fontScale = 1;
+		tf.shadowColor = 0x555555;
+		//tf.backgroundColor = 0xFF0000;
+		//tf.smooth = true;
+		//tf.scale = 2;
 		//tf.angle = 30;
-		tf.flipped = true;
+		//tf.flipped = true;
+		tf.shadowOffsetX = tf.shadowOffsetY = -1;
 		
 		trace(String.fromCharCode(127).charCodeAt(0));
 		//trace(font2.numGlyphs, font2.supportedGlyphs);
@@ -303,9 +357,18 @@ class Main extends Engine
 			HP.getBitmapData("assets/round_font-pixelizer.png"), 
 			" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~⌂", 
 			0xFF202020);
-		var pixelizerText:BitmapText = new BitmapText("pixelizedr all wthe waeey!", 0, 0, pixelizerFont);
+		var pixelizerText:BitmapText = new BitmapText("pixelizedr all wthe waeey!~⌂", 0, 0, pixelizerFont);
 		HP.world.addGraphic(pixelizerText, 0, 100, 170);
-		pixelizerText.scale = 2;
+
+		var u = new Utf8();
+		u.addChar(8962);
+		//trace(pixelizerFont.serialize());
+		
+		pixelizerText.backgroundColor = 0xFF0000;
+		pixelizerText.outlineColor = 0;
+		pixelizerText.color = 0xFFFF00;
+		//pixelizerText.useTextColor = true;
+		pixelizerText.fontScale = 2;
 
 		//trace(font2.getSerializedData());
 		//bd = BitmapFont.createDefaultFont();
@@ -343,8 +406,110 @@ class Main extends Engine
 			var ch:String = String.fromCharCode(u);
 			trace(StringTools.lpad(Std.string(u), "0", 3) + "\t" + byte2bits(u) + "\t" + ch);
 		}*/
+		
 	}
 	
+	
+    public static inline function uIsHighSurrogate(code : Int) : Bool {
+        return (minHighSurrogates <= code && code <= maxHighSurrogates);
+    }
+
+    public static inline function uIsLowSurrogate(code : Int) : Bool {
+        return (minLowSurrogates <= code && code <= maxLowSurrogates);
+    }
+
+	
+    public static function uCodeToString(code : Int) : String {
+/*#if neko
+        var b = new neko.Utf8();
+        b.addChar(code);
+        return b.toString();
+#elseif php
+        return php.Utf8.uchr(code);
+#else*/
+        if( !uIsValidChar(code) ) {
+            return null;
+        }
+        if(stringIsUtf32 || code <= 0xFFFF) {
+            return String.fromCharCode(code);
+        } else {
+            return String.fromCharCode(encodeHighSurrogate(code))
+                + String.fromCharCode(encodeLowSurrogate(code));
+        }
+//#end
+    }
+	
+    public static function uIsValidChar(code : Int) : Bool {
+        return (0 <= code && code <= maxUnicodeChar)
+            && !uIsHighSurrogate(code)
+            && !uIsLowSurrogate(code)
+            && !(0xFDD0 <= code && code <= 0xFDEF)
+            && !(code & 0xFFFE == 0xFFFE);
+    }
+    
+	public static inline function decodeSurrogate(c:Int, d:Int) : Int {
+        return (c - 0xD7C0 << 10) | (d & 0x3FF);
+    }
+    
+	public static inline function encodeHighSurrogate(c:Int) {
+        return (c >> 10) + 0xD7C0;
+    }
+	
+    public static inline function encodeLowSurrogate(c:Int) {
+        return (c & 0x3FF) | 0xDC00;
+    }
+	
+
+    public static inline var stringIsUtf32 :Bool = false;
+
+	
+	
+	
+	
+	/** 
+	 * Encodes a ByteArray into a String. 
+	 * 
+	 * @param byteArray		The ByteArray to be encoded.
+	 * @param mustEscape	Whether the returned string chars must be escaped.
+	 * @return The encoded string.
+	 */
+	public static function ByteArray2String(byteArray:ByteArray, mustEscape:Bool = true):String {
+		var origPos:Int = byteArray.position;
+		var result:Array<Int> = new Array<Int>();
+		var output:String;
+
+		byteArray.position = 0;
+		while (byteArray.position < byteArray.length - 1)
+			result.push(byteArray.readShort());
+
+		if (byteArray.position != byteArray.length)
+			result.push(byteArray.readByte() << 8);
+
+		byteArray.position = origPos;
+		var fromCharCode = function (i) return String.fromCharCode(i);
+		output = Lambda.array(Lambda.map(result, fromCharCode)).join("");
+		return (mustEscape ? StringTools.urlEncode(output) : output);
+	}
+	
+	/** 
+	 * Decodes a ByteArray from a String. 
+	 * 
+	 * @param str			The string to be decoded.
+	 * @param mustUnescape	Whether the string chars must be unescaped.
+	 * @return The decoded ByteArray.
+	 */
+	public static function String2ByteArray(str:String, mustUnescape:Bool = true):ByteArray {
+		var result:ByteArray = new ByteArray();
+		var encodedStr:String = (mustUnescape ? StringTools.urlDecode(str) : str);
+		
+		for (i in 0...encodedStr.length) {
+			result.writeShort(encodedStr.charCodeAt(i));
+		}
+		
+		result.position = 0;
+		return result;
+	}
+
 	public function byte2bits(u:Int):String 
 	{ 
 		var res:String = "";
@@ -465,6 +630,22 @@ class Main extends Engine
 		if (Input.check(Key.J)) HP.pan -= .05;
 		
 		//text.richText = "<bah>v:" + HP.toFixed(HP.volume, 1) + " </bah>p:" + HP.toFixed(HP.pan, 1) + "  part:" + emitter.particleCount;
+		
+		if (Input.mousePressed) {
+			if (_startPoint == null) _startPoint = new Point();
+			_dragging = true;
+			_startPoint.setTo(Input.mouseX, Input.mouseY);
+		} else if (Input.mouseReleased) {
+			_dragging = false;
+		}
+		
+		if (_dragging) {
+			HP.camera.x += (_startPoint.x - Input.mouseX) / HP.screen.scale;
+			HP.camera.y += (_startPoint.y - Input.mouseY) / HP.screen.scale;
+			_startPoint.setTo(Input.mouseX, Input.mouseY);
+		}
+		
+		
 	}
 	
 	override public function render():Void 
@@ -481,10 +662,19 @@ class Main extends Engine
     public static function main() { 
 		new Main(); 
 	}
+
+	public var _dragging:Bool = false;
+	public var _startPoint:Point;
 	
 	/*
 	public static function upd():Void 
 	{
 		trace("update");
 	}*/
+    public static inline var maxUnicodeChar     :Int    = 0x10FFFF;
+    public static inline var replacementChar    :Int    = 0xFFFD;
+    public static inline var minHighSurrogates  :Int    = 0xD800;
+    public static inline var maxHighSurrogates  :Int    = 0xDBFF;
+    public static inline var minLowSurrogates   :Int    = 0xDC00;
+    public static inline var maxLowSurrogates   :Int    = 0xDFFF;
 }
