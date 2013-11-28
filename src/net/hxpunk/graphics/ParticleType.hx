@@ -219,7 +219,7 @@ class ParticleType
 		return this;
 	}
 	
-	/** @private Creates the buffer if it doesn't exist. */
+	/** Creates the buffer if it doesn't exist. */
 	private function createBuffer():Void
 	{
 		if (_buffer != null) return;

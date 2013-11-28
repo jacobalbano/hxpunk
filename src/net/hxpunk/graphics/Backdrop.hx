@@ -35,7 +35,7 @@ class Backdrop extends Canvas
 		fillTexture(HP.rect, _texture);
 	}
 	
-	/** @private Renders the Backdrop. */
+	/** Renders the Backdrop. */
 	override public function render(target:BitmapData, point:Point, camera:Point):Void 
 	{
 		_point.x = point.x + x - camera.x * scrollX;

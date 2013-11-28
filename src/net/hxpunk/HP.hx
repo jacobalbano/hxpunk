@@ -1215,7 +1215,7 @@ class HP
 		}
 	}
 	
-	/** @private Quicksorts the array. */ 
+	/** Quicksorts the array. */ 
 	private static function quicksort<T>(a:Array<T>, left:Int, right:Int, ascending:Bool):Void
 	{		
 		var i:Int = left, j:Int = right, t:T,
@@ -1252,7 +1252,7 @@ class HP
 		if (i < right) quicksort(a, i, right, ascending);
 	}
 	
-	/** @private Quicksorts the array by the property. */ 
+	/** Quicksorts the array by the property. */ 
 	private static function quicksortBy(a:Array<Dynamic>, left:Int, right:Int, ascending:Bool, property:String):Void
 	{			
 		var i:Int = left, j:Int = right, t:Dynamic,

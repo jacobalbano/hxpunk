@@ -144,7 +144,7 @@ class Data
 		return defaultValue;
 	}
 	
-	/** @private Loads the data file, or return it if you're loading the same one. */
+	/** Loads the data file, or return it if you're loading the same one. */
 	private static function loadData(file:String = null):Dynamic
 	{
 		if (file == null || file == "") file = DEFAULT_FILE;

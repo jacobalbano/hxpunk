@@ -130,7 +130,7 @@ class Emitter extends Graphic
 		}
 	}
 	
-	/** @private Renders the particles. */
+	/** Renders the particles. */
 	override public function render(target:BitmapData, point:Point, camera:Point):Void 
 	{
 		// quit if there are no particles

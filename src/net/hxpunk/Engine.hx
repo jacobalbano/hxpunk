@@ -163,7 +163,7 @@ class Engine extends Sprite
 		stage.displayState = StageDisplayState.NORMAL;
 	}
 	
-	/** @private Event handler for stage entry. */
+	/** Event handler for stage entry. */
 	private function onStage(e:Event = null):Void
 	{
 		// remove event listener
@@ -211,7 +211,7 @@ class Engine extends Sprite
 		}
 	}
 	
-	/** @private Framerate independent game loop. */
+	/** Framerate independent game loop. */
 	private function onEnterFrame(e:Event):Void
 	{
 		// update timer
@@ -246,7 +246,7 @@ class Engine extends Sprite
 		HP._logicTime = _time - _logicTime;
 	}
 	
-	/** @private Fixed framerate game loop. */
+	/** Fixed framerate game loop. */
 	private function onTimer(/*e:TimerEvent=null*/):Void
 	{
 		// update timer
@@ -298,7 +298,7 @@ class Engine extends Sprite
 		HP._logicTime =  _time - _logicTime;
 	}
 	
-	/** @private Switch Worlds if they've changed. */
+	/** Switch Worlds if they've changed. */
 	private function checkWorld():Void
 	{
 		if (HP._goto == null) return;

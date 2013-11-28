@@ -90,14 +90,14 @@ class LinearPath extends Motion
 		return _points[index % _points.length];
 	}
 	
-	/** @private Starts the Tween. */
+	/** Starts the Tween. */
 	override public function start():Void 
 	{
 		_index = 0;
 		super.start();
 	}
 	
-	/** @private Updates the Tween. */
+	/** Updates the Tween. */
 	override public function update():Void 
 	{
 		super.update();
@@ -121,7 +121,7 @@ class LinearPath extends Motion
 		y = _prevPoint.y + (_nextPoint.y - _prevPoint.y) * td;
 	}
 	
-	/** @private Updates the path, preparing it for motion. */
+	/** Updates the path, preparing it for motion. */
 	private function updatePath():Void
 	{
 		if (_points.length < 1) throw new Error("A LinearPath must have at least one point.");

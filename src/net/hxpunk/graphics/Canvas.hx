@@ -68,7 +68,7 @@ class Canvas extends Graphic
 		}
 	}
 	
-	/** @private Renders the canvas. */
+	/** Renders the canvas. */
 	override public function render(target:BitmapData, point:Point, camera:Point):Void 
 	{
 		// determine drawing location

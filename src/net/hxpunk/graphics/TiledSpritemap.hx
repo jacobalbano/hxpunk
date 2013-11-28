@@ -26,7 +26,7 @@ class TiledSpritemap extends Spritemap
 		super(source, frameWidth, frameHeight, callback);
 	}
 	
-	/** @private Creates the buffer. */
+	/** Creates the buffer. */
 	override private function createBuffer():Void 
 	{
 		if (_buffer != null) {
@@ -40,7 +40,7 @@ class TiledSpritemap extends Spritemap
 		_bitmap.bitmapData = _buffer;
 	}
 	
-	/** @private Updates the buffer. */
+	/** Updates the buffer. */
 	override public function updateBuffer(clearBefore:Bool = false):Void 
 	{
 		// get position of the current frame

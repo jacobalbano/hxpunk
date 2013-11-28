@@ -122,7 +122,7 @@ class Sfx
 		_position = 0;
 	}
 	
-	/** @private Event handler for sound completion. */
+	/** Event handler for sound completion. */
 	private function _onComplete(e:Event = null):Void
 	{
 		if (_looping) loop(_vol, _pan);
@@ -131,14 +131,14 @@ class Sfx
 		if (onComplete != null) onComplete();
 	}
 	
-	/** @private Add the sound to the global list. */
+	/** Add the sound to the global list. */
 	private function addPlaying():Void
 	{
 		if (!_typePlaying.exists(_type)) _typePlaying.set(_type, new Map<String, Sfx>());
 		_typePlaying[_type].set(_className, this);
 	}
 	
-	/** @private Remove the sound from the global list. */
+	/** Remove the sound from the global list. */
 	private function removePlaying():Void
 	{
 		if (_typePlaying[_type] != null) _typePlaying[_type].remove(_className);

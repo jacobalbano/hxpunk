@@ -32,7 +32,7 @@ class Stamp extends Graphic
 		_sourceRect = _source.rect;
 	}
 	
-	/** @private Renders the Graphic. */
+	/** Renders the Graphic. */
 	override public function render(target:BitmapData, point:Point, camera:Point):Void 
 	{
 		if (_source == null) return;

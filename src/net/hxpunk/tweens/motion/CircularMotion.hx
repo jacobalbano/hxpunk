@@ -64,7 +64,7 @@ class CircularMotion extends Motion
 		start();
 	}
 	
-	/** @private Updates the Tween. */
+	/** Updates the Tween. */
 	override public function update():Void 
 	{
 		super.update();

@@ -95,7 +95,7 @@ class PreRotation extends Image
 		super(_source, _frame);
 	}
 	
-	/** @private Renders the PreRotated graphic. */
+	/** Renders the PreRotated graphic. */
 	override public function render(target:BitmapData, point:Point, camera:Point):Void 
 	{
 		var _angle:Float = angle;
@@ -131,7 +131,7 @@ class PreRotation extends Image
 		originY = _prevOriginY;
 	}
 	
-	/** @private Recalculates the offsets for each frame. */
+	/** Recalculates the offsets for each frame. */
 	private function recalcOriginOffsets():Void
 	{
 		if (_frameOrigins == null) {

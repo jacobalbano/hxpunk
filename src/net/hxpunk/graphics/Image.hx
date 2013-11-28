@@ -105,7 +105,7 @@ class Image extends Graphic
 		updateBuffer();
 	}
 	
-	/** @private Creates the buffer. */
+	/** Creates the buffer. */
 	private function createBuffer():Void
 	{
 		if (_buffer != null) {
@@ -117,7 +117,7 @@ class Image extends Graphic
 		_bitmap.bitmapData = _buffer;
 	}
 	
-	/** @private Renders the image. */
+	/** Renders the image. */
 	override public function render(target:BitmapData, point:Point, camera:Point):Void
 	{
 		// quit if no graphic is assigned

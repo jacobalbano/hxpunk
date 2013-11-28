@@ -83,7 +83,7 @@ class Spritemap extends Image
 		super.updateBuffer(clearBefore);
 	}
 	
-	/** @private Updates the animation. */
+	/** Updates the animation. */
 	override public function update():Void 
 	{
 		if (_anim != null && !isComplete)

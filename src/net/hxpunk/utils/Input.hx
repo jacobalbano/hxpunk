@@ -222,7 +222,7 @@ class Input
 		return _control[name];
 	}
 	
-	/** @private Called by Engine to enable keyboard input on the stage. */
+	/** Called by Engine to enable keyboard input on the stage. */
 	public static function enable():Void
 	{
 		if (!_enabled && HP.stage != null)
@@ -237,7 +237,7 @@ class Input
 		}
 	}
 	
-	/** @private Called by Engine to update the input. */
+	/** Called by Engine to update the input. */
 	public static function update():Void
 	{
 		while (_pressNum -- > 0) _press[_pressNum] = -1;
@@ -276,7 +276,7 @@ class Input
 		_keyNum = 0;
 	}
 	
-	/** @private Event handler for key press. */
+	/** Event handler for key press. */
 	private static function onKeyDown(e:KeyboardEvent = null):Void
 	{
 		// get the keycode
@@ -301,7 +301,7 @@ class Input
 		}
 	}
 	
-	/** @private Event handler for key release. */
+	/** Event handler for key release. */
 	private static function onKeyUp(e:KeyboardEvent):Void
 	{
 		// get the keycode and update the keystate
@@ -317,7 +317,7 @@ class Input
 		}
 	}
 	
-	/** @private Event handler for mouse press. */
+	/** Event handler for mouse press. */
 	private static function onMouseDown(e:MouseEvent):Void
 	{
 		if (!mouseDown)
@@ -328,7 +328,7 @@ class Input
 		}
 	}
 	
-	/** @private Event handler for mouse release. */
+	/** Event handler for mouse release. */
 	private static function onMouseUp(e:MouseEvent):Void
 	{
 		mouseDown = false;
@@ -336,14 +336,14 @@ class Input
 		mouseReleased = true;
 	}
 	
-	/** @private Event handler for mouse wheel events */
+	/** Event handler for mouse wheel events */
 	private static function onMouseWheel(e:MouseEvent):Void
 	{
 		mouseWheel = true;
 		_mouseWheelDelta = e.delta;
 	}
 	
-	/** @private Event handler for mouse move events: only here for a bug workaround. */
+	/** Event handler for mouse move events: only here for a bug workaround. */
 	private static function onMouseMove(e:MouseEvent):Void
 	{
 		if (mouseCursor == "hide") {

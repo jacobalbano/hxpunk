@@ -25,7 +25,7 @@ class TiledImage extends Image
 		super(texture, clipRect);
 	}
 	
-	/** @private Creates the buffer. */
+	/** Creates the buffer. */
 	override private function createBuffer():Void 
 	{
 		if (_buffer != null) {
@@ -39,7 +39,7 @@ class TiledImage extends Image
 		_bitmap.bitmapData = _buffer;
 	}
 	
-	/** @private Updates the buffer. */
+	/** Updates the buffer. */
 	override public function updateBuffer(clearBefore:Bool = false):Void
 	{
 		if (_source == null) return;

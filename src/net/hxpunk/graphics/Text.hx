@@ -373,7 +373,7 @@ class Text extends Image
 		super.updateBuffer();
 	}
 	
-	/** @private Centers the Text's originX/Y to its center. */
+	/** Centers the Text's originX/Y to its center. */
 	override public function centerOrigin():Void 
 	{
 		originX = _width / 2;

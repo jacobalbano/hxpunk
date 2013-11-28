@@ -75,7 +75,7 @@ class Graphic
 		
 	}
 	
-	/** @private Callback for when the graphic is assigned to an Entity. */
+	/** Callback for when the graphic is assigned to an Entity. */
 	public var onAssign(get, set):Void -> Void;
 	private inline function get_onAssign() { return _onAssign; }
 	private inline function set_onAssign(value:Void -> Void) { return _onAssign = value; }

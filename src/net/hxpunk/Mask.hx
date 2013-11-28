@@ -56,7 +56,7 @@ class Mask
 		return false;
 	}
 	
-	/** @private Collide against an Entity. */
+	/** Collide against an Entity. */
 	private function collideMask(other:Mask):Bool
 	{
 		return parent.x - parent.originX + parent.width > other.parent.x - other.parent.originX
@@ -65,13 +65,13 @@ class Mask
 			&& parent.y - parent.originY < other.parent.y - other.parent.originY + other.parent.height;
 	}
 	
-	/** @private Collide against a Masklist. */
+	/** Collide against a Masklist. */
 	private function collideMasklist(other:Masklist):Bool
 	{
 		return other.collide(this);
 	}
 	
-	/** @private Assigns the mask to the parent. */
+	/** Assigns the mask to the parent. */
 	public function assignTo(parent:Entity):Void
 	{
 		this.parent = parent;

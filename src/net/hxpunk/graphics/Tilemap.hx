@@ -449,7 +449,7 @@ class Tilemap extends Canvas
 		usePositions = u;
 	}
 	
-	/** @private Used by shiftTiles to update a tile from the tilemap. */
+	/** Used by shiftTiles to update a tile from the tilemap. */
 	private function updateTile(column:Int, row:Int):Void
 	{
 		setTile(column, row, _map.getPixel(column % _columns, row % _rows));

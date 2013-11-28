@@ -27,7 +27,7 @@ class Graphiclist extends Graphic
 		if (graphics != null) for (g in graphics) add(g);
 	}
 	
-	/** @private Updates the graphics in the list. */
+	/** Updates the graphics in the list. */
 	override public function update():Void 
 	{
 		for (g in _graphics)
@@ -36,7 +36,7 @@ class Graphiclist extends Graphic
 		}
 	}
 	
-	/** @private Renders the Graphics in the list. */
+	/** Renders the Graphics in the list. */
 	override public function render(target:BitmapData, point:Point, camera:Point):Void 
 	{
 		point.x += x;

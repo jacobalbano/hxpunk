@@ -101,7 +101,7 @@ class Tween
 		if (_parent != null) _parent.removeTween(this);
 	}
 	
-	/** @private Called when the Tween completes. */
+	/** Called when the Tween completes. */
 	public function finish():Void
 	{
 		switch (_type)

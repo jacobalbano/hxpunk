@@ -481,7 +481,7 @@ class Console
 		return value;
 	}
 	
-	/** @private Steps the frame ahead. */
+	/** Steps the frame ahead. */
 	private function stepFrame():Void
 	{
 		HP.engine.update();
@@ -491,7 +491,7 @@ class Console
 		renderEntities();
 	}
 	
-	/** @private Starts Entity dragging. */
+	/** Starts Entity dragging. */
 	private function startDragging():Void
 	{
 		_dragging = true;
@@ -499,7 +499,7 @@ class Console
 		_entRect.y = Input.mouseY;
 	}
 	
-	/** @private Updates Entity dragging. */
+	/** Updates Entity dragging. */
 	private function updateDragging():Void
 	{
 		moveSelected(Std.int(Input.mouseX - _entRect.x), Std.int(Input.mouseY - _entRect.y));
@@ -508,7 +508,7 @@ class Console
 		if (Input.mouseReleased) _dragging = false;
 	}
 	
-	/** @private Move the selected Entities by the amount. */
+	/** Move the selected Entities by the amount. */
 	private function moveSelected(xDelta:Int, yDelta:Int):Void
 	{
 		for (e in SELECT_LIST)
@@ -521,7 +521,7 @@ class Console
 		updateEntityLists(true);
 	}
 	
-	/** @private Starts camera panning. */
+	/** Starts camera panning. */
 	private function startPanning():Void
 	{
 		_panning = true;
@@ -529,7 +529,7 @@ class Console
 		_entRect.y = Input.mouseY;
 	}
 	
-	/** @private Updates camera panning. */
+	/** Updates camera panning. */
 	private function updatePanning():Void
 	{
 		if (Input.mouseReleased) _panning = false;
@@ -538,7 +538,7 @@ class Console
 		_entRect.y = Input.mouseY;
 	}
 	
-	/** @private Pans the camera. */
+	/** Pans the camera. */
 	private function panCamera(xDelta:Int, yDelta:Int):Void
 	{
 		HP.camera.x += xDelta;
@@ -548,7 +548,7 @@ class Console
 		renderEntities();
 	}
 	
-	/** @private Sets the camera position. */
+	/** Sets the camera position. */
 	private function setCamera(x:Int, y:Int):Void
 	{
 		HP.camera.x = x;
@@ -558,7 +558,7 @@ class Console
 		renderEntities();
 	}
 	
-	/** @private Starts Entity selection. */
+	/** Starts Entity selection. */
 	private function startSelection():Void
 	{
 		_selecting = true;
@@ -568,7 +568,7 @@ class Console
 		_entRect.height = 0;
 	}
 	
-	/** @private Updates Entity selection. */
+	/** Updates Entity selection. */
 	private function updateSelection():Void
 	{
 		_entRect.width = Input.mouseFlashX - _entRect.x;
@@ -588,7 +588,7 @@ class Console
 		}
 	}
 	
-	/** @private Selects the Entities in the rectangle. */
+	/** Selects the Entities in the rectangle. */
 	private function selectEntities(rect:Rectangle):Void
 	{
 		if (rect.width < 0) rect.x -= (rect.width = -rect.width);
@@ -630,7 +630,7 @@ class Console
 		}
 	}
 	
-	/** @private Selects all entities on screen. */
+	/** Selects all entities on screen. */
 	private function selectAll():Void
 	{
 		HP.removeAll(SELECT_LIST);
@@ -639,13 +639,13 @@ class Console
 		renderEntities();
 	}
 	
-	/** @private Starts log text scrolling. */
+	/** Starts log text scrolling. */
 	private function startScrolling():Void
 	{
 		if (LOG.length > _logLines) _scrolling = _logBarGlobal.contains(Input.mouseFlashX, Input.mouseFlashY);
 	}
 	
-	/** @private Updates log text scrolling. */
+	/** Updates log text scrolling. */
 	private function updateScrolling():Void
 	{
 		_scrolling = Input.mouseDown;
@@ -653,7 +653,7 @@ class Console
 		updateLog();
 	}
 	
-	/** @private Moves Entities with the arrow keys. */
+	/** Moves Entities with the arrow keys. */
 	private function updateKeyMoving():Void
 	{
 		HP.point.x = (Input.pressed(Key.RIGHT) ? 1 : 0) - (Input.pressed(Key.LEFT) ? 1 : 0);
@@ -661,7 +661,7 @@ class Console
 		if (HP.point.x != 0 || HP.point.y != 0) moveSelected(Std.int(HP.point.x), Std.int(HP.point.y));
 	}
 	
-	/** @private Pans the camera with the arrow keys. */
+	/** Pans the camera with the arrow keys. */
 	private function updateKeyPanning():Void
 	{
 		HP.point.x = (Input.check(Key.RIGHT) ? 1 : 0) - (Input.check(Key.LEFT) ? 1 : 0);
@@ -669,7 +669,7 @@ class Console
 		if (HP.point.x != 0 || HP.point.y != 0) panCamera(Std.int(HP.point.x), Std.int(HP.point.y));
 	}
 	
-	/** @private Update the Entity list information. */
+	/** Update the Entity list information. */
 	private function updateEntityLists(fetchList:Bool = true):Void
 	{
 		// If the list should be re-populated.
@@ -688,7 +688,7 @@ class Console
 		}
 	}
 	
-	/** @private Renders the Entities positions and hitboxes. */
+	/** Renders the Entities positions and hitboxes. */
 	private function renderEntities():Void
 	{
 		// If debug mode is on.
@@ -732,7 +732,7 @@ class Console
 		}
 	}
 	
-	/** @private Updates the log window. */
+	/** Updates the log window. */
 	private function updateLog():Void
 	{
 		// If the console is paused.
@@ -841,7 +841,7 @@ class Console
 		}
 	}
 	
-	/** @private Update the FPS/frame timing panel text. */
+	/** Update the FPS/frame timing panel text. */
 	private function updateFPSRead():Void
 	{
 		_fpsReadText.text = "FPS: " + HP.toFixed(HP.frameRate, 0);
@@ -854,7 +854,7 @@ class Console
 		_memReadText.text = (width >= BIG_WIDTH_THRESHOLD ? "MEM: " : "") + HP.toFixed(System.totalMemory/1024/1024, 2) + "MB";
 	}
 	
-	/** @private Update the debug panel text. */
+	/** Update the debug panel text. */
 	private function updateDebugRead():Void
 	{
 		// Find out the screen size and set the text.
@@ -904,13 +904,13 @@ class Console
 	#end
 	}
 	
-	/** @private Updates the Entity count text. */
+	/** Updates the Entity count text. */
 	private function updateEntityCount():Void
 	{
 		_entReadText.text = Std.string(HP.world.count) + " Entities";
 	}
 	
-	/** @private Updates the Button panel. */
+	/** Updates the Button panel. */
 	private function updateButtons():Void
 	{
 		// Button visibility.
@@ -949,7 +949,7 @@ class Console
 		else _butStep.alpha = .5;
 	}
 	
-	/** @private Gets a TextFormat object with the formatting. */
+	/** Gets a TextFormat object with the formatting. */
 #if (flash || html5)
 	private function format(size:Int = 16, color:Int = 0xFFFFFF, ?align:TextFormatAlign = null):TextFormat
 #else

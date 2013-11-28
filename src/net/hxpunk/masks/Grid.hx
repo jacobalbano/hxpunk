@@ -210,7 +210,7 @@ class Grid extends Hitbox
 	public var data(get, null):BitmapData;
 	private inline function get_data():BitmapData { return _data; }
 	
-	/** @private Collides against an Entity. */
+	/** Collides against an Entity. */
 	override private function collideMask(other:Mask):Bool
 	{
 		_rect.x = other.parent.x - other.parent.originX - parent.x + parent.originX;
@@ -228,7 +228,7 @@ class Grid extends Hitbox
 	#end
 	}
 	
-	/** @private Collides against a Hitbox. */
+	/** Collides against a Hitbox. */
 	override private function collideHitbox(other:Hitbox):Bool
 	{
 		_rect.x = other.parent.x + other._x - parent.x - _x;
@@ -246,7 +246,7 @@ class Grid extends Hitbox
 	#end
 	}
 	
-	/** @private Collides against a Pixelmask. */
+	/** Collides against a Pixelmask. */
 	private function collidePixelmask(other:Pixelmask):Bool
 	{
 		var x1:Int = Std.int(other.parent.x + other._x - parent.x - _x - other.parent.originX - other.x + parent.originX),
@@ -283,7 +283,7 @@ class Grid extends Hitbox
 		return false;
 	}
 	
-	/** @private Collides against a Grid. */
+	/** Collides against a Grid. */
 	private function collideGrid(other:Grid):Bool
 	{
 		// Find the X edges

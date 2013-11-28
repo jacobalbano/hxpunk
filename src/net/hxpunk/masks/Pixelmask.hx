@@ -50,7 +50,7 @@ class Pixelmask extends Hitbox
 		_check.set(Type.getClassName(Pixelmask), collidePixelmask);
 	}
 	
-	/** @private Collide against an Entity. */
+	/** Collide against an Entity. */
 	override private function collideMask(other:Mask):Bool
 	{
 		_point.x = parent.x + _x;
@@ -66,7 +66,7 @@ class Pixelmask extends Hitbox
 	#end
 	}
 	
-	/** @private Collide against a Hitbox. */
+	/** Collide against a Hitbox. */
 	override private function collideHitbox(other:Hitbox):Bool
 	{
 		_point.x = parent.x + _x;
@@ -82,7 +82,7 @@ class Pixelmask extends Hitbox
 	#end
 	}
 	
-	/** @private Collide against a Pixelmask. */
+	/** Collide against a Pixelmask. */
 	private function collidePixelmask(other:Pixelmask):Bool
 	{
 		_point.x = parent.x + _x;

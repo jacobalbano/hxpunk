@@ -1084,7 +1084,7 @@ class World extends Tweener
 		}
 	}
 	
-	/** @private Adds Entity to the update list. */
+	/** Adds Entity to the update list. */
 	private function addUpdate(e:Entity):Void
 	{
 		var fe:FriendlyEntity = e;
@@ -1102,7 +1102,7 @@ class World extends Tweener
 		_classCount.set(fe._class, _classCount[fe._class] + 1);
 	}
 	
-	/** @private Removes Entity from the update list. */
+	/** Removes Entity from the update list. */
 	private function removeUpdate(e:Entity):Void
 	{
 		var fe:FriendlyEntity = e;
@@ -1116,7 +1116,7 @@ class World extends Tweener
 		_classCount.set(fe._class, _classCount[fe._class] - 1);
 	}
 	
-	/** @private Adds Entity to the render list. */
+	/** Adds Entity to the render list. */
 	public function addRender(e:Entity):Void
 	{
 		var fe:FriendlyEntity = e,
@@ -1141,7 +1141,7 @@ class World extends Tweener
 		fe._renderPrev = null;
 	}
 	
-	/** @private Removes Entity from the render list. */
+	/** Removes Entity from the render list. */
 	public function removeRender(e:Entity):Void
 	{
 		var fe:FriendlyEntity = e;
@@ -1167,7 +1167,7 @@ class World extends Tweener
 		fe._renderNext = fe._renderPrev = null;
 	}
 	
-	/** @private Adds Entity to the type list. */
+	/** Adds Entity to the type list. */
 	public function addType(e:Entity):Void
 	{
 		var fe:FriendlyEntity = e;
@@ -1187,7 +1187,7 @@ class World extends Tweener
 		_typeFirst.set(fe._type, e);
 	}
 	
-	/** @private Removes Entity from the type list. */
+	/** Removes Entity from the type list. */
 	public function removeType(e:Entity):Void
 	{
 		var fe:FriendlyEntity = e;
@@ -1199,14 +1199,14 @@ class World extends Tweener
 		_typeCount.set(fe._type, _typeCount[fe._type] - 1);
 	}
 	
-	/** @private Register's the Entity's instance name. */
+	/** Register's the Entity's instance name. */
 	public function registerName(e:Entity):Void
 	{
 		var fe:FriendlyEntity = e;
 		_entityNames[fe._name] = e;
 	}
 	
-	/** @private Unregister's the Entity's instance name. */
+	/** Unregister's the Entity's instance name. */
 	public function unregisterName(e:Entity):Void
 	{
 		var fe:FriendlyEntity = e;
@@ -1215,24 +1215,24 @@ class World extends Tweener
 	
 	
 	// Adding and removal.
-	/** @private */	private var _add:Array<Entity>;
-	/** @private */	private var _remove:Array<Entity>;
-	/** @private */	private var _recycle:Array<Entity>;
+	/** */	private var _add:Array<Entity>;
+	/** */	private var _remove:Array<Entity>;
+	/** */	private var _recycle:Array<Entity>;
 	
 	// Update information.
-	/** @private */	private var _updateFirst:FriendlyEntity;
-	/** @private */	private var _count:Int = 0;
+	/** */	private var _updateFirst:FriendlyEntity;
+	/** */	private var _count:Int = 0;
 	
 	// Render information.
-	/** @private */	private var _renderFirst:Array<FriendlyEntity>;
-	/** @private */	private var _renderLast:Array<FriendlyEntity>;
-	/** @private */	private var _layerList:Array<Int>;
-	/** @private */	private var _layerCount:Array<Int>;
-	/** @private */	private var _layerSort:Bool;
-	/** @private */	private var _classCount:Map<String, Int>;
-	/** @private */	public var _typeFirst:Map<String, FriendlyEntity>;
-	/** @private */	private var _typeCount:Map<String, Int>;
-	/** @private */	private static var _recycled:Map<String, Entity>;
-	/** @private */	public var _entityNames:Map<String, Entity>;
+	/** */	private var _renderFirst:Array<FriendlyEntity>;
+	/** */	private var _renderLast:Array<FriendlyEntity>;
+	/** */	private var _layerList:Array<Int>;
+	/** */	private var _layerCount:Array<Int>;
+	/** */	private var _layerSort:Bool;
+	/** */	private var _classCount:Map<String, Int>;
+	/** */	public var _typeFirst:Map<String, FriendlyEntity>;
+	/** */	private var _typeCount:Map<String, Int>;
+	/** */	private static var _recycled:Map<String, Entity>;
+	/** */	public var _entityNames:Map<String, Entity>;
 }
 

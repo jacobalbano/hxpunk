@@ -24,7 +24,7 @@ class Masklist extends Hitbox
 		for (m in mask) add(m);
 	}
 	
-	/** @private Collide against a mask. */
+	/** Collide against a mask. */
 	override public function collide(mask:Mask):Bool 
 	{
 		for (m in _masks)
@@ -34,7 +34,7 @@ class Masklist extends Hitbox
 		return false;
 	}
 	
-	/** @private Collide against a Masklist. */
+	/** Collide against a Masklist. */
 	override private function collideMasklist(other:Masklist):Bool 
 	{
 		for (a in _masks)

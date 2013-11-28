@@ -81,14 +81,14 @@ class QuadPath extends Motion
 		return _points[index % _points.length];
 	}
 	
-	/** @private Starts the Tween. */
+	/** Starts the Tween. */
 	override public function start():Void 
 	{
 		_index = 0;
 		super.start();
 	}
 	
-	/** @private Updates the Tween. */
+	/** Updates the Tween. */
 	override public function update():Void 
 	{
 		super.update();
@@ -107,7 +107,7 @@ class QuadPath extends Motion
 		y = _a.y * (1 - td) * (1 - td) + _b.y * 2 * (1 - td) * td + _c.y * td * td;
 	}
 	
-	/** @private Updates the path, preparing the curve. */
+	/** Updates the path, preparing the curve. */
 	private function updatePath():Void
 	{
 		if (_points.length < 3)	throw new Error("A QuadPath must have at least 3 points to operate.");
@@ -164,7 +164,7 @@ class QuadPath extends Motion
 	public var pointCount(get, null):Int;
 	private inline function get_pointCount():Int { return _points.length; }
 	
-	/** @private Calculates the length of the curve. */
+	/** Calculates the length of the curve. */
 	private function curveLength(start:Point, control:Point, finish:Point):Float
 	{
 		var a:Point = HP.point,

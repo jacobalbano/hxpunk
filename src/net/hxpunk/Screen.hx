@@ -80,7 +80,7 @@ class Screen
 		_bitmap[1 - _current].visible = false;
 	}
 	
-	/** @private Re-applies transformation matrix. */
+	/** Re-applies transformation matrix. */
 	public function update():Void
 	{
 		_matrix.b = _matrix.c = 0;

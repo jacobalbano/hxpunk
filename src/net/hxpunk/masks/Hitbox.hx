@@ -28,7 +28,7 @@ class Hitbox extends Mask
 		_check.set(Type.getClassName(Hitbox), collideHitbox);
 	}
 	
-	/** @private Collides against an Entity. */
+	/** Collides against an Entity. */
 	override private function collideMask(other:Mask):Bool
 	{
 		return parent.x + _x + _width > other.parent.x - other.parent.originX
@@ -37,7 +37,7 @@ class Hitbox extends Mask
 			&& parent.y + _y < other.parent.y - other.parent.originY + other.parent.height;
 	}
 	
-	/** @private Collides against a Hitbox. */
+	/** Collides against a Hitbox. */
 	private function collideHitbox(other:Hitbox):Bool
 	{
 		return parent.x + _x + _width > other.parent.x + other._x
