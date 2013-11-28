@@ -329,6 +329,10 @@ class Text extends Image
 		
 		var i:Int = 0;
 	
+	#if html
+		_source.draw(_field);
+	#else
+
 	#if !mobile
 		// reassign text to force a recalc of TextLineMetrics and so be sure they report correct values
 		_field.htmlText = _field.htmlText;
@@ -364,7 +368,8 @@ class Text extends Image
 		} else {
 			_source.draw(_field);
 		}
-		
+	#end
+	
 		super.updateBuffer();
 	}
 	

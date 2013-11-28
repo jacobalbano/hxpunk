@@ -39,15 +39,15 @@ class Tween
 	 * Constructor. Specify basic information about the Tween.
 	 * @param	duration		Duration of the tween (in seconds or frames).
 	 * @param	type			Tween type, one of Tween.PERSIST (default), Tween.LOOPING, or Tween.ONESHOT.
-	 * @param	complete		Optional callback for when the Tween completes.
+	 * @param	onComplete		Optional callback for when the Tween completes.
 	 * @param	ease			Optional easer function to apply to the Tweened value.
 	 */
-	public function new(duration:Float, type:TweenType = null, complete:VoidCallback = null, ease:EasingFunction = null) 
+	public function new(duration:Float, type:TweenType = null, onComplete:VoidCallback = null, ease:EasingFunction = null) 
 	{
 		if (type == null) type = TweenType.PERSIST;
 		_target = duration;
 		_type = type;
-		this.onComplete = complete;
+		this.onComplete = onComplete;
 		_ease = ease;
 	}
 	

@@ -50,7 +50,7 @@ class Data
 		if (_shared != null) _shared.clear();
 		var data:Dynamic = loadData(file);
 		for (i in _dataMap.keys()) Reflect.setProperty(data, i, _dataMap[i]);
-		_shared.flush(SIZE);
+		_shared.flush(#if !html SIZE #end);
 	}
 	
 	/**

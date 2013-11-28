@@ -537,7 +537,7 @@ class Entity extends Tweener
 	{
 		if (_graphic != value) {
 			_graphic = value;
-			if (value != null && value.assign != null && Reflect.isFunction(value.assign)) value.assign();
+			if (value != null && value.onAssign != null && Reflect.isFunction(value.onAssign)) value.onAssign();
 		}
 		return value;
 	}

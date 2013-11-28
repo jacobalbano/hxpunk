@@ -209,6 +209,7 @@ class BitmapText extends Image
 						ox += finalWidth - Math.floor(_font.getTextWidth(t, _letterSpacing, _fontScale)) - 2 * padding;
 					}
 					if (shadow) ox -= Std.int(Math.abs(_shadowOffsetX));
+					if (outline) ox -= 1;
 				}
 				if (shadow) 
 				{
@@ -248,7 +249,7 @@ class BitmapText extends Image
 	 * Analyzes text and splits it into separate lines (appended to intoLines), giving back the calculated minimum 
 	 * width of the text field (without accounting for outline and shadow).
 	 * @param	text		The text string to analyze.
-	 * @param	intoRows	A Vector of strings with each item representing a single line.
+	 * @param	intoRows	An Array of strings with each item representing a single line.
 	 * @return	The calculated width for the text field.
 	 */
 	private function splitIntoLines(text:String, intoLines:Array<String>):Int 

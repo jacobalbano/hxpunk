@@ -34,9 +34,9 @@ class Sfx
 	 * Creates a sound effect from an embedded source. Store a reference to
 	 * this object so that you can play the sound using play() or loop().
 	 * @param	source		The embedded sound class to use or a Sound object. An asset id/file, Sound object, or embedded Sound class.
-	 * @param	complete	Optional callback function for when the sound finishes playing.
+	 * @param	onComplete	Optional callback function for when the sound finishes playing.
 	 */
-	public function new(source:Dynamic, complete:VoidCallback = null, type:String = null) 
+	public function new(source:Dynamic, onComplete:VoidCallback = null, type:String = null) 
 	{
 		_transform = new SoundTransform();
 		_type = type != null ? type : "";
@@ -46,7 +46,7 @@ class Sfx
 		else if (Std.is(source, String)) 
 			_className = source;
 		else if (source == null) throw new Error("Sfx source must be of type Sound, String or Class.");
-		this.onComplete = complete;
+		this.onComplete = onComplete;
 	}
 	
 	/**

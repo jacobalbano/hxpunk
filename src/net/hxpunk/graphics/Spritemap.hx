@@ -11,14 +11,14 @@ import net.hxpunk.graphics.Anim;
 class Spritemap extends Image
 {
 	/**
-	 * If the animation has stopped.
+	 * If the animation has finished.
 	 */
-	public var complete:Bool = true;
+	public var isComplete:Bool = true;
 	
 	/**
 	 * Optional callback function for animation end.
 	 */
-	public var callback:VoidCallback;
+	public var onComplete:VoidCallback;
 	
 	/**
 	 * Animation speed factor, alter this to speed up/slow down all animations.
@@ -32,7 +32,7 @@ class Spritemap extends Image
 	 * @param	frameHeight		Frame height.
 	 * @param	callback		Optional callback function for animation end.
 	 */
-	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, callback:VoidCallback = null) 
+	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, onComplete:VoidCallback = null) 
 	{
 		_anims = new Map<String, Anim>();
 		_rect = new Rectangle(0, 0, frameWidth, frameHeight);
@@ -57,7 +57,7 @@ class Spritemap extends Image
 		_columns = Math.ceil(_width / _rect.width);
 		_rows = Math.ceil(_height / _rect.height);
 		_frameCount = _columns * _rows;
-		this.callback = callback;
+		this.onComplete = onComplete;
 		updateBuffer();
 		active = true;
 	}
@@ -86,7 +86,7 @@ class Spritemap extends Image
 	/** @private Updates the animation. */
 	override public function update():Void 
 	{
-		if (_anim != null && !complete)
+		if (_anim != null && !isComplete)
 		{
 			var timeAdd:Float = _anim.frameRate * rate;
 			if (!HP.timeInFrames) timeAdd *= HP.elapsed;
@@ -102,13 +102,13 @@ class Spritemap extends Image
 						if (_anim.loop)
 						{
 							_index = 0;
-							if (callback != null) callback();
+							if (onComplete != null) onComplete();
 						}
 						else
 						{
 							_index = _anim.frameCount - 1;
-							complete = true;
-							if (callback != null) callback();
+							isComplete = true;
+							if (onComplete != null) onComplete();
 							break;
 						}
 					}
@@ -154,14 +154,14 @@ class Spritemap extends Image
 		if (_anim == null)
 		{
 			_frame = _index = 0;
-			complete = true;
+			isComplete = true;
 			updateBuffer();
 			return null;
 		}
 		_index = 0;
 		_timer = 0;
 		_frame = Std.int(_anim.frames[frame % _anim.frameCount]);
-		complete = false;
+		isComplete = false;
 		updateBuffer();
 		return _anim;
 	}

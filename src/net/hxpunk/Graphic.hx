@@ -76,11 +76,11 @@ class Graphic
 	}
 	
 	/** @private Callback for when the graphic is assigned to an Entity. */
-	public var assign(get, set):Void -> Void;
-	private inline function get_assign() { return _assign; }
-	private inline function set_assign(value:Void -> Void) { return _assign = value; }
+	public var onAssign(get, set):Void -> Void;
+	private inline function get_onAssign() { return _onAssign; }
+	private inline function set_onAssign(value:Void -> Void) { return _onAssign = value; }
 	
 	// Graphic information.
-	private var _assign:Void -> Void;
+	private var _onAssign:Void -> Void;
 	private var _point:Point;
 }

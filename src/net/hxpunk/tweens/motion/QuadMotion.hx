@@ -14,12 +14,12 @@ class QuadMotion extends Motion
 {
 	/**
 	 * Constructor.
-	 * @param	complete	Optional completion callback.
+	 * @param	onComplete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(complete:VoidCallback = null, type:TweenType = null)
+	public function new(onComplete:VoidCallback = null, type:TweenType = null)
 	{
-		super(0, complete, type, null);
+		super(0, onComplete, type, null);
 	}
 	
 	/**

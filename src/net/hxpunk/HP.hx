@@ -1091,18 +1091,18 @@ class HP
 	 * @param	duration	Duration of the tween.
 	 * @param	options		An object containing key/value pairs of the following optional parameters:
 	 * 						type		Tween type.
-	 * 						complete	Optional completion callback function.
+	 * 						onComplete	Optional completion callback function.
 	 * 						ease		Optional easer function.
 	 * 						tweener		The Tweener to add this Tween to.
 	 * 						delay		A length of time to wait before starting this tween.
 	 * @return	The added MultiVarTween object.
 	 * 
-	 * Example: HP.tween(object, { x: 500, y: 350 }, 2.0, { ease: easeFunction, complete: onComplete } );
+	 * Example: HP.tween(object, { x: 500, y: 350 }, 2.0, { ease: easeFunction, onComplete: onComplete } );
 	 */
 	public static function tween(object:Dynamic, values:Dynamic, duration:Float, options:Dynamic = null):MultiVarTween
 	{
 		var type:TweenType = TweenType.ONESHOT,
-			complete:VoidCallback = null,
+			onComplete:VoidCallback = null,
 			ease:EasingFunction = null,
 			tweener:Tweener = HP.tweener,
 			delay:Float = 0;
@@ -1110,12 +1110,12 @@ class HP
 		if (options != null)
 		{
 			if (Reflect.hasField(options, "type")) type = Reflect.getProperty(options, "type");
-			if (Reflect.hasField(options, "complete")) complete = Reflect.getProperty(options, "complete");
+			if (Reflect.hasField(options, "onComplete")) onComplete = Reflect.getProperty(options, "onComplete");
 			if (Reflect.hasField(options, "ease")) ease = Reflect.getProperty(options, "ease");
 			if (Reflect.hasField(options, "tweener")) tweener = Reflect.getProperty(options, "tweener");
 			if (Reflect.hasField(options, "delay")) delay = Reflect.getProperty(options, "delay");
 		}
-		var tween:MultiVarTween = new MultiVarTween(complete, type);
+		var tween:MultiVarTween = new MultiVarTween(onComplete, type);
 		tween.tween(object, values, duration, ease, delay);
 		tweener.addTween(tween);
 		return tween;

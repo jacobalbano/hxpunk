@@ -233,6 +233,7 @@ class Console
 		_fpsInfoText0.height = _fpsInfoText1.height = 20;
 		_fpsInfo.x = 75;
 		_fpsInfoText1.x = 60;
+		_fpsInfo.width = _fpsInfoText0.width + _fpsInfoText1.width;
 		
 		// The memory usage
 		_fpsRead.addChild(_memReadText);
@@ -240,7 +241,7 @@ class Console
 		_memReadText.embedFonts = true;
 		_memReadText.width = 110;
 		_memReadText.height = 20;
-		_memReadText.x = (big) ? _fpsInfo.x + _fpsInfo.width + 5 : _fpsInfo.x + 9;
+		_memReadText.x = (big) ? _fpsInfo.x + _fpsInfoText0.width + _fpsInfoText1.width + 5 : _fpsInfo.x + 9;
 		_memReadText.y = 1;
 		
 		// The output log text.
@@ -913,7 +914,7 @@ class Console
 	private function updateButtons():Void
 	{
 		// Button visibility.
-		_butRead.x = (width >= BIG_WIDTH_THRESHOLD ? _fpsInfo.x + _fpsInfo.width + Std.int((_entRead.x - (_fpsInfo.x + _fpsInfo.width)) / 2) - 30 : 160 + 20);
+		_butRead.x = (width >= BIG_WIDTH_THRESHOLD ? _fpsInfo.x + _fpsInfoText0.width + _fpsInfoText1.width + Std.int((_entRead.x - (_fpsInfo.x + _fpsInfoText0.width + _fpsInfoText1.width)) / 2) - 30 : 160 + 20);
 		_butDebug.visible = !_debug;
 		_butOutput.visible = _debug;
 		_butPlay.visible = HP.engine.paused;
