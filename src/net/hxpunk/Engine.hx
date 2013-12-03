@@ -19,7 +19,8 @@ import net.hxpunk.World;
 /**
  * Main game Sprite class, added to the Flash Stage. Manages the game loop.
  */
-@:access(net.hxpunk.HP)		// access HP class private members
+@:access(net.hxpunk.HP)			// access HP class private members
+@:access(net.hxpunk.Tweener)	// access Tweener class private members
 class Engine extends Sprite
 {
 	/**

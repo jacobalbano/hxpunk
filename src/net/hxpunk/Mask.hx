@@ -17,6 +17,8 @@ import net.hxpunk.utils.Draw;
 
 typedef HitCallback = Dynamic -> Bool;
 
+typedef Projection = { min:Float, max:Float };
+
 /**
  * Base class for Entity collision masks.
  */
@@ -88,6 +90,33 @@ class Mask
 	public function renderDebug(g:Graphics):Void
 	{
 		
+	}
+	
+	/** @private Projects this mask points on axis and returns min and max values in projection object. */
+	public function project(axis:Point, projection:Projection):Void
+	{
+		var cur:Float,
+			max:Float = Math.NEGATIVE_INFINITY,
+			min:Float = Math.POSITIVE_INFINITY;
+
+		cur = -parent.originX * axis.x - parent.originY * axis.y;
+		if (cur < min) min = cur;
+		if (cur > max) max = cur;
+
+		cur = (-parent.originX + parent.width) * axis.x - parent.originY * axis.y;
+		if (cur < min) min = cur;
+		if (cur > max) max = cur;
+
+		cur = -parent.originX * axis.x + (-parent.originY + parent.height) * axis.y;
+		if (cur < min) min = cur;
+		if (cur > max) max = cur;
+
+		cur = (-parent.originX + parent.width) * axis.x + (-parent.originY + parent.height)* axis.y;
+		if (cur < min) min = cur;
+		if (cur > max) max = cur;
+
+		projection.min = min;
+		projection.max = max;
 	}
 	
 	/**

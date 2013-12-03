@@ -92,10 +92,10 @@ class World extends Tweener
 			e = cast fe;
 			if (e.active)
 			{
-				if (e._tween != null) e.updateTweens();
+				if (fe._tween != null) e.updateTweens();
 				e.update();
 			}
-			if (e._graphic != null && e._graphic.active) e._graphic.update();
+			if (fe._graphic != null && fe._graphic.active) fe._graphic.update();
 			fe = fe._updateNext;
 		}
 	}
@@ -493,6 +493,34 @@ class World extends Tweener
 		return null;
 	}
 	
+	/**
+	 * Returns the topmost Entity which collides with the point.
+	 * @param	type	The Entity type to check for (pass null to check for any type).
+	 * @param   x       X position
+	 * @param   y       Y position
+	 * @return The topmost Entity which collides with the point, or null if not found.
+	 */
+	public function topmostCollidePoint(type:String = null, x:Float, y:Float):Entity
+	{
+		var e:Entity,
+			fe:FriendlyEntity,
+			i:Int = 0,
+			nLayers:Int = _layerList.length;
+		
+		while (i < nLayers)
+		{
+			fe = _renderFirst[_layerList[i]];
+			while (fe != null)
+			{
+				e = cast fe;
+				if (e.collidable && (type == null || fe._type == type) && e.collidePoint(e.x, e.y, x, y)) return e;
+				fe = fe._renderNext;
+			}
+			i++;
+		}
+		return null;
+	}
+		
 	/**
 	 * Returns the first Entity found that collides with the line.
 	 * @param	type		The Entity type to check for.
@@ -1043,7 +1071,7 @@ class World extends Tweener
 				removeRender(e);
 				if (fe._type != null) removeType(e);
 				if (fe._name != null) unregisterName(e);
-				if (e.autoClear && e._tween != null) e.clearTweens();
+				if (e.autoClear && fe._tween != null) e.clearTweens();
 			}
 			HP.removeAll(_remove);
 		}

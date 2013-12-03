@@ -117,6 +117,6 @@ class Tweener
 	}
 	
 	// List information.
-	public var _tween:Tween;
+	private var _tween:Tween;
 }
 

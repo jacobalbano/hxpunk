@@ -24,6 +24,10 @@ typedef FriendlyEntity = {
 	private var _typeNext:FriendlyEntity;
 	private var _recycleNext:FriendlyEntity;
 	
+	// Rendering information.
+	private var _graphic:Graphic;
+	private var _tween:Tween;
+	
 	// Collision information.
 	private var HITBOX:Mask;	
 }
@@ -844,7 +848,7 @@ class Entity extends Tweener
 	private var _moveY:Float = 0;
 	
 	// Rendering information.
-	public var _graphic:Graphic;
+	private var _graphic:Graphic;
 	private var _point:Point;
 	private var _camera:Point;
 }

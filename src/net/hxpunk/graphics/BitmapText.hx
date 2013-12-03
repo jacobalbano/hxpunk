@@ -235,7 +235,6 @@ class BitmapText extends Image
 					}
 				}
 				_font.render(_source, t, _preparedTextGlyphs, ox + _padding, oy + row * (fontHeight + _lineSpacing) + _padding, _letterSpacing);
-				//row++;
 			}
 			
 			_source.unlock();
@@ -521,7 +520,7 @@ class BitmapText extends Image
 	}
 	
 	/**
-	 * Sets the color of the text.
+	 * Sets the color of the text (set to null to use the original color).
 	 */
 	public var textColor(get, set):Null<Int>;
 	private inline function get_textColor():Null<Int>

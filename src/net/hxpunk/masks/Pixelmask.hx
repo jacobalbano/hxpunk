@@ -87,8 +87,8 @@ class Pixelmask extends Hitbox
 	{
 		_point.x = parent.x + _x;
 		_point.y = parent.y + _y;
-		_point2.x = other.parent.x + other._x - other.parent.originX;
-		_point2.y = other.parent.y + other._y - other.parent.originY;
+		_point2.x = other.parent.x + other._x;
+		_point2.y = other.parent.y + other._y;
 	#if flash
 		return _data.hitTest(_point, threshold, other._data, _point2, other.threshold);
 	#else
