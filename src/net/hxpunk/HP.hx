@@ -278,11 +278,11 @@ class HP
 		This function uses operator [==] to check for equality.
 		If [v] does not exist in [it], the result is -1.
 	**/
-	public static inline function indexOf<T>( it : Iterable<T>, v : T ) : Int {
+	public static inline function indexOf<T>(it:Iterable<T>, v:T) : Int {
 		var i = 0;
 		var found:Bool = false;
-		for( v2 in it ) {
-			if( v == v2 ) {
+		for (v2 in it) {
+			if (v == v2) {
 				found = true;
 				break;
 			}

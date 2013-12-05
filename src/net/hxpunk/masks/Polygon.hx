@@ -256,11 +256,6 @@ class Polygon extends Hitbox
 		
 		_fakePixelmask.data = data;
 		
-		Draw.enqueueCall(function ():Void 
-		{
-			Draw.copyPixels(data, data.rect, new Point(50, 70));
-		});
-		
 		return pixelmask.collide(_fakePixelmask);
 	}
 	
