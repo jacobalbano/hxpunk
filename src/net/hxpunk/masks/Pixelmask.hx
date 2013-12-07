@@ -127,6 +127,9 @@ class Pixelmask extends Hitbox
 		if (_debug == null) {
 			_debug = new BitmapData(_data.width, _data.height, true, 0x0);
 		}
+		if (_colorTransform == null) {
+			_colorTransform = new ColorTransform(1, 1, 1, 0, 0, 0, 0, 0x20);
+		}
 		
 		HP.rect.x = 0;
 		HP.rect.y = 0;
@@ -139,7 +142,7 @@ class Pixelmask extends Hitbox
 		_debug.threshold(_data, HP.rect, HP.zero, ">=", threshold << 24, 0x40FFFFFF, 0xFF000000);
 	#else
 		/* will not take the alpha threshold into consideration in the debug view (just show the bitmapdata)*/
-		_debug.draw(_data, null, new ColorTransform(1, 1, 1, 0, 0, 0, 0, 0x20));
+		_debug.draw(_data, null, _colorTransform);
 	#end
 	
 		var sx:Float = HP.screen.scaleX * HP.screen.scale;
@@ -167,5 +170,8 @@ class Pixelmask extends Hitbox
 	private var _rect:Rectangle;
 	private var _point:Point;
 	private var _point2:Point;
+	
+	// Debug Draw.
+	private static var _colorTransform:ColorTransform;
 }
 

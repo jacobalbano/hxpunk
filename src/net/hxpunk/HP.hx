@@ -945,7 +945,7 @@ class HP
 		} 
 		
 		if (Std.is(source, Class)) {
-			data = Type.createInstance(source, []);
+			data = Type.createInstance(source, [0, 0]);
 		} else { 
 			data = Assets.getBitmapData(source);
 		}
@@ -1074,14 +1074,14 @@ class HP
 	}
 	
 	/**
-	 * Loads the file as an XML object.
+	 * Loads the file as an Xml object.
 	 * @param	file		The embedded file to load.
-	 * @return	An XML object representing the file.
+	 * @return	An Xml object representing the file.
 	 */
-	public static function getXML(file:Class<ByteArray>):Xml
+	public static function getXml(file:Class<ByteArray>):Xml
 	{
 		var bytes:ByteArray = Type.createInstance(file, []);
-		return cast(bytes.readUTFBytes(bytes.length), Xml);
+		return Xml.parse(bytes.readUTFBytes(bytes.length));
 	}
 	
 	/**

@@ -423,8 +423,8 @@ class Polygon extends Hitbox
 			var sx:Float = HP.screen.scaleX * HP.screen.scale;
 			var sy:Float = HP.screen.scaleY * HP.screen.scale;
 			
-			graphics.beginFill(0xFFFFFF, .15);
-			graphics.lineStyle(1, 0xFFFFFF, 0.25);
+			graphics.beginFill(0xFFFFFF, .25);
+			graphics.lineStyle(1, 0xFFFFFF, 0.35);
 			
 			graphics.moveTo((points[_points.length - 1].x + offsetX) * sx , (_points[_points.length - 1].y + offsetY) * sy);
 			for (i in 0..._points.length)

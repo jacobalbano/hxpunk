@@ -251,7 +251,7 @@ class World extends Tweener
 	}
 	
 	/**
-	 * Adds an Entity to the World with the Graphic object.
+	 * Adds an Entity to the World with the Graphic object (also sets active to false).
 	 * @param	graphic		Graphic to assign the Entity.
 	 * @param	x			X position of the Entity.
 	 * @param	y			Y position of the Entity.
@@ -267,7 +267,7 @@ class World extends Tweener
 	}
 	
 	/**
-	 * Adds an Entity to the World with the Mask object.
+	 * Adds an Entity to the World with the Mask object (also sets active and visible to false).
 	 * @param	mask	Mask to assign the Entity.
 	 * @param	type	Collision type of the Entity.
 	 * @param	x		X position of the Entity.
