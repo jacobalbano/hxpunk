@@ -23,6 +23,8 @@ import net.hxpunk.Screen;
 import net.hxpunk.tweens.misc.Alarm;
 import openfl.Assets;
 import net.hxpunk.Tween.TweenType;
+import net.hxpunk.HP._EMBEDDED_DEFAULT_FONT;
+
 
 typedef PointLike = { 
 	var x:Dynamic; 
@@ -47,7 +49,7 @@ class HP
 	/**
 	 * The default font file to use.
 	 */
-	public static var defaultFontName:String = "assets/hxpunk/04B_03__.ttf";
+	public static var defaultFontName:String;
 	public static var defaultFont:Font;
 
 	private static var init:Bool = initStaticVars();
@@ -177,8 +179,9 @@ class HP
 		entity = new Entity();
 
 		// Default Font
-		defaultFont = Assets.getFont(defaultFontName);
-		//defaultFontName = defaultFont.fontName;
+		Font.registerFont(_EMBEDDED_DEFAULT_FONT);
+		defaultFont = new _EMBEDDED_DEFAULT_FONT();
+		defaultFontName = defaultFont.fontName;
 		
 		return true;
 	}
@@ -1358,3 +1361,4 @@ class HP
 	public static var entity:Entity;
 }
 
+@:font("../assets/hxpunk/04B_03__.ttf") class _EMBEDDED_DEFAULT_FONT extends Font {}

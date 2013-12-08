@@ -17,6 +17,12 @@ import net.hxpunk.HP;
 import net.hxpunk.utils.Input;
 import net.hxpunk.utils.Key;
 import openfl.Assets;
+import net.hxpunk.debug.Console._EMBEDDED_CONSOLE_DEBUG;
+import net.hxpunk.debug.Console._EMBEDDED_CONSOLE_LOGO;
+import net.hxpunk.debug.Console._EMBEDDED_CONSOLE_OUTPUT;
+import net.hxpunk.debug.Console._EMBEDDED_CONSOLE_PAUSE;
+import net.hxpunk.debug.Console._EMBEDDED_CONSOLE_PLAY;
+import net.hxpunk.debug.Console._EMBEDDED_CONSOLE_STEP;
 
 
 /**
@@ -90,12 +96,12 @@ class Console
 		WATCH_LIST = ["x", "y"];
 		
 		// Embedded assets.
-		CONSOLE_LOGO = Assets.getBitmapData("assets/hxpunk/console_logo.png");
-		CONSOLE_DEBUG = Assets.getBitmapData("assets/hxpunk/console_debug.png");
-		CONSOLE_OUTPUT = Assets.getBitmapData("assets/hxpunk/console_output.png");
-		CONSOLE_PLAY = Assets.getBitmapData("assets/hxpunk/console_play.png");
-		CONSOLE_PAUSE = Assets.getBitmapData("assets/hxpunk/console_pause.png");
-		CONSOLE_STEP = Assets.getBitmapData("assets/hxpunk/console_step.png");
+		CONSOLE_LOGO = new _EMBEDDED_CONSOLE_LOGO(0, 0);
+		CONSOLE_DEBUG = new _EMBEDDED_CONSOLE_DEBUG(0, 0);
+		CONSOLE_OUTPUT = new _EMBEDDED_CONSOLE_OUTPUT(0, 0);
+		CONSOLE_PLAY = new _EMBEDDED_CONSOLE_PLAY(0, 0);
+		CONSOLE_PAUSE = new _EMBEDDED_CONSOLE_PAUSE(0, 0);
+		CONSOLE_STEP = new _EMBEDDED_CONSOLE_STEP(0, 0);
 	}
 	
 	
@@ -1053,3 +1059,10 @@ class Console
 	// Arrow keys define
 	public static inline var ARROW_KEYS:String = "_ARROWS";
 }
+
+@:bitmap("../assets/hxpunk/console_logo.png") class _EMBEDDED_CONSOLE_LOGO extends BitmapData {}
+@:bitmap("../assets/hxpunk/console_debug.png") class _EMBEDDED_CONSOLE_DEBUG extends BitmapData {}
+@:bitmap("../assets/hxpunk/console_output.png") class _EMBEDDED_CONSOLE_OUTPUT extends BitmapData {}
+@:bitmap("../assets/hxpunk/console_play.png") class _EMBEDDED_CONSOLE_PLAY extends BitmapData {}
+@:bitmap("../assets/hxpunk/console_pause.png") class _EMBEDDED_CONSOLE_PAUSE extends BitmapData {}
+@:bitmap("../assets/hxpunk/console_step.png") class _EMBEDDED_CONSOLE_STEP extends BitmapData {}

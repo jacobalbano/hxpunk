@@ -21,9 +21,6 @@ class Text extends Image
 	 */
 	public static var FONT:String;
 	
-	// Default font family.
-	private static var _FONT_DEFAULT:Font;
-
 	private static var init:Bool = initStaticVars();
 	
 	/**
@@ -43,7 +40,7 @@ class Text extends Image
 	/**
 	 * The leading to assign to new Text objects.
 	 */
-	public static var DEFAULT_LEADING:Float = 0;
+	public static var LEADING:Float = 0;
 	
 	/**
 	 * The wordWrap property to assign to new Text objects.
@@ -90,14 +87,13 @@ class Text extends Image
 		_field = new TextField();
 		_styles = new Map<String, TextFormat>();
 		
-		if (Text.FONT == null || Text._FONT_DEFAULT == null) {
-			Text._FONT_DEFAULT = Assets.getFont(HP.defaultFontName);
-			Text.FONT = Text._FONT_DEFAULT.fontName;
+		if (Text.FONT == null) {
+			Text.FONT = HP.defaultFontName;
 		}
 		_font = Text.FONT;
 		_size = Text.SIZE;
 		_align = Text.ALIGN;
-		_leading = Text.DEFAULT_LEADING;
+		_leading = Text.LEADING;
 		_wordWrap = Text.WORD_WRAP;
 		resizable = Text.RESIZABLE;
 		var width:Int = 0;
