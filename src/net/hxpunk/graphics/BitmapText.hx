@@ -58,7 +58,7 @@ class BitmapText extends Image
 		if (options != null)
 		{
 			for (property in Reflect.fields(options)) {
-				try {	// if (Reflect.hasField(this, property)) seems to not work in this case
+				try {
 					Reflect.setProperty(this, property, Reflect.getProperty(options, property));
 				} catch (e:Error) {
 					throw new Error('"' + property + '" is not a property of BitmapText.');
@@ -769,7 +769,7 @@ class BitmapText extends Image
 		{
 			lock();
 			for (property in Reflect.fields(props)) {
-				try {	// if (Reflect.hasField(this, property)) seems to not work in this case
+				try {
 					Reflect.setProperty(this, property, Reflect.getProperty(props, property));
 				} catch (e:Error) {
 					throw new Error('"' + property + '" is not a property of BitmapText.');

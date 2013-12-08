@@ -140,7 +140,7 @@ class Text extends Image
 		if (options != null)
 		{
 			for (property in Reflect.fields(options)) {
-				try {	// if (Reflect.hasField(this, property)) seems to not work in this case
+				try {
 					Reflect.setProperty(this, property, Reflect.getProperty(options, property));
 				} catch (e:Error) {
 					throw new Error('"' + property + '" is not a property of Text.');
@@ -179,7 +179,7 @@ class Text extends Image
 			format = new TextFormat();
 			
 			for (key in Reflect.fields(params)) {
-				try {	// if (Reflect.hasField(format, key)) seems to not work in this case
+				try {
 					Reflect.setProperty(format, key, Reflect.getProperty(params, key));
 				} catch (e:Error) {
 					throw new Error('"' + key + '" is not a TextFormat property.');
@@ -561,14 +561,19 @@ class Text extends Image
 	 * returns true on success and false if property not found on either
 	 */
 	public function setTextProperty(name:String, value:Dynamic):Bool {
-		if (Reflect.hasField(_field, name)) {
+		var propertyFound:Bool = false;
+		try {
 			Reflect.setProperty(_field, name, value);
-		} else if (Reflect.hasField(_form, name)) {
-			Reflect.setProperty(_form, name, value);
-			_field.setTextFormat(_form);
-		} else {
-			return false;
+			propertyFound = true;
+		} catch (e:Dynamic) {
+			try {
+				Reflect.setProperty(_form, name, value);
+				propertyFound = true;
+			} catch (e:Dynamic) {
+			}
 		}
+		if (!propertyFound) return false;
+		
 		updateTextBuffer();
 		return true;
 	}
@@ -577,14 +582,18 @@ class Text extends Image
 	 * Get TextField or TextForm property
 	 */ 
 	public function getTextProperty(name:String):Dynamic {
-		if (Reflect.hasField(_field, name)) {
-			return Reflect.getProperty(_field, name);
-		} else if (Reflect.hasField(_form, name)) {
-			return Reflect.getProperty(_form, name);
-		} else {
-			// TODO need a better "cannot get" value here
-			return null;
+		try {
+			var value = Reflect.getProperty(_field, name);
+			return value;
+		} catch (e:Dynamic) {
+			try {
+				var value = Reflect.getProperty(_form, name);
+				return value;
+			} catch (e:Dynamic) {
+			}
 		}
+		// TODO need a better "cannot get" value here
+		return null;
 	}
 
 	// Text information.
