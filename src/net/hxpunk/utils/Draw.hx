@@ -1,6 +1,5 @@
 ﻿package net.hxpunk.utils;
 
-import flash.display.*;
 import flash.display.BitmapData;
 import flash.display.BlendMode;
 import flash.display.Graphics;
@@ -757,6 +756,47 @@ class Draw
 		HP.matrix.ty += y;
 
 		_target.draw(HP.sprite, HP.matrix, null, blend);
+	}
+
+	/**
+	 * Draws a polygon (or a polyline with closed = false) from an array of points.
+	 * @param	x			X position of the poly.
+	 * @param	y			Y position of the poly.
+	 * @param	points		Array containing the poly's points.
+	 * @param	color		Color of the poly.
+	 * @param	alpha		Alpha of the poly.
+	 * @param	fill		If the poly should be filled with the color (true) or just an outline (false).
+	 * @param	closed		If the poly should be closed (true) or a polyline (false).
+	 * @param	thick		How thick the outline should be (only applicable when fill = false).
+	 */
+	public static function poly(x:Float, y:Float, points:Array<Point>, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, closed:Bool = true, thick:Float = 1):Void
+	{
+		x -= _camera.x;
+		y -= _camera.y;
+		
+		if (color > 0xFFFFFF) color = 0xFFFFFF & color;
+		_graphics.clear();
+		
+		fill = fill && closed;
+		if (fill) {
+			_graphics.beginFill(color, alpha);
+		} else {
+			_graphics.lineStyle(thick, color, alpha, false, LineScaleMode.NORMAL, null, JointStyle.MITER);
+		}
+		
+		if (closed) _graphics.moveTo(points[points.length - 1].x, points[points.length - 1].y);
+		else _graphics.moveTo(points[0].x, points[0].y);
+		for (p in points)
+		{
+			_graphics.lineTo(p.x, p.y);
+		}
+		if (fill) _graphics.endFill();
+		
+		var matrix:Matrix = HP.matrix;
+		matrix.identity();
+		matrix.translate(x, y);
+
+		_target.draw(HP.sprite, matrix, null, blend);
 	}
 
 	/**
