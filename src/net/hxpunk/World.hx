@@ -1,6 +1,7 @@
 ﻿package net.hxpunk;
 
 import flash.geom.Point;
+import haxe.ds.IntMap;
 import net.hxpunk.Entity.FriendlyEntity;
 import net.hxpunk.utils.Draw;
 
@@ -49,10 +50,10 @@ class World extends Tweener
 		_recycle = new Array<Entity>();
 		
 		// Render information.
-		_renderFirst = new Array<FriendlyEntity>();
-		_renderLast = new Array<FriendlyEntity>();
+		_renderFirst = new IntMap<FriendlyEntity>();
+		_renderLast = new IntMap<FriendlyEntity>();
 		_layerList = new Array<Int>();
-		_layerCount = new Array<Int>();
+		_layerCount = new IntMap<Int>();
 		_classCount = new Map<String, Int>();
 		
 		_typeFirst = new Map<String, FriendlyEntity>();
@@ -120,7 +121,7 @@ class World extends Tweener
 			i:Int = _layerList.length;
 		while (i -- > 0)
 		{
-			fe = _renderLast[_layerList[i]];
+			fe = _renderLast.get(_layerList[i]);
 			while (fe != null)
 			{
 				e = cast fe;
@@ -355,11 +356,11 @@ class World extends Tweener
 		// pull from list
 		fe._renderPrev._renderNext = fe._renderNext;
 		if (fe._renderNext != null) fe._renderNext._renderPrev = fe._renderPrev;
-		else _renderLast[fe._layer] = fe._renderPrev;
+		else _renderLast.set(fe._layer, fe._renderPrev);
 		// place at the start
-		fe._renderNext = _renderFirst[fe._layer];
+		fe._renderNext = _renderFirst.get(fe._layer);
 		fe._renderNext._renderPrev = e;
-		_renderFirst[fe._layer] = e;
+		_renderFirst.set(fe._layer, e);
 		fe._renderPrev = null;
 		return true;
 	}
@@ -376,11 +377,11 @@ class World extends Tweener
 		// pull from list
 		fe._renderNext._renderPrev = fe._renderPrev;
 		if (fe._renderPrev != null) fe._renderPrev._renderNext = fe._renderNext;
-		else _renderFirst[fe._layer] = fe._renderNext;
+		else _renderFirst.set(fe._layer, fe._renderNext);
 		// place at the end
-		fe._renderPrev = _renderLast[fe._layer];
+		fe._renderPrev = _renderLast.get(fe._layer);
 		fe._renderPrev._renderNext = fe;
-		_renderLast[fe._layer] = fe;
+		_renderLast.set(fe._layer, fe);
 		fe._renderNext = null;
 		return true;
 	}
@@ -397,13 +398,13 @@ class World extends Tweener
 		// pull from list
 		fe._renderPrev._renderNext = fe._renderNext;
 		if (fe._renderNext != null) fe._renderNext._renderPrev = fe._renderPrev;
-		else _renderLast[fe._layer] = fe._renderPrev;
+		else _renderLast.set(fe._layer, fe._renderPrev);
 		// shift towards the front
 		fe._renderNext = fe._renderPrev;
 		fe._renderPrev = fe._renderPrev._renderPrev;
 		fe._renderNext._renderPrev = fe;
 		if (fe._renderPrev != null) fe._renderPrev._renderNext = fe;
-		else _renderFirst[fe._layer] = fe;
+		else _renderFirst.set(fe._layer, fe);
 		return true;
 	}
 	
@@ -419,13 +420,13 @@ class World extends Tweener
 		// pull from list
 		fe._renderNext._renderPrev = fe._renderPrev;
 		if (fe._renderPrev != null) fe._renderPrev._renderNext = fe._renderNext;
-		else _renderFirst[fe._layer] = fe._renderNext;
+		else _renderFirst.set(fe._layer, fe._renderNext);
 		// shift towards the back
 		fe._renderPrev = fe._renderNext;
 		fe._renderNext = fe._renderNext._renderNext;
 		fe._renderPrev._renderNext = fe;
 		if (fe._renderNext != null) fe._renderNext._renderPrev = fe;
-		else _renderLast[fe._layer] = fe;
+		else _renderLast.set(fe._layer, fe);
 		return true;
 	}
 	
@@ -509,7 +510,7 @@ class World extends Tweener
 		
 		while (i < nLayers)
 		{
-			fe = _renderFirst[_layerList[i]];
+			fe = _renderFirst.get(_layerList[i]);
 			while (fe != null)
 			{
 				e = cast fe;
@@ -841,7 +842,7 @@ class World extends Tweener
 	 */
 	public function layerCount(layer:Int):Int
 	{
-		return cast _layerCount[layer];
+		return cast _layerCount.get(layer);
 	}
 	
 	/**
@@ -894,7 +895,7 @@ class World extends Tweener
 	public function layerFirst(layer:Int):Entity
 	{
 		if (_updateFirst == null) return null;
-		return cast _renderFirst[layer];
+		return cast _renderFirst.get(layer);
 	}
 	
 	/**
@@ -905,7 +906,7 @@ class World extends Tweener
 	public function layerLast(layer:Int):Entity
 	{
 		if (_updateFirst == null) return null;
-		return cast _renderLast[layer];
+		return cast _renderLast.get(layer);
 	}
 	
 	/**
@@ -915,7 +916,7 @@ class World extends Tweener
 	private function get_farthest()
 	{
 		if (_updateFirst == null) return null;
-		return cast _renderLast[_layerList[_layerList.length - 1]];
+		return cast _renderLast.get(_layerList[_layerList.length - 1]);
 	}
 	
 	/**
@@ -925,7 +926,7 @@ class World extends Tweener
 	private function get_nearest()
 	{
 		if (_updateFirst == null) return null;
-		return cast _renderFirst[_layerList[0]];
+		return cast _renderFirst.get(_layerList[0]);
 	}
 	
 	/**
@@ -1003,7 +1004,7 @@ class World extends Tweener
 	 */
 	public function getLayer(layer:Int, into:Array<Entity>):Void
 	{
-		var fe:FriendlyEntity = _renderLast[layer],
+		var fe:FriendlyEntity = _renderLast.get(layer),
 			n:Int = into.length;
 		while (fe != null)
 		{
@@ -1056,7 +1057,7 @@ class World extends Tweener
 				fe = e;
 				if (fe._world == null)
 				{
-					if(HP.indexOf(_add, e) >= 0)
+					if (HP.indexOf(_add, e) >= 0)
 						_add.splice(HP.indexOf(_add, e), 1);
 					
 					continue;
@@ -1148,24 +1149,24 @@ class World extends Tweener
 	public function addRender(e:Entity):Void
 	{
 		var fe:FriendlyEntity = e,
-			f:FriendlyEntity = _renderFirst[fe._layer];
+			f:FriendlyEntity = _renderFirst.get(fe._layer);
 		if (f != null)
 		{
 			// Append entity to existing layer.
 			fe._renderNext = f;
 			f._renderPrev = fe;
-			_layerCount[fe._layer] ++;
+			_layerCount.set(fe._layer, _layerCount.get(fe._layer) + 1);
 		}
 		else
 		{
 			// Create new layer with entity.
-			_renderLast[fe._layer] = fe;
+			_renderLast.set(fe._layer, fe);
 			_layerList[_layerList.length] = fe._layer;
 			_layerSort = true;
 			fe._renderNext = null;
-			_layerCount[fe._layer] = 1;
+			_layerCount.set(fe._layer, 1);
 		}
-		_renderFirst[fe._layer] = e;
+		_renderFirst.set(fe._layer, e);
 		fe._renderPrev = null;
 	}
 	
@@ -1174,13 +1175,13 @@ class World extends Tweener
 	{
 		var fe:FriendlyEntity = e;
 		if (fe._renderNext != null) fe._renderNext._renderPrev = fe._renderPrev;
-		else _renderLast[fe._layer] = fe._renderPrev;
+		else _renderLast.set(fe._layer, fe._renderPrev);
 		if (fe._renderPrev != null) fe._renderPrev._renderNext = fe._renderNext;
 		else
 		{
 			// Remove this entity from the layer.
-			_renderFirst[fe._layer] = fe._renderNext;
-			if (fe._renderNext != null)
+			_renderFirst.set(fe._layer, fe._renderNext);
+			if (fe._renderNext == null)
 			{
 				// Remove the layer from the layer list if this was the last entity.
 				if (_layerList.length > 1)
@@ -1191,7 +1192,15 @@ class World extends Tweener
 				_layerList.pop();
 			}
 		}
-		_layerCount[fe._layer] --;
+		var newLayerCount:Int = _layerCount.get(fe._layer) - 1;
+		if (newLayerCount > 0) {
+			_layerCount.set(fe._layer, newLayerCount);
+		} else {
+			// Remove layer from maps if it contains 0 entities.
+			_layerCount.remove(fe._layer);
+			_renderFirst.remove(fe._layer);
+			_renderLast.remove(fe._layer);
+		}
 		fe._renderNext = fe._renderPrev = null;
 	}
 	
@@ -1252,10 +1261,10 @@ class World extends Tweener
 	/** */	private var _count:Int = 0;
 	
 	// Render information.
-	/** */	private var _renderFirst:Array<FriendlyEntity>;
-	/** */	private var _renderLast:Array<FriendlyEntity>;
+	/** */	private var _renderFirst:IntMap<FriendlyEntity>;
+	/** */	private var _renderLast:IntMap<FriendlyEntity>;
 	/** */	private var _layerList:Array<Int>;
-	/** */	private var _layerCount:Array<Int>;
+	/** */	private var _layerCount:IntMap<Int>;
 	/** */	private var _layerSort:Bool;
 	/** */	private var _classCount:Map<String, Int>;
 	/** */	public var _typeFirst:Map<String, FriendlyEntity>;

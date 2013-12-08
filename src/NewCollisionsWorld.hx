@@ -67,8 +67,8 @@ class NewCollisionsWorld extends World
 		points.push(new Point(0, 0));
 		points.push(new Point(30, 0));
 		points.push(new Point(30, 60));
-		ePoly = addMask(polygon = new Polygon(points), "polygon");
-		//ePoly = addMask(polygon = Polygon.createRegular(5, 20, 0), "polygon");
+		//ePoly = addMask(polygon = new Polygon(points), "polygon");
+		ePoly = addMask(polygon = Polygon.createRegular(5, 20, 0), "polygon");
 		ePoly.x = HP.halfWidth;
 		ePoly.y = HP.halfHeight;
 		/*ePoly.centerOrigin();
@@ -253,5 +253,6 @@ class NewCollisionsWorld extends World
 		Draw.dot(ePoly.x, ePoly.y);
 		Draw.dot(ePoly.x + polygon.x + polygon.originX, ePoly.y + polygon.y + polygon.originY, 0xFFFF00);
 		
+		Draw.poly(0, 0, polygon.points, 0x0000FF, .5, true, false, 5);
 	}
 }

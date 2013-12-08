@@ -569,8 +569,7 @@ class Text extends Image
 			try {
 				Reflect.setProperty(_form, name, value);
 				propertyFound = true;
-			} catch (e:Dynamic) {
-			}
+			} catch (e:Dynamic) {}
 		}
 		if (!propertyFound) return false;
 		
@@ -589,8 +588,7 @@ class Text extends Image
 			try {
 				var value = Reflect.getProperty(_form, name);
 				return value;
-			} catch (e:Dynamic) {
-			}
+			} catch (e:Dynamic) {}
 		}
 		// TODO need a better "cannot get" value here
 		return null;
