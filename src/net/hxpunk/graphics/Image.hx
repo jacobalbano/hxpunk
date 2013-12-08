@@ -4,6 +4,9 @@ import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.BlendMode;
 import flash.display.GradientType;
+import flash.display.Graphics;
+import flash.display.JointStyle;
+import flash.display.LineScaleMode;
 import flash.display.SpreadMethod;
 import flash.errors.Error;
 import flash.geom.ColorTransform;
@@ -12,6 +15,7 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import net.hxpunk.Graphic;
 import net.hxpunk.HP;
+import net.hxpunk.masks.Polygon;
 
 /**
  * Performance-optimized non-animated image. Can be drawn to the screen with transformations.
@@ -152,17 +156,38 @@ class Image extends Graphic
 	 * @param	width		Width of the rectangle.
 	 * @param	height		Height of the rectangle.
 	 * @param	color		Color of the rectangle.
+	 * @param	alpha		Alpha of the rectangle.
+	 * @param	fill		If the rectangle should be filled with the color (true) or just an outline (false).
+	 * @param	thick		How thick the outline should be (only applicable when fill = false).
+	 * @param	radius		Round rectangle corners by this amount.
 	 * @return	A new Image object.
 	 */
-	public static function createRect(width:Int, height:Int, color:Int = 0xFFFFFF, alpha:Float = 1):Image
+	public static function createRect(width:Int, height:Int, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1, radius:Float = 0):Image
 	{
-		var source:BitmapData = new BitmapData(width, height, true, 0xFFFFFFFF);
+		var graphics:Graphics = HP.sprite.graphics;
 		
-		var image:Image = new Image(source);
+		if (color > 0xFFFFFF) color = 0xFFFFFF & color;
+		graphics.clear();
 		
-		image.color = color;
-		image.alpha = alpha;
+		var thickOffset:Float = 0;
+		if (fill) {
+			graphics.beginFill(color, alpha);
+		} else {
+			thickOffset = thick * .5;
+			graphics.lineStyle(thick, color, alpha, false, LineScaleMode.NORMAL, null, JointStyle.MITER);
+		}
 		
+		if (radius <= 0) {
+			graphics.drawRect(0 + thickOffset, 0 + thickOffset, width - thickOffset * 2, height - thickOffset * 2);
+		} else {
+			graphics.drawRoundRect(0 + thickOffset, 0 + thickOffset, width - thickOffset * 2, height - thickOffset * 2, radius);
+		}
+		graphics.endFill();
+
+		var data:BitmapData = new BitmapData(width, height, true, 0);
+		data.draw(HP.sprite);
+		
+		var image:Image = new Image(data);
 		return image;
 	}
 	
@@ -171,21 +196,27 @@ class Image extends Graphic
 	 * @param	radius		Radius of the circle.
 	 * @param	color		Color of the circle.
 	 * @param	alpha		Alpha of the circle.
+	 * @param	fill		If the circle should be filled with the color (true) or just an outline (false).
+	 * @param	thick		How thick the outline should be (only applicable when fill = false).
 	 * @return	A new Image object.
 	 */
-	public static function createCircle(radius:Int, color:Int = 0xFFFFFF, alpha:Float = 1):Image
+	public static function createCircle(radius:Int, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1):Image
 	{
-		HP.sprite.graphics.clear();
-		HP.sprite.graphics.beginFill(0xFFFFFF);
-		HP.sprite.graphics.drawCircle(radius, radius, radius);
+		var graphics:Graphics = HP.sprite.graphics;
+		
+		graphics.clear();
+		if (fill) {
+			graphics.beginFill(color & 0xFFFFFF, alpha);
+			graphics.drawCircle(radius, radius, radius);
+			graphics.endFill();
+		} else {
+			graphics.lineStyle(thick, color & 0xFFFFFF, alpha);
+			graphics.drawCircle(radius, radius, radius - thick * .5);
+		}
 		var data:BitmapData = new BitmapData(radius * 2, radius * 2, true, 0);
 		data.draw(HP.sprite);
 		
 		var image:Image = new Image(data);
-		
-		image.color = color;
-		image.alpha = alpha;
-		
 		return image;
 	}
 	
@@ -240,6 +271,96 @@ class Image extends Graphic
 		bitmap.draw(HP.sprite);
 		
 		return new Image(bitmap);
+	}
+	
+	/**
+	 * Creates a new polygon Image from an array of points.
+	 * @param	points		Array containing the polygon's points.
+	 * @param	color		Color of the polygon.
+	 * @param	alpha		Alpha of the polygon.
+	 * @param	fill		If the polygon should be filled with the color (true) or just an outline (false).
+	 * @param	thick		How thick the outline should be (only applicable when fill = false).
+	 * @return	A new Image object.
+	 */
+	public static function createPolygonFromPoints(points:Array<Point>, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1):Image
+	{
+		var graphics:Graphics = HP.sprite.graphics;
+		var minX:Float, maxX:Float;
+		var minY:Float, maxY:Float;
+		
+		minX = minY = Math.POSITIVE_INFINITY;
+		maxX = maxY = Math.NEGATIVE_INFINITY;
+		
+		// find polygon bounds
+		for (p in points) {
+			if (p.x < minX) minX = p.x;
+			if (p.x > maxX) maxX = p.x;
+			if (p.y < minY) minY = p.y;
+			if (p.y > maxY) maxY = p.y;
+		}
+		var w:Int = Math.ceil(maxX - minX);
+		var h:Int = Math.ceil(maxY - minY);
+		
+		if (color > 0xFFFFFF) color = 0xFFFFFF & color;
+		graphics.clear();
+		
+		if (fill) {
+			graphics.beginFill(color, alpha);
+		} else {
+			graphics.lineStyle(thick, color, alpha, false, LineScaleMode.NORMAL, null, JointStyle.MITER);
+		}
+		
+		graphics.moveTo(points[points.length - 1].x, points[points.length - 1].y);
+		for (p in points)
+		{
+			graphics.lineTo(p.x, p.y);
+		}
+		graphics.endFill();
+		
+		var matrix:Matrix = HP.matrix;
+		matrix.identity();
+		matrix.translate(-minX, -minY);
+
+		var data:BitmapData = new BitmapData(w, h, true, 0);
+		data.draw(HP.sprite, matrix);
+		
+		var image:Image = new Image(data);
+		return image;
+	}
+	
+	/**
+	 * Creates a new regular polygon Image.
+	 * @param	sides		The number of sides in the polygon.
+	 * @param	radius		The distance that the vertices are at.
+	 * @param	angle		How much the polygon is rotated (in degrees).
+	 * @param	color		Color of the polygon.
+	 * @param	alpha		Alpha of the polygon.
+	 * @param	fill		If the polygon should be filled with the color (true) or just an outline (false).
+	 * @param	thick		How thick the outline should be (only applicable when fill = false).
+	 * @return	A new Image object.
+	 */
+	public static function createRegularPolygon(sides:Int = 3, radius:Float = 100, angle:Float = 0, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1):Image
+	{
+		if (sides < 3) throw new Error("The polygon needs at least 3 sides.");
+
+		// figure out the angle required for each step
+		var rotationAngle:Float = (Math.PI * 2) / sides;
+		var angleRad:Float = angle * HP.RAD;
+
+		// loop through and generate each point
+		var points:Array<Point> = new Array<Point>();
+
+		for (i in 0...sides)
+		{
+			var tempAngle:Float = i * rotationAngle + angleRad;
+			var p:Point = new Point();
+			p.x = Math.cos(tempAngle) * radius;
+			p.y = Math.sin(tempAngle) * radius;
+			points.push(p);
+		}
+		
+		var image:Image = Image.createPolygonFromPoints(points, color, alpha, fill, thick);
+		return image;
 	}
 	
 	/**
@@ -492,6 +613,18 @@ class Image extends Graphic
 	 */
 	public var locked(get, null):Bool;
 	private inline function get_locked() { return _locked; }
+	
+	/**
+	 * Sync the image with the specified polygon mask.
+	 */
+	public function syncWithPolygon(poly:Polygon):Void 
+	{
+		originX = poly.originX;
+		originY = poly.originY;
+		angle = poly.angle;
+		x = poly.x + poly.originX;
+		y = poly.y + poly.originY;
+	}
 	
 	// Locking
 	private var _locked:Bool = false;

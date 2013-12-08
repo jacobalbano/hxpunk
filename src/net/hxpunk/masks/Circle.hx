@@ -211,8 +211,7 @@ class Circle extends Hitbox
 			_radius = value;
 			_squaredRadius = value * value;
 			height = width = _radius + _radius;
-			if (list != null) list.update();
-			else if (parent != null) update();
+			update();
 		}
 		return value;
 	}
@@ -220,16 +219,17 @@ class Circle extends Hitbox
 	/** Updates the parent's bounds for this mask. */
 	override public function update():Void
 	{
-		if (parent != null)
+		if (list != null)
+		{
+			// update parent list
+			list.update();
+		}
+		else if (parent != null)
 		{
 			// update entity bounds
 			parent.originX = -_x + radius;
 			parent.originY = -_y + radius;
 			parent.height = parent.width = radius + radius;
-
-			// update parent list
-			if (list != null)
-				list.update();
 		}
 	}
 

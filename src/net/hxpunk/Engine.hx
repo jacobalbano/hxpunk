@@ -224,11 +224,11 @@ class Engine extends Sprite
 		HP.elapsed *= HP.rate;
 		_last = _time;
 		
-		// update console
-		if (HP._console != null) HP._console.update();
-		
 		// update loop
 		if (!paused) update();
+		
+		// update console
+		if (HP._console != null) HP._console.update();
 		
 		// update input
 		Input.update();
@@ -262,9 +262,6 @@ class Engine extends Sprite
 		_logicTime = Std.int(_time);
 		HP._systemTime = _time - _systemTime;
 		
-		// update console
-		if (HP._console != null) HP._console.update();
-		
 		// update loop
 		if (_delta > _skip) _delta = _skip;
 		while (_delta >= _rate)
@@ -286,6 +283,9 @@ class Engine extends Sprite
 			_time = Lib.getTimer();
 			HP._updateTime = Std.int(_time - _updateTime);
 		}
+		
+		// update console
+		if (HP._console != null) HP._console.update();
 		
 		// update timer
 		_renderTime = Std.int(_time);

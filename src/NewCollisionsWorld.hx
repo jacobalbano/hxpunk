@@ -1,5 +1,7 @@
 package;
 
+import flash.utils.ByteArray;
+import flash.display.BitmapData;
 import flash.display.BlendMode;
 import flash.geom.Point;
 import flash.system.System;
@@ -41,6 +43,7 @@ class NewCollisionsWorld extends World
 	private static inline var MAX_MESSAGES:Int = 7;
 	private var hitEntities:Array<Entity>;
 	private var e6:Entity;
+	var imgPoly:Image;
 	
 
 	public function new() 
@@ -49,19 +52,23 @@ class NewCollisionsWorld extends World
 	}
 	
 	override public function begin():Void {
-			
+		
 		// interactive CIRCLE
 		eCircle = addMask(circle = new Circle(20, 50,20), "circle");
 		eCircle.x = HP.halfWidth;
 		eCircle.y = HP.halfHeight + 20;
+		eCircle.graphic = Image.createCircle(20, 0xFF00FF, .5, false, 1);
+		eCircle.graphic.x = 50;
+		eCircle.graphic.y = 20;
+		eCircle.active = eCircle.visible = true;
 		
 		// interactive POLYGON
 		var points:Array<Point> = new Array<Point>();
 		points.push(new Point(0, 0));
 		points.push(new Point(30, 0));
-		points.push(new Point(30, 30));
-		//ePoly = addMask(polygon = new Polygon(points), "polygon");
-		ePoly = addMask(polygon = Polygon.createPolygon(5, 20, 360/10), "polygon");
+		points.push(new Point(30, 60));
+		ePoly = addMask(polygon = new Polygon(points), "polygon");
+		//ePoly = addMask(polygon = Polygon.createRegular(5, 20, 0), "polygon");
 		ePoly.x = HP.halfWidth;
 		ePoly.y = HP.halfHeight;
 		/*ePoly.centerOrigin();
@@ -70,6 +77,16 @@ class NewCollisionsWorld extends World
 		polygon.origin.x = ePoly.originX;
 		polygon.origin.y = ePoly.originY;
 		*/
+		//imgPoly = Image.createRegularPolygon(5, 20, 0, 0xFFFF00, .7, true);
+		imgPoly = Image.createPolygonFromPoints(polygon.points, 0xFFFF00, .7, true);
+		imgPoly.smooth = true;
+		ePoly.addGraphic(imgPoly);
+		polygon.x = 10;
+		polygon.y = 10;
+		polygon.originX = 15;
+		polygon.originY = 30;
+		rotate(polygon, imgPoly, 0.0001);
+		ePoly.active = ePoly.visible = true;
 		
 		// other MASKS
 		
@@ -92,6 +109,12 @@ class NewCollisionsWorld extends World
 		e3.x = 250;
 		e3.y = 110;
 		
+		
+		var asd:Entity = addMask(new Hitbox(60, 30), "bb", 50, 50);
+		asd.graphic = Image.createRect(60, 30, 0xFFFF00, .7, false, 2, 20);
+		asd.active = asd.visible = true;
+		add(asd);
+		
 		// Grid
 		var gridMask:Grid = new Grid(140, 80, 20, 20);
 		var gridStr:String = 
@@ -105,10 +128,11 @@ class NewCollisionsWorld extends World
 		var e4:Entity = addMask(gridMask, "grid", 5, 120);
 		
 		// Polygon
-		var polyMask:Polygon = Polygon.createPolygon(8, 20);
+		var polyMask:Polygon = Polygon.createRegular(5, 20);
 		var e5:Entity = addMask(polyMask, "polygon");
 		e5.x = 130;
 		e5.y = 40;
+		e5.addGraphic(imgPoly);
 		
 		// Pixelmask
 		var pixelmask:Pixelmask = new Pixelmask(SKELETON);
@@ -164,7 +188,7 @@ class NewCollisionsWorld extends World
 		
 		
 		if (Input.pressed(Key.SPACE)) {
-			polygon.angle += 90;
+			rotate(polygon, imgPoly, imgPoly.angle + 15);
 		}
 				
 		if (Input.check(Key.CONTROL)) {
@@ -201,9 +225,33 @@ class NewCollisionsWorld extends World
 		
 	}
 	
+	public function rotate(poly:Polygon, image:Image, angle:Float):Void 
+	{
+		/*
+		trace("before");
+		trace("img", imgPoly.x, imgPoly.y, imgPoly.originX, imgPoly.originY);
+		trace("poly", polygon.x, polygon.y, polygon.originX, polygon.originY);
+		trace(ePoly.x, ePoly.y, ePoly.originX, ePoly.originY);
+		poly.angle = angle;
+		image.originX = poly.originX;
+		image.originY = poly.originY;
+		image.angle = angle;
+		image.x = polygon.x + polygon.originX;
+		image.y = polygon.y + polygon.originY;
+		trace("after");
+		trace("img", imgPoly.x, imgPoly.y, imgPoly.originX, imgPoly.originY);
+		trace("poly", polygon.x, polygon.y, polygon.originX, polygon.originY);
+		trace(ePoly.x, ePoly.y, ePoly.originX, ePoly.originY);*/
+		poly.angle = angle;
+		image.syncWithPolygon(poly);
+		
+	}
+	
 	override public function render():Void 
 	{
 		super.render();
+		Draw.dot(ePoly.x, ePoly.y);
+		Draw.dot(ePoly.x + polygon.x + polygon.originX, ePoly.y + polygon.y + polygon.originY, 0xFFFF00);
 		
 	}
 }

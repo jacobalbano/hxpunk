@@ -229,6 +229,7 @@ class Draw
 		} else {
 			_graphics.drawRoundRect(x - _camera.x, y - _camera.y, width, height, radius);
 		}
+		_graphics.endFill();
 		
 		_target.draw(HP.sprite, null, null, blend);
 	}

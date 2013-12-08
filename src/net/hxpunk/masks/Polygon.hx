@@ -2,6 +2,7 @@ package net.hxpunk.masks;
 
 import flash.display.BitmapData;
 import flash.display.Graphics;
+import flash.errors.Error;
 import flash.geom.Point;
 import net.hxpunk.Entity;
 import net.hxpunk.HP;
@@ -21,19 +22,30 @@ class Polygon extends Hitbox
 	private static var init:Bool = initStaticVars();
 	
 	/**
-	 * The polygon rotates around this point when the angle is set.
+	 * X coord to use for rotations.
+	 * Defaults to top-left corner.
 	 */
-	public var origin:Point;
-
+	public var originX:Float = 0;
+	
+	/**
+	 * Y coord to use for rotations.
+	 * Defaults to top-left corner.
+	 */
+	public var originY:Float = 0;
+	
+	
 	/**
 	 * Constructor.
-	 * @param	points   a vector of coordinates that define the polygon (must have at least 3)
-	 * @param	origin   origin point of the polygon
+	 * @param	points		An array of coordinates that define the polygon (must have at least 3)
+	 * @param	x			X offset of the polygon.
+	 * @param	y			Y offset of the polygon.
+	 * @param	originX		X pivot for rotations.
+	 * @param	originY		Y pivot for rotations.
 	 */
-	public function new(points:Array<Point>, origin:Point = null)
+	public function new(points:Array<Point>, x:Int = 0, y:Int = 0, originX:Float = 0, originY:Float = 0)
 	{
 		super();
-		if (points.length < 3) throw "The polygon needs at least 3 sides.";
+		if (points.length < 3) throw new Error("The polygon needs at least 3 sides.");
 		_points = points;
 		_projection = { min:0.0, max:0.0 };
 		_indicesToRemove = new Array<Int>();
@@ -48,7 +60,10 @@ class Polygon extends Hitbox
 		_check.set(Type.getClassName(Circle), collideCircle);
 		_check.set(Type.getClassName(Polygon), collidePolygon);
 
-		this.origin = origin != null ? origin : new Point();
+		_x = x;
+		_y = y;
+		this.originX = originX;
+		this.originY = originY;
 		_angle = 0;
 
 		updateAxes();
@@ -71,8 +86,8 @@ class Polygon extends Hitbox
 	override private function collideMask(other:Mask):Bool
 	{
 		var offset:Float,
-			offsetX:Float = parent.x - other.parent.x,
-			offsetY:Float = parent.y - other.parent.y;
+			offsetX:Float = parent.x + _x - other.parent.x,
+			offsetY:Float = parent.y + _y - other.parent.y;
 
 		// project on the vertical axis of the hitbox/mask
 		project(verticalAxis, firstProj);
@@ -129,8 +144,8 @@ class Polygon extends Hitbox
 	override private function collideHitbox(hitbox:Hitbox):Bool
 	{
 		var offset:Float,
-			offsetX:Float = parent.x - hitbox.parent.x,
-			offsetY:Float = parent.y - hitbox.parent.y;
+			offsetX:Float = parent.x + _x - hitbox.parent.x,
+			offsetY:Float = parent.y + _y - hitbox.parent.y;
 
 		// project on the vertical axis of the hitbox
 		project(verticalAxis, firstProj);
@@ -195,6 +210,8 @@ class Polygon extends Hitbox
 		
 		_fakeEntity.width = tileW;
 		_fakeEntity.height = tileH;
+		_fakeEntity.x = parent.x;
+		_fakeEntity.y = parent.y;
 		_fakeEntity.originX = grid.parent.originX + grid._x;
 		_fakeEntity.originY = grid.parent.originY + grid._y;
 		
@@ -225,9 +242,16 @@ class Polygon extends Hitbox
 	{
 		var data:BitmapData = _fakePixelmask._data;
 		
-		_fakePixelmask._x = _x;
-		_fakePixelmask._y = _y;
-		_fakePixelmask.parent = parent;
+		_fakeEntity.width = _width;
+		_fakeEntity.height = _height;
+		_fakeEntity.x = parent.x - _x;
+		_fakeEntity.y = parent.y - _y;
+		_fakeEntity.originX = parent.originX;
+		_fakeEntity.originY = parent.originY;
+
+		_fakePixelmask._x = _x - parent.originX;
+		_fakePixelmask._y = _y - parent.originY;
+		_fakePixelmask.parent = _fakeEntity;
 		
 		if (data == null || (data.width < _width || data.height < _height)) {
 			data = new BitmapData(_width, height, true, 0);
@@ -241,8 +265,8 @@ class Polygon extends Hitbox
 		graphics.beginFill(0xFFFFFF, 1);
 		graphics.lineStyle(1, 0xFFFFFF, 1);
 		
-		var offsetX:Float = _x + parent.originX * 2;
-		var offsetY:Float = _y + parent.originY * 2;
+		var offsetX:Float = _x + parent.originX;
+		var offsetY:Float = _y + parent.originY;
 		
 		graphics.moveTo(points[_points.length - 1].x + offsetX, _points[_points.length - 1].y + offsetY);
 		for (i in 0..._points.length)
@@ -256,6 +280,13 @@ class Polygon extends Hitbox
 		
 		_fakePixelmask.data = data;
 		
+		trace(_x, _y, _fakeEntity.originX, _fakeEntity.originY, _fakeEntity.width, _fakeEntity.height, data.width, data.height);
+		Draw.enqueueCall(function ():Void 
+		{
+			Draw.copyPixels(data, data.rect, new Point(50, 70));
+			Draw.rectPlus(_fakeEntity.x - _fakeEntity.originX, _fakeEntity.y - _fakeEntity.originY, _fakeEntity.width, _fakeEntity.height, 0xFFFFFF, 1, false);
+		});
+		
 		return pixelmask.collide(_fakePixelmask);
 	}
 	
@@ -268,8 +299,8 @@ class Polygon extends Hitbox
 		var p1:Point, p2:Point;
 		var i:Int, j:Int;
 		var nPoints:Int = _points.length;
-		var offsetX:Float = parent.x + _x + parent.originX;
-		var offsetY:Float = parent.y + _y + parent.originY;
+		var offsetX:Float = parent.x + _x;
+		var offsetY:Float = parent.y + _y;
 		
 
 		// check if circle center is inside the polygon
@@ -341,8 +372,8 @@ class Polygon extends Hitbox
 	private function collidePolygon(other:Polygon):Bool
 	{
 		var offset:Float;
-		var offsetX:Float = parent.x - other.parent.x;
-		var offsetY:Float = parent.y - other.parent.y;
+		var offsetX:Float = parent.x + _x - other.parent.x;
+		var offsetY:Float = parent.y + _y - other.parent.y;
 		var a:Point;
 		
 		// project other on this polygon axes
@@ -417,8 +448,8 @@ class Polygon extends Hitbox
 	{
 		if (parent != null)
 		{
-			var	offsetX:Float = parent.x - HP.camera.x,
-				offsetY:Float = parent.y - HP.camera.y;
+			var	offsetX:Float = parent.x + _x - HP.camera.x,
+				offsetY:Float = parent.y + _y - HP.camera.y;
 
 			var sx:Float = HP.screen.scaleX * HP.screen.scale;
 			var sy:Float = HP.screen.scaleY * HP.screen.scale;
@@ -433,6 +464,10 @@ class Polygon extends Hitbox
 			}
 			
 			graphics.endFill();
+			
+			// draw pivot
+			graphics.lineStyle(1, 0xFFFFFF, 0.75);
+			graphics.drawCircle((offsetX + originX) * sx, (offsetY + originY) * sy, 2); 
 		}
 	}
 
@@ -444,7 +479,7 @@ class Polygon extends Hitbox
 	private function set_angle(value:Float):Float
 	{
 		if (value != _angle) {
-			rotate(_angle - value);
+			rotate(value - _angle);
 			if (list != null || parent != null) update();
 		}
 		return value;
@@ -471,37 +506,37 @@ class Polygon extends Hitbox
 	override public function update():Void
 	{
 		project(horizontalAxis, firstProj); // width
-		_x = Math.ceil(firstProj.min);
-		_width = Math.ceil(firstProj.max - firstProj.min);
+		var projX:Int = Math.round(firstProj.min);
+		_width = Math.round(firstProj.max - firstProj.min);
 		project(verticalAxis, secondProj); // height
-		_y = Math.ceil(secondProj.min);
-		_height = Math.ceil(secondProj.max - secondProj.min);
+		var projY:Int = Math.round(secondProj.min);
+		_height = Math.round(secondProj.max - secondProj.min);
 
-		if (parent != null)
+		if (list != null)
 		{
-			// update entity bounds
+			// update parent list
+			list.update();
+		}
+		else if (parent != null)
+		{
+			parent.originX = -_x - projX;
+			parent.originY = -_y - projY;
 			parent.width = _width;
 			parent.height = _height;
-
-			// since the collision infos haven't changed we can use them to calculate hitbox placement
-			parent.originX = Std.int((_width - firstProj.max - firstProj.min)/2);
-			parent.originY = Std.int((_height - secondProj.max - secondProj.min )/2);
 		}
-
-		// update parent list
-		if (list != null) list.update();
+		
 	}
 
 	/**
 	 * Creates a regular polygon (edges of same length).
-	 * @param	sides	The number of sides in the polygon
-	 * @param	radius	The distance that the corners are at
-	 * @param	angle	How much the polygon is rotated
+	 * @param	sides	The number of sides in the polygon.
+	 * @param	radius	The distance that the vertices are at.
+	 * @param	angle	How much the polygon is rotated (in degrees).
 	 * @return	The polygon
 	 */
-	public static function createPolygon(sides:Int = 3, radius:Float = 100, angle:Float = 0):Polygon
+	public static function createRegular(sides:Int = 3, radius:Float = 100, angle:Float = 0):Polygon
 	{
-		if (sides < 3) throw "The polygon needs at least 3 sides.";
+		if (sides < 3) throw new Error("The polygon needs at least 3 sides.");
 
 		// figure out the angle required for each step
 		var rotationAngle:Float = (Math.PI * 2) / sides;
@@ -511,26 +546,28 @@ class Polygon extends Hitbox
 
 		for (i in 0...sides)
 		{
-			var tempAngle:Float = i * rotationAngle;
+			var tempAngle:Float = Math.PI + i * rotationAngle;
 			var p:Point = new Point();
-			p.x = Math.cos(tempAngle) * radius;
-			p.y = Math.sin(tempAngle) * radius;
+			p.x = Math.cos(tempAngle) * radius + radius;
+			p.y = Math.sin(tempAngle) * radius + radius;
 			points.push(p);
 		}
 		
 		// return the polygon
 		var poly:Polygon = new Polygon(points);
+		poly.originX = radius;
+		poly.originY = radius;
 		poly.angle = angle;
 		return poly;
 	}
 
 	/**
 	 * Creates a polygon from an array were even numbers are x and odd are y
-	 * @param	points	Vector containing the polygon's points.
+	 * @param	points	Array containing the polygon's points.
 	 * 
 	 * @return	The polygon
 	 */
-	public static function createFromVector(points:Array<Float>):Polygon
+	public static function createFromFloats(points:Array<Float>):Polygon
 	{
 		var p:Array<Point> = new Array<Point>();
 
@@ -553,14 +590,14 @@ class Polygon extends Hitbox
 		for (i in 0..._points.length)
 		{
 			p = _points[i];
-			var dx:Float = p.x - origin.x;
-			var dy:Float = p.y - origin.y;
+			var dx:Float = p.x - originX;
+			var dy:Float = p.y - originY;
 
 			var pointAngle:Float = Math.atan2(dy, dx);
 			var length:Float = Math.sqrt(dx * dx + dy * dy);
 
-			p.x = Math.cos(pointAngle + angleDelta) * length + origin.x;
-			p.y = Math.sin(pointAngle + angleDelta) * length + origin.y;
+			p.x = Math.cos(pointAngle + angleDelta) * length + originX;
+			p.y = Math.sin(pointAngle + angleDelta) * length + originY;
 		}
 		var a:Point;
 		
@@ -643,11 +680,11 @@ class Polygon extends Hitbox
 	private var _axes:Array<Point>;
 	private var _projection:Projection;
 
-	private var _fakeEntity:Entity;			// used for Grid collision
-	private var _fakeTileHitbox:Hitbox;		// used for Grid collision
-	private var _fakePixelmask:Pixelmask;	// used for Pixelmask collision
+	private var _fakeEntity:Entity;				// used for Grid and Pixelmask collision
+	private var _fakeTileHitbox:Hitbox;			// used for Grid collision
+	private var _fakePixelmask:Pixelmask;		// used for Pixelmask collision
 	
-	private var _indicesToRemove:Array<Int>;// used in removeDuplicateAxes()
+	private var _indicesToRemove:Array<Int>;	// used in removeDuplicateAxes()
 	
 	private static var firstProj:Projection;
 	private static var secondProj:Projection;
