@@ -30,8 +30,8 @@ class TestLayerWorld extends World
 		images = new Array<Text>();
 		for (i in 0...N) {
 			images[i] = new Text("layer xxx");
-			trace(images[i].setTextProperty("background", true));
-			trace(images[i].setTextProperty("backgroundColor", 0xFF000000 | HP.rand(0xFFFFFF)));
+			images[i].setTextProperty("background", true);
+			images[i].setTextProperty("backgroundColor", 0xFF000000 | HP.rand(0xFFFFFF));
 			images[i].alpha = .75;
 			entities[i] = new Entity(70 + 10 * i, 70 + 10 * i, images[i]);
 			entities[i].layer = -i * 10;
@@ -44,16 +44,6 @@ class TestLayerWorld extends World
 	override public function update():Void 
 	{
 		super.update();
-		
-		// ESC to exit
-		if (Input.pressed(Key.ESCAPE)) {
-			System.exit(1);
-		}
-		
-		// R to reset the world
-		if (Input.pressed(Key.R)) {
-			HP.world = new NewCollisionsWorld();
-		}	
 		
 		// shuffle layers
 		if (Input.pressed(Key.SPACE)) {

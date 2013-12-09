@@ -68,8 +68,20 @@ class Main extends Engine
 		
 		// ESC to exit
 		if (Input.pressed(Key.ESCAPE)) {
-			System.exit(1);
+		#if web
+			System.exit(0);
+		#else
+			Sys.exit(0);
+		#end
 		}
+		
+		// R to reset the world
+		if (Input.pressed(Key.R)) {
+			HP.world.removeAll();
+			var worldClass = Type.getClass(HP.world);
+			HP.world = Type.createInstance(worldClass, []);
+		}	
+		
 	}
 	
 	override public function render():Void 

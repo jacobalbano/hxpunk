@@ -176,17 +176,6 @@ class NewCollisionsWorld extends World
 	{
 		super.update();
 		
-		// ESC to exit
-		if (Input.pressed(Key.ESCAPE)) {
-			System.exit(1);
-		}
-		
-		// R to reset the world
-		if (Input.pressed(Key.R)) {
-			HP.world = new NewCollisionsWorld();
-		}
-		
-		
 		if (Input.pressed(Key.SPACE)) {
 			rotate(polygon, imgPoly, imgPoly.angle + 15);
 		}
