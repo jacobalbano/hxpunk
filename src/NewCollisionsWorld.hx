@@ -44,6 +44,7 @@ class NewCollisionsWorld extends World
 	private var hitEntities:Array<Entity>;
 	private var e6:Entity;
 	var imgPoly:Image;
+	var pixelmask:Pixelmask;
 	
 
 	public function new() 
@@ -135,7 +136,7 @@ class NewCollisionsWorld extends World
 		e5.addGraphic(imgPoly);
 		
 		// Pixelmask
-		var pixelmask:Pixelmask = new Pixelmask(SKELETON);
+		pixelmask = new Pixelmask(SKELETON);
 		e6 = addMask(pixelmask, "pixelmask");
 		e6.x = 260;
 		e6.y = 20;
@@ -243,5 +244,9 @@ class NewCollisionsWorld extends World
 		Draw.dot(ePoly.x + polygon.x + polygon.originX, ePoly.y + polygon.y + polygon.originY, 0xFFFF00);
 		
 		Draw.poly(0, 0, polygon.points, 0x0000FF, .5, true, false, 5);
+		
+		Draw.mask(pixelmask, -20, -20);
+		Draw.hitbox(eCircle);
+		Draw.mask(circle, 0, 0);
 	}
 }

@@ -342,7 +342,7 @@ class Draw
 	 * @param	color		Color of the hitbox.
 	 * @param	alpha		Alpha of the hitbox.
 	 */
-	public static function hitbox(e:Entity, outline:Bool = true, color:Int = 0xFFFFFF, alpha:Float = 1):Void
+	public static function hitbox(e:Entity, outline:Bool = true, color:Int = 0xFF0000, alpha:Float = 1):Void
 	{
 		if (outline)
 		{
@@ -799,6 +799,28 @@ class Draw
 		_target.draw(HP.sprite, matrix, null, blend);
 	}
 
+	/**
+	 * Draws the specified mask.
+	 * @param	mask		The mask to be drawn.
+	 * @param	x			X position of the mask.
+	 * @param	y			Y position of the mask.
+	 */
+	public static function mask(m:Mask, x:Float = 0, y:Float = 0):Void
+	{
+		var isx:Float = 1 / (HP.screen.scaleX * HP.screen.scale);
+		var isy:Float = 1 / (HP.screen.scaleY * HP.screen.scale);
+		
+		_graphics.clear();
+		m.renderDebug(_graphics);
+		
+		var matrix:Matrix = HP.matrix;
+		matrix.identity();
+		matrix.scale(isx, isy);
+		matrix.translate(x, y);
+
+		_target.draw(HP.sprite, matrix, null, blend);
+	}
+	
 	/**
 	 * Draws the source display object onto the current target (doesn't use camera).
 	 * 

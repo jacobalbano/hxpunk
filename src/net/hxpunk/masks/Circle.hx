@@ -193,6 +193,7 @@ class Circle extends Hitbox
 		var sx:Float = HP.screen.scaleX * HP.screen.scale;
 		var sy:Float = HP.screen.scaleY * HP.screen.scale;
 		
+		graphics.lineStyle(1, 0xFF0000);
 		graphics.drawCircle((parent.x + _x - HP.camera.x) * sx, (parent.y + _y - HP.camera.y) * sy, radius * sx);
 	}
 

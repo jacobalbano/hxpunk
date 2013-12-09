@@ -280,13 +280,6 @@ class Polygon extends Hitbox
 		
 		_fakePixelmask.data = data;
 		
-		trace(_x, _y, _fakeEntity.originX, _fakeEntity.originY, _fakeEntity.width, _fakeEntity.height, data.width, data.height);
-		Draw.enqueueCall(function ():Void 
-		{
-			Draw.copyPixels(data, data.rect, new Point(50, 70));
-			Draw.rectPlus(_fakeEntity.x - _fakeEntity.originX, _fakeEntity.y - _fakeEntity.originY, _fakeEntity.width, _fakeEntity.height, 0xFFFFFF, 1, false);
-		});
-		
 		return pixelmask.collide(_fakePixelmask);
 	}
 	
