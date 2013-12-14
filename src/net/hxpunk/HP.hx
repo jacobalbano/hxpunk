@@ -276,22 +276,18 @@ class HP
 		return value;
 	}
 	
-	/** Substitute of Lambda.indexOf 'cause Lambda.indexOf seems to leak memory (in flash)
-		Returns the index of the first element [v] within Iterable [it].
+	/** Optimized version of Lambda.indexOf for Array on dynamic platforms (Lambda.indexOf is less performant on those targets).
+	 * 
+		Returns the index of the first element [v] within Array [arr].
 		This function uses operator [==] to check for equality.
-		If [v] does not exist in [it], the result is -1.
+		If [v] does not exist in [arr], the result is -1.
 	**/
-	public static inline function indexOf<T>(it:Iterable<T>, v:T) : Int {
-		var i = 0;
-		var found:Bool = false;
-		for (v2 in it) {
-			if (v == v2) {
-				found = true;
-				break;
-			}
-			i++;
-		}
-		return found ? i : -1;
+	public static inline function indexOf<T>(arr:Array<T>, v:T) : Int {
+	#if (flash || js)
+		return untyped arr.indexOf(v);
+	#else
+		return Lambda.indexOf(arr, t);
+	#end
 	}
 	
 	/**

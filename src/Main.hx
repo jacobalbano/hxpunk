@@ -59,7 +59,7 @@ class Main extends Engine
 
 		trace(HP.NAME + " is running!");
 		
-		HP.world = new TestLayerWorld();
+		HP.world = new NewCollisionsWorld();
 	}
 		
 	override public function update():Void 

@@ -2,6 +2,7 @@
 
 import flash.geom.Rectangle;
 import net.hxpunk.graphics.Anim;
+import net.hxpunk.HP.VoidCallback;
 
 
 /**
