@@ -1,18 +1,28 @@
-hxpunk
-======
+Forked from https://github.com/azrafe7/hxpunk to make compatible with openfl 9.0.2
 
-[FlashPunk 1.7.2](http://useflashpunk.net/) port to [Haxe 3](http://haxe.org/) + [OpenFL 1.1](http://www.openfl.org/). (alpha)
+Add this line to project xml:
+```xml
 
-Experimenting with Haxe + OpenFL, mainly to learn the language and see if there's some performance gain 
-in compiling for the Flash target. 
+	<assets path="Source/net/hxpunk/assets" rename="hxpunk_assets" />
+```
 
-(... and taking a look at [HaxePunk](http://haxepunk.com) when I'm not sure about things)
+Main class:
+```haxe
+package ;
 
+import net.hxpunk.Engine;
+import net.hxpunk.HP;
 
-
-
-Alpha version. It's almost a 1 to 1 port of FlashPunk 1.7.2 (very minimal changes) to Haxe 3 + OpenFL 1.1. 
-
-All classes should work as expected, but minor issues will surely pop up. 
-
-Please file an issue [here](https://github.com/azrafe7/hxpunk/issues) if something doesn't work.
+class Main extends Engine
+{
+    public function new() {
+        super(320, 240, 60, false);
+    }
+	
+    override public function init():Void {
+        super.init();
+		trace(HP.NAME + " is running!");
+		//HP.world = new MyWorld();
+	}
+}
+```

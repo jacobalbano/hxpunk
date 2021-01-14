@@ -40,7 +40,7 @@ class Text extends Image
 	/**
 	 * The leading to assign to new Text objects.
 	 */
-	public static var LEADING:Float = 0;
+	public static var LEADING:Int = 0;
 	
 	/**
 	 * The wordWrap property to assign to new Text objects.
@@ -471,9 +471,9 @@ class Text extends Image
 	/**
 	 * Leading (amount of vertical space between lines).
 	 */
-	public var leading(get, set):Float;
+	public var leading(get, set):Int;
 	private inline function get_leading() { return _leading; }
-	private function set_leading(value:Float):Float
+	private function set_leading(value:Int):Int
 	{
 		if (_leading == value) return value;
 		_form.leading = _leading = value;
@@ -606,7 +606,7 @@ class Text extends Image
 #else
 	private var _align:String;
 #end
-	private var _leading:Float = 0;
+	private var _leading:Int = 0;
 	private var _wordWrap:Bool;
 	
 	// Style vars

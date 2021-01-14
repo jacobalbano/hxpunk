@@ -241,8 +241,8 @@ class Image extends Graphic
 		var fillType:GradientType = GradientType.LINEAR;
 		var spreadMethod:SpreadMethod = SpreadMethod.PAD;
 		var colors:Array<Int> = [fromColor & 0xFFFFFF, toColor & 0xFFFFFF];
-		var alphas:Array<Dynamic> = [fromAlpha, toAlpha];
-		var ratios:Array<Dynamic> = [0x00, 0xFF];
+		var alphas:Array<Float> = [fromAlpha, toAlpha];
+		var ratios:Array<Int> = [0x00, 0xFF];
 		
 		var dirX:Float = toX - fromX;
 		var dirY:Float = toY - fromY;

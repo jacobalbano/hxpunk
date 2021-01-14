@@ -1060,9 +1060,9 @@ class Console
 	public static inline var ARROW_KEYS:String = "_ARROWS";
 }
 
-@:bitmap("../assets/hxpunk/console_logo.png") class _EMBEDDED_CONSOLE_LOGO extends BitmapData {}
-@:bitmap("../assets/hxpunk/console_debug.png") class _EMBEDDED_CONSOLE_DEBUG extends BitmapData {}
-@:bitmap("../assets/hxpunk/console_output.png") class _EMBEDDED_CONSOLE_OUTPUT extends BitmapData {}
-@:bitmap("../assets/hxpunk/console_play.png") class _EMBEDDED_CONSOLE_PLAY extends BitmapData {}
-@:bitmap("../assets/hxpunk/console_pause.png") class _EMBEDDED_CONSOLE_PAUSE extends BitmapData {}
-@:bitmap("../assets/hxpunk/console_step.png") class _EMBEDDED_CONSOLE_STEP extends BitmapData {}
+@:bitmap("net/hxpunk/assets/console_logo.png") class _EMBEDDED_CONSOLE_LOGO extends BitmapData {}
+@:bitmap("net/hxpunk/assets/console_debug.png") class _EMBEDDED_CONSOLE_DEBUG extends BitmapData {}
+@:bitmap("net/hxpunk/assets/console_output.png") class _EMBEDDED_CONSOLE_OUTPUT extends BitmapData {}
+@:bitmap("net/hxpunk/assets/console_play.png") class _EMBEDDED_CONSOLE_PLAY extends BitmapData {}
+@:bitmap("net/hxpunk/assets/console_pause.png") class _EMBEDDED_CONSOLE_PAUSE extends BitmapData {}
+@:bitmap("net/hxpunk/assets/console_step.png") class _EMBEDDED_CONSOLE_STEP extends BitmapData {}

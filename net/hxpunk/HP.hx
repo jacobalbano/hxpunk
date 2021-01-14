@@ -961,7 +961,6 @@ class HP
 	public static inline function clearBitmapCache():Void
 	{
 		_bitmap = new Map<String, BitmapData>();
-		Assets.cache.bitmapData = new Map<String, BitmapData>();
 	}
 	
 	/**
@@ -998,7 +997,6 @@ class HP
 	public static inline function clearSoundCache():Void
 	{
 		_sound = new Map<String, Sound>();
-		Assets.cache.sound = new Map<String, Sound>();
 	}
 	
 	/**
@@ -1357,4 +1355,4 @@ class HP
 	public static var entity:Entity;
 }
 
-@:font("../assets/hxpunk/04B_03__.ttf") class _EMBEDDED_DEFAULT_FONT extends Font {}
+@:font("net/hxpunk/assets/04B_03__.ttf") class _EMBEDDED_DEFAULT_FONT extends Font {}
