@@ -23,7 +23,6 @@ import net.hxpunk.Screen;
 import net.hxpunk.tweens.misc.Alarm;
 import openfl.Assets;
 import net.hxpunk.Tween.TweenType;
-import net.hxpunk.HP._EMBEDDED_DEFAULT_FONT;
 
 
 typedef PointLike = { 
@@ -178,10 +177,11 @@ class HP
 		sprite = new Sprite();
 		entity = new Entity();
 
-		// Default Font
-		Font.registerFont(_EMBEDDED_DEFAULT_FONT);
-		defaultFont = new _EMBEDDED_DEFAULT_FONT();
-		defaultFontName = defaultFont.fontName;
+		if (Assets.exists("hxpunk/04b03.ttf"))
+		{
+			defaultFont = Assets.getFont("hxpunk/04b03.ttf");
+			defaultFontName = defaultFont.fontName;
+		}
 		
 		return true;
 	}
@@ -1354,5 +1354,3 @@ class HP
 	public static var sprite:Sprite;
 	public static var entity:Entity;
 }
-
-@:font("net/hxpunk/assets/04B_03__.ttf") class _EMBEDDED_DEFAULT_FONT extends Font {}

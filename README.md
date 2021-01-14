@@ -1,9 +1,9 @@
 Forked from https://github.com/azrafe7/hxpunk to make compatible with openfl 9.0.2
 
-Add this line to project xml:
+Add this line to project xml if you want the default font to work:
 ```xml
 
-	<assets path="Source/net/hxpunk/assets" rename="hxpunk_assets" />
+	<assets path="Source/net/hxpunk/assets" rename="hxpunk" />
 ```
 
 Main class:

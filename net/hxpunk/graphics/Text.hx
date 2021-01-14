@@ -85,6 +85,7 @@ class Text extends Image
 	{
 		// Text information.
 		_field = new TextField();
+		_field.embedFonts = true;
 		_styles = new Map<String, TextFormat>();
 		
 		if (Text.FONT == null) {

@@ -50,31 +50,40 @@ class Console
 	{
 		// Console display objects.
 		_sprite = new Sprite();
-		if (HP.defaultFont == null) HP.defaultFont = Assets.getFont(HP.defaultFontName);
-		_format = new TextFormat(HP.defaultFont.fontName);
+		if (HP.defaultFont == null) HP.defaultFontName = "";
+		_format = new TextFormat(HP.defaultFontName);
 		_back = new Bitmap();
 		
 		// FPS panel information.
 		_fpsRead = new Sprite();
 		_fpsReadText = new TextField();
+		_fpsReadText.embedFonts = true;
 		_fpsInfo = new Sprite();
 		_fpsInfoText0 = new TextField();
+		_fpsInfoText0.embedFonts = true;
 		_fpsInfoText1 = new TextField();
+		_fpsInfoText1.embedFonts = true;
 		_memReadText = new TextField();
+		_memReadText.embedFonts = true;
 		
 		// Output panel information.
 		_logRead = new Sprite();
 		_logReadText0 = new TextField();
+		_logReadText0.embedFonts = true;
 		_logReadText1 = new TextField();
+		_logReadText1.embedFonts = true;
 		
 		// Entity count panel information.
 		_entRead = new Sprite();
 		_entReadText = new TextField();
+		_entReadText.embedFonts = true;
 		
 		// Debug panel information.
 		_debRead = new Sprite();
 		_debReadText0 = new TextField();
+		_debReadText0.embedFonts = true;
 		_debReadText1 = new TextField();
+		_debReadText1.embedFonts = true;
 
 		// Button panel information
 		_butRead = new Sprite();

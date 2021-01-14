@@ -590,7 +590,7 @@ class BitmapText extends Image
 	/**
 	 * Specifies whether the text field will break into multiple lines or not on overflow.
 	 */
-	public var multiLine(get_multiLine, set_multiLine):Bool;
+	public var multiLine(get, set):Bool;
 	private inline function get_multiLine():Bool
 	{
 		return _multiLine;
