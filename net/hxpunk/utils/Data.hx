@@ -65,18 +65,7 @@ class Data
 	}
 	
 	/**
-	 * Reads a uint from the current data.
-	 * @param	name			Property to read.
-	 * @param	defaultValue	Default value.
-	 * @return	The property value, or defaultValue if the property is not assigned.
-	 */
-	public static function readUInt(name:String, defaultValue:UInt = 0):UInt
-	{
-		return Std.int(read(name, defaultValue));
-	}
-	
-	/**
-	 * Reads a Boolean from the current data.
+	 * Reads a Bool from the current data.
 	 * @param	name			Property to read.
 	 * @param	defaultValue	Default value.
 	 * @return	The property value, or defaultValue if the property is not assigned.
@@ -108,17 +97,17 @@ class Data
 	}
 	
 	/**
-	 * Writes a uint to the current data.
+	 * Writes a Uint to the current data.
 	 * @param	name		Property to write.
 	 * @param	value		Value to write.
 	 */
-	public static function writeUInt(name:String, value:UInt = 0):Void
+	public static function writeUint(name:String, value:Int = 0):Void
 	{
 		_dataMap.set(name, value);
 	}
 	
 	/**
-	 * Writes a Boolean to the current data.
+	 * Writes a Bool to the current data.
 	 * @param	name		Property to write.
 	 * @param	value		Value to write.
 	 */
@@ -187,5 +176,5 @@ class Data
 	private static var _dataMap:Map<String, Dynamic>;
 	
 	private static var DEFAULT_FILE:String = "_file";
-	private static var SIZE:UInt = 10000;
+	private static var SIZE:Int = 10000;
 }

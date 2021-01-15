@@ -494,6 +494,34 @@ class World extends Tweener
 		return null;
 	}
 	
+		/**
+		 * Returns the Entity at front which collides with the point.
+		 * @param   x       X position
+		 * @param   y       Y position
+		 * @return The Entity at front which collides with the point, or null if not found.
+		 */
+		public function frontCollidePoint(x:Float, y:Float):Entity
+		{
+			var fe:FriendlyEntity,
+			e:Entity,
+			i:Int = 0,
+			l:Int = _layerList.length;
+			do
+			{
+				fe = _renderFirst.get(_layerList[i]);
+				while (fe != null)
+				{
+					e = cast fe;
+					if(e.collidePoint(e.x, e.y, x, y)) return e;
+					fe = fe._renderNext;
+				}
+				if(i > l) break;
+			}
+			while(++i != 0);
+			
+			return null;
+		}
+	
 	/**
 	 * Returns the topmost Entity which collides with the point.
 	 * @param	type	The Entity type to check for (pass null to check for any type).
@@ -961,7 +989,7 @@ class World extends Tweener
 	}
 	
 	/**
-	 * Pushes all Entities in the World of the type into the Array or Vector.
+	 * Pushes all Entities in the World of the type into the Array or Array
 	 * @param	type		The type to check.
 	 * @param	into		The Array or Vector to populate.
 	 * @return	The same array, populated.
@@ -978,7 +1006,7 @@ class World extends Tweener
 	}
 	
 	/**
-	 * Pushes all Entities in the World of the Class into the Array or Vector.
+	 * Pushes all Entities in the World of the Class into the Array or Array
 	 * @param	c			The Class type to check.
 	 * @param	into		The Array or Vector to populate.
 	 * @return	The same array, populated.
@@ -997,7 +1025,7 @@ class World extends Tweener
 	}
 	
 	/**
-	 * Pushes all Entities in the World on the layer into the Array or Vector.
+	 * Pushes all Entities in the World on the layer into the Array or Array
 	 * @param	layer		The layer to check.
 	 * @param	into		The Array or Vector to populate.
 	 * @return	The same array, populated.

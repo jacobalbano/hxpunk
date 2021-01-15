@@ -14,6 +14,8 @@ import net.hxpunk.Screen;
 import net.hxpunk.utils.Draw;
 import net.hxpunk.utils.Input;
 import net.hxpunk.World;
+import net.hxpunk.HP;
+import openfl.Assets;
 
 
 /**
@@ -54,8 +56,6 @@ class Engine extends Sprite
 	{
 		super();
 		
-		_frameList = new Array<Int>();
-
 		// global game properties
 		HP.width = width;
 		HP.height = height;
@@ -178,6 +178,13 @@ class Engine extends Sprite
 		HP.stage = stage;
 	#end
 		
+		
+		if (Assets.exists("hxpunk/04b03.ttf"))
+		{
+			HP.defaultFont = Assets.getFont("hxpunk/04b03.ttf");
+			HP.defaultFontName = HP.defaultFont.fontName;
+		}
+
 		// add focus change listeners
 		stage.addEventListener(Event.ACTIVATE, onActivate);
 		stage.addEventListener(Event.DEACTIVATE, onDeactivate);
@@ -346,5 +353,5 @@ class Engine extends Sprite
 	// FrameRate tracking.
 	private var _frameLast:Float = 0;
 	private var _frameListSum:Int = 0;
-	private var _frameList:Array<Int>;
+	private var _frameList:Array<Int> = [];
 }

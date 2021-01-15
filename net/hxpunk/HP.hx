@@ -177,12 +177,6 @@ class HP
 		sprite = new Sprite();
 		entity = new Entity();
 
-		if (Assets.exists("hxpunk/04b03.ttf"))
-		{
-			defaultFont = Assets.getFont("hxpunk/04b03.ttf");
-			defaultFontName = defaultFont.fontName;
-		}
-		
 		return true;
 	}
 	

@@ -609,7 +609,7 @@ class BitmapText extends Image
 	/**
 	 * The color to use for the text outline (set to null to disable the outline).
 	 */
-	public var outlineColor(get_outlineColor, set_outlineColor):Null<Int>;
+	public var outlineColor(get, set):Null<Int>;
 	private inline function get_outlineColor():Null<Int>
 	{
 		return _outlineColor;
