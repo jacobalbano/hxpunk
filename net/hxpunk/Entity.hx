@@ -35,6 +35,7 @@ typedef FriendlyEntity = {
 /**
  * Main game Entity class updated by World.
  */
+@:rtti
 class Entity extends Tweener
 {
 	/**
