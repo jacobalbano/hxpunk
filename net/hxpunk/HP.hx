@@ -1120,7 +1120,7 @@ class HP
 	 * @param	tweener		The Tweener object to add this Alarm to. Defaults to HP.tweener.
 	 * @return	The added Alarm object.
 	 * 
-	 * Example: HP.alarm(5.0, callbackFunction, Tween.LOOPING); // Calls callbackFunction every 5 seconds
+	 * Example: HP.alarm(5.0, callbackFunction, TweenType.LOOPING); // Calls callbackFunction every 5 seconds
 	 */
 	public static inline function alarm(delay:Float, callback:Void -> Void, type:TweenType = null, tweener:Tweener = null):Alarm
 	{
@@ -1300,6 +1300,12 @@ class HP
 		}
 		for (i in dotPos...dotPos + decimalPlaces) strBuf.add('0');
 		return strBuf.toString().substr(0, dotPos + decimalPlaces + 1);
+	}
+
+	public static function coalesce<T>(a:T, b:T):T
+	{
+		if (a != null) return a;
+		return b;
 	}
 	
 	// World information.
