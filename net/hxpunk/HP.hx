@@ -280,7 +280,7 @@ class HP
 	#if (flash || js)
 		return untyped arr.indexOf(v);
 	#else
-		return Lambda.indexOf(arr, t);
+		return Lambda.indexOf(arr, v);
 	#end
 	}
 	

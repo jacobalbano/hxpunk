@@ -265,7 +265,7 @@ class Image extends Graphic
 		matrix.createGradientBox(mWidth, mHeight, mRotation, fromX, fromY);
 		
 		HP.sprite.graphics.clear();
-		HP.sprite.graphics.beginGradientFill(fillType, colors, alphas, ratios, matrix, spreadMethod);
+		HP.sprite.graphics.beginGradientFill(fillType, cast colors, alphas, ratios, matrix, spreadMethod);
 		HP.sprite.graphics.drawRect(0, 0, width, height);
 		
 		bitmap.draw(HP.sprite);
@@ -276,7 +276,7 @@ class Image extends Graphic
 	/**
 	 * Creates a new polygon Image from an array of points.
 	 * @param	points		Array containing the polygon's points.
-	 * @param	color		Color of the polygon.
+	 * @param	color		Color of the polygon.P
 	 * @param	alpha		Alpha of the polygon.
 	 * @param	fill		If the polygon should be filled with the color (true) or just an outline (false).
 	 * @param	thick		How thick the outline should be (only applicable when fill = false).
